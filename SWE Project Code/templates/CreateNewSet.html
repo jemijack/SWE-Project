@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junction Set Creation</title>
+  <style>
+    /* Styling for the active direction button */
+    .active {
+      /*Can use the !important tag to override the default settings of a browser. So by default, the active button would have a grey background in Chrome, so we must override to get green*/
+      background-color: #4CAF50 !important; /* Green background for the active button */
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+    /* Styling for the inactive direction buttons */
+    .direction-buttons button {
+      background-color: #f1f1f1;
+      color: black;
+      border: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+    }
+    /* Style to make the priority number just a plain text, not a textbox */
+    .priority-number {
+      font-size: 16px;
+      font-weight: bold;
+      display: inline-block;
+      width: 40px;
+      text-align: center;
+    }
+    /* Styling for invalid input */
+    input.invalid {
+      border: 2px solid red;
+    }
+
+    /* Styling for valid input */
+    input.valid {
+      border: 2px solid green;
+    }
+    
+    .error-message {
+      color: red;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Create a Junction Set</h1>
+  
+  <form id="junctionForm" method="POST" action="/junctionform" onsubmit="return validateForm()">
+    <!-- Junction Set Name -->
+    <label for="junctionSetName">Junction Set Name:</label>
+    <input type="text" id="junctionSetName" name="junctionSetName" required>
+
+    <!-- Direction buttons to show input forms for each direction -->
+    <div class="direction-buttons">
+      <button type="button" id="northButton" onclick="showDirectionForm('north')">Northbound</button>
+      <button type="button" id="southButton" onclick="showDirectionForm('south')">Southbound</button>
+      <button type="button" id="eastButton" onclick="showDirectionForm('east')">Eastbound</button>
+      <button type="button" id="westButton" onclick="showDirectionForm('west')">Westbound</button>
+    </div>
+
+    <!-- North Form Inputs (Only one of these will be visible at a time) -->
+    <div id="northForm" class="form-container">
+      <h3>Northbound</h3>
+      <label for="northVehiclesIn">Total Vehicles Incoming (per hour):</label>
+      <input type="text" id="northVehiclesIn" name="northVehiclesIn" required oninput="validateInteger(this)">
+      <div id="northVehiclesInError" class="error-message"></div>
+
+      <label for="northLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="northLeftOut" name="northLeftOut" required oninput="validateInteger(this)">
+      <div id="northLeftOutError" class="error-message"></div>
+
+      <label for="northStraightOut">Total Vehicles Exiting North (per hour):</label>
+      <input type="text" id="northStraightOut" name="northStraightOut" required oninput="validateInteger(this)">
+      <div id="northStraightOutError" class="error-message"></div>
+
+      <label for="northRightOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="northRightOut" name="northRightOut" required oninput="validateInteger(this)">
+      <div id="northRightOutError" class="error-message"></div>
+
+      <label for="northCarPercentage">Percentage of Cars:</label>
+      <input type="text" id="northCarPercentage" name="northCarPercentage" required oninput="validateDecimal(this)">
+      <div id="northCarPercentageError" class="error-message"></div>
+
+      <label for="northBusPercentage">Percentage of Busses:</label>
+      <input type="text" id="northBusPercentage" name="northBusPercentage" required oninput="validateDecimal(this)">
+      <div id="northBusPercentageError" class="error-message"></div>
+
+      <label for="northCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="northCyclePercentage" name="northCyclePercentage" required oninput="validateDecimal(this)">
+      <div id="northCyclePercentageError" class="error-message"></div>
+
+      <label for="northPriority">Direction Priority:</label>
+      <input type="range" id="northPriority" name="northPriority" min="0" max="4" value="0" oninput="updatePriorityText('north')">
+      <span id="northPriorityText" class="priority-number">0</span>
+    </div>
+
+    <!-- South Form Inputs -->
+    <div id="southForm" class="form-container">
+      <h3>Southbound</h3>
+      <label for="southVehiclesIn">Total Vehicles Incoming (per hour):</label>
+      <input type="text" id="southVehiclesIn" name="southVehiclesIn" required oninput="validateInteger(this)">
+      <div id="southVehiclesInError" class="error-message"></div>
+
+      <label for="southLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="southLeftOut" name="southLeftOut" required oninput="validateInteger(this)">
+      <div id="southLeftOutError" class="error-message"></div>
+
+      <label for="southStraightOut">Total Vehicles Exiting South (per hour):</label>
+      <input type="text" id="southStraightOut" name="southStraightOut" required oninput="validateInteger(this)">
+      <div id="southStraightOutError" class="error-message"></div>
+
+      <label for="southRightOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="southRightOut" name="southRightOut" required oninput="validateInteger(this)">
+      <div id="southRightOutError" class="error-message"></div>
+
+      <label for="southCarPercentage">Percentage of Cars:</label>
+      <input type="text" id="southCarPercentage" name="southCarPercentage" required oninput="validateDecimal(this)">
+      <div id="southCarPercentageError" class="error-message"></div>
+
+      <label for="southBusPercentage">Percentage of Busses:</label>
+      <input type="text" id="southBusPercentage" name="southBusPercentage" required oninput="validateDecimal(this)">
+      <div id="southBusPercentageError" class="error-message"></div>
+
+      <label for="southCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="southCyclePercentage" name="southCyclePercentage" required oninput="validateDecimal(this)">
+      <div id="southCyclePercentageError" class="error-message"></div>
+
+      <label for="southPriority">Direction Priority:</label>
+      <input type="range" id="southPriority" name="southPriority" min="0" max="4" value="0" oninput="updatePriorityText('south')">
+      <span id="southPriorityText" class="priority-number">0</span>
+    </div>
+
+    <!-- East Form Inputs -->
+    <div id="eastForm" class="form-container">
+      <h3>Eastbound</h3>
+      <label for="eastVehiclesIn">Total Vehicles Incoming (per hour):</label>
+      <input type="text" id="eastVehiclesIn" name="eastVehiclesIn" required oninput="validateInteger(this)">
+      <div id="eastVehiclesInError" class="error-message"></div>
+
+      <label for="eastLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="eastLeftOut" name="eastLeftOut" required oninput="validateInteger(this)">
+      <div id="eastLeftOutError" class="error-message"></div>
+
+      <label for="eastStraightOut">Total Vehicles Exiting North (per hour):</label>
+      <input type="text" id="eastStraightOut" name="eastStraightOut" required oninput="validateInteger(this)">
+      <div id="eastStraightOutError" class="error-message"></div>
+
+      <label for="eastRightOut">Total Vehicles Exiting South (per hour):</label>
+      <input type="text" id="eastRightOut" name="eastRightOut" required oninput="validateInteger(this)">
+      <div id="eastRightOutError" class="error-message"></div>
+
+      <label for="eastCarPercentage">Percentage of Cars:</label>
+      <input type="text" id="eastCarPercentage" name="eastCarPercentage" required oninput="validateDecimal(this)">
+      <div id="eastCarPercentageError" class="error-message"></div>
+
+      <label for="eastBusPercentage">Percentage of Busses:</label>
+      <input type="text" id="eastBusPercentage" name="eastBusPercentage" required oninput="validateDecimal(this)">
+      <div id="eastBusPercentageError" class="error-message"></div>
+
+      <label for="eastCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="eastCyclePercentage" name="eastCyclePercentage" required oninput="validateDecimal(this)">
+      <div id="eastCyclePercentageError" class="error-message"></div>
+
+      <label for="eastPriority">Direction Priority:</label>
+      <input type="range" id="eastPriority" name="eastPriority" min="0" max="4" value="0" oninput="updatePriorityText('east')">
+      <span id="eastPriorityText" class="priority-number">0</span>
+    </div>
+
+    <!-- West form inputs -->
+    <div id="westForm" class="form-container">
+      <h3>Westbound</h3>
+      <label for="westVehiclesIn">Total Vehicles Incoming (per hour):</label>
+      <input type="text" id="westVehiclesIn" name="westVehiclesIn" required oninput="validateInteger(this)">
+      <div id="westVehiclesInError" class="error-message"></div>
+
+      <label for="westLeftOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="westLeftOut" name="westLeftOut" required oninput="validateInteger(this)">
+      <div id="westLeftOutError" class="error-message"></div>
+
+      <label for="westStraightOut">Total Vehicles Exiting North (per hour):</label>
+      <input type="text" id="westStraightOut" name="westStraightOut" required oninput="validateInteger(this)">
+      <div id="westStraightOutError" class="error-message"></div>
+
+      <label for="westRightOut">Total Vehicles Exiting South (per hour):</label>
+      <input type="text" id="westRightOut" name="westRightOut" required oninput="validateInteger(this)">
+      <div id="westRightOutError" class="error-message"></div>
+
+      <label for="westCarPercentage">Percentage of Cars:</label>
+      <input type="text" id="westCarPercentage" name="westCarPercentage" required oninput="validateDecimal(this)">
+      <div id="westCarPercentageError" class="error-message"></div>
+
+      <label for="westBusPercentage">Percentage of Busses:</label>
+      <input type="text" id="westBusPercentage" name="westBusPercentage" required oninput="validateDecimal(this)">
+      <div id="westBusPercentageError" class="error-message"></div>
+
+      <label for="westCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="westCyclePercentage" name="westCyclePercentage" required oninput="validateDecimal(this)">
+      <div id="westCyclePercentageError" class="error-message"></div>
+
+      <label for="westPriority">Direction Priority:</label>
+      <input type="range" id="westPriority" name="westPriority" min="0" max="4" value="0" oninput="updatePriorityText('west')">
+      <span id="westPriorityText" class="priority-number">0</span>
+    </div>
+
+    <!-- Submit the form -->
+    <button type="submit">Submit Junction Set</button>
+  </form>
+
+  <script>
+    // Initialize the page with the North direction form displayed by default, thus highlighting the North button before the user has pressed any button
+    showDirectionForm('north');
+    // Validate for integer (>= 0)
+    function validateInteger(input) {
+    const value = input.value;
+    const isValid = /^\d+$/.test(value);  // Matches one or more digits (non-negative integer)
+    const errorMessage = document.getElementById(input.id + "Error");
+
+    if (isValid) {
+      input.classList.add("valid");
+      input.classList.remove("invalid");
+      errorMessage.textContent = ""; // Clear error message
+    } else {
+      input.classList.add("invalid");
+      input.classList.remove("valid");
+      errorMessage.textContent = "Please enter a non-negative integer."; // Show error message
+    }
+  }
+
+    // Validate for decimal (>= 0, with one decimal place)
+    function validateDecimal(input) {
+      const value = input.value;
+      const isValid = /^[0-9]+(\.[0-9]{1})?$/.test(value);  // Matches decimal with one decimal place
+      const errorMessage = document.getElementById(input.id + "Error");
+
+      if (isValid) {
+        input.classList.add("valid");
+        input.classList.remove("invalid");
+        errorMessage.textContent = ""; // Clear error message
+      } else {
+        input.classList.add("invalid");
+        input.classList.remove("valid");
+        errorMessage.textContent = "Please enter a non-negative number (up to one decimal place)."; // Show error message
+      }
+    }
+    // Show form for the selected direction (hide others)
+    function showDirectionForm(direction) {
+      // Hide all forms
+      document.querySelectorAll('.form-container').forEach(form => form.style.display = 'none');
+      
+      // Show the selected direction's form
+      document.getElementById(direction + 'Form').style.display = 'block';
+
+      // Remove active class from all buttons
+      const buttons = document.querySelectorAll('.direction-buttons button');
+      buttons.forEach(button => button.classList.remove('active'));
+
+      // Add active class to the clicked button
+      document.getElementById(direction + 'Button').classList.add('active');
+    }
+
+    // Update the text span to reflect the current value of the slider
+    function updatePriorityText(direction) {
+      const slider = document.getElementById(direction + 'Priority');
+      const textField = document.getElementById(direction + 'PriorityText');
+      textField.innerText = slider.value;
+    }
+
+    // Custom form validation to prevent submission if fields are invalid
+    function validateForm() {
+    // Get all the input fields
+    const inputs = document.querySelectorAll('input');
+    let isValid = true;
+
+    // Validate each input and prevent form submission if any input is invalid
+    inputs.forEach(input => {
+      // Trigger input validation
+      input.dispatchEvent(new Event('input'));
+
+      // Check if input is valid (doesn't have the invalid class)
+      if (input.classList.contains('invalid')) {
+        isValid = false;
+      }
+    });
+
+    // 1. Validate that the percentages add up to 100 for all directions
+    const nCarPercentage = parseFloat(document.getElementById('northCarPercentage').value);
+    const nBusPercentage = parseFloat(document.getElementById('northBusPercentage').value);
+    const nCyclePercentage = parseFloat(document.getElementById('northCyclePercentage').value);
+    const nTotalPercentage = nCarPercentage + nBusPercentage + nCyclePercentage;
+
+    if (nTotalPercentage !== 100) {
+      alert("North Direction: The percentages of cars, buses, and cycles must add up to 100.");
+      isValid = false;
+    }
+
+    const sCarPercentage = parseFloat(document.getElementById('southCarPercentage').value);
+    const sBusPercentage = parseFloat(document.getElementById('southBusPercentage').value);
+    const sCyclePercentage = parseFloat(document.getElementById('southCyclePercentage').value);
+    const sTotalPercentage = sCarPercentage + sBusPercentage + sCyclePercentage;
+
+    if (sTotalPercentage !== 100) {
+      alert("South Direction: The percentages of cars, buses, and cycles must add up to 100.");
+      isValid = false;
+    }
+
+    const eCarPercentage = parseFloat(document.getElementById('eastCarPercentage').value);
+    const eBusPercentage = parseFloat(document.getElementById('eastBusPercentage').value);
+    const eCyclePercentage = parseFloat(document.getElementById('eastCyclePercentage').value);
+    const eTotalPercentage = eCarPercentage + eBusPercentage + eCyclePercentage;
+
+    if (eTotalPercentage !== 100) {
+      alert("East Direction: The percentages of cars, buses, and cycles must add up to 100.");
+      isValid = false;
+    }
+
+    const wCarPercentage = parseFloat(document.getElementById('westCarPercentage').value);
+    const wBusPercentage = parseFloat(document.getElementById('westBusPercentage').value);
+    const wCyclePercentage = parseFloat(document.getElementById('westCyclePercentage').value);
+    const wTotalPercentage = wCarPercentage + wBusPercentage + wCyclePercentage;
+
+    if (wTotalPercentage !== 100) {
+      alert("West Direction: The percentages of cars, buses, and cycles must add up to 100.");
+      isValid = false;
+    }
+
+    // 2. Validate that incoming vehicles = exiting vehicles for every direction
+    const nIncoming = parseInt(document.getElementById('northVehiclesIn').value);
+    const nLeftOut = parseInt(document.getElementById('northLeftOut').value);
+    const nStraightOut = parseInt(document.getElementById('northStraightOut').value);
+    const nRightOut = parseInt(document.getElementById('northRightOut').value);
+    const nTotalExiting = nLeftOut + nStraightOut + nRightOut;
+
+    if (nIncoming !== nTotalExiting) {
+      alert("North Direction: The total incoming vehicles must equal the total exiting vehicles.");
+      isValid = false;
+    }
+
+    const sIncoming = parseInt(document.getElementById('southVehiclesIn').value);
+    const sLeftOut = parseInt(document.getElementById('southLeftOut').value);
+    const sStraightOut = parseInt(document.getElementById('southStraightOut').value);
+    const sRightOut = parseInt(document.getElementById('southRightOut').value);
+    const sTotalExiting = sLeftOut + sStraightOut + sRightOut;
+
+    if (sIncoming !== sTotalExiting) {
+      alert("South Direction: The total incoming vehicles must equal the total exiting vehicles.");
+      isValid = false;
+    }
+
+    const eIncoming = parseInt(document.getElementById('eastVehiclesIn').value);
+    const eLeftOut = parseInt(document.getElementById('eastLeftOut').value);
+    const eStraightOut = parseInt(document.getElementById('eastStraightOut').value);
+    const eRightOut = parseInt(document.getElementById('eastRightOut').value);
+    const eTotalExiting = eLeftOut + eStraightOut + eRightOut;
+
+    if (eIncoming !== eTotalExiting) {
+      alert("East Direction: The total incoming vehicles must equal the total exiting vehicles.");
+      isValid = false;
+    }
+
+    const wIncoming = parseInt(document.getElementById('westVehiclesIn').value);
+    const wLeftOut = parseInt(document.getElementById('westLeftOut').value);
+    const wStraightOut = parseInt(document.getElementById('westStraightOut').value);
+    const wRightOut = parseInt(document.getElementById('westRightOut').value);
+    const wTotalExiting = wLeftOut + wStraightOut + wRightOut;
+
+    if (wIncoming !== wTotalExiting) {
+      alert("West Direction: The total incoming vehicles must equal the total exiting vehicles.");
+      isValid = false;
+    }
+
+    // Return false to prevent form submission if any invalid input is found across all directions
+    if (!isValid) {
+      alert("Please correct the invalid fields before submitting.");
+      return false;
+    }
+
+    return true;
+  }
+  // Prevent form submission when the Enter key is pressed
+  document.getElementById('junctionForm').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission on Enter key press
+      }
+    });
+  </script>
+
+</body>
+</html>
