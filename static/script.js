@@ -1,7 +1,7 @@
-// TO DO: ADD Junction set
-// Make save button appea only when all sets are done 
-//Go back to last active junction when we hot teh previous lane. 
-
+// TO DO 22/2/2025: 
+// integration with junction image. 
+// test cases to write 
+// CSS to write
 
 // list of all parmeters in each direction. 
 let junctionData = {
@@ -132,26 +132,99 @@ function resetLaneUI() {
     document.getElementById("cycleLane").checked = false;
 }
 
+
+// lane validation
+function validateLaneSettings(laneData) {
+
+//lane can't be both a bus lane and cycle lane at the same time
+if (laneData.bus && laneData.cycle) {
+    alert("A lane cannot be both a Bus Lane and a Cycle Lane.");
+    return false;
+}
+
+
+// Only ONE of these should be true at a time:
+let directionOptions = [
+    laneData.leftTurnOnly, 
+    laneData.rightTurnOnly, 
+    laneData.leftStraight, 
+    laneData.rightStraight, 
+    laneData.anyDirection
+];
+
+
+let selectedCount = directionOptions.filter(option => option === true).length;
+
+if (selectedCount > 1) {
+    alert("A lane can only have one direction restriction: {Dedicated left lane, Dedicated right lane, Left Turn and Straight lane, Right Turn and Straight lane or Any Direction");
+    return false;
+}
+
+//  if all validation is passed. This validation seems to be working fine. 
+return true; 
+
+} 
+
+function validateDirectionSettings(direction){
+
+    let lanes = junctionData[direction].lanes;
+
+
+if (lanes.length === 1 && !lanes[0].anyDirection) {
+    alert(" If there is only one lane in a direction then it must be an any direction lane.");
+    return false;
+}
+
+
+// the only lane can't be both a bus lane and cycle lane at the same time
+if (lanes[0].bus && lanes[0].cycle) {
+    alert("A lane cannot be both a Bus Lane and a Cycle Lane.");
+    return false;
+}
+
+
+
+// Can only have 1 lane of bus lane / cycle lane per direction. 
+
+let busLaneCount = lanes.filter(lane => lane.bus).length;
+let cycleLaneCount = lanes.filter(lane => lane.cycle).length;
+
+if (busLaneCount > 1 || cycleLaneCount > 1)  {
+    alert("A direction can only have one bus or cycle lane.");
+    return false;
+}
+
+
+return true; 
+
+}
+
 // updates settinsg for each lane within a direction (look at the JSON  structure at the begining)
 function switchLane(laneIndex){
-   
-// save current lane data before switching
-    if (currentLane !== null ) {
-        junctionData[currentDirection].lanes[currentLane] = {
-            ...junctionData[currentDirection].lanes[currentLane],
-            leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
-            rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
-            leftStraight: document.getElementById("leftStraight")?.checked || false,
-            rightStraight: document.getElementById("rightStraight")?.checked || false,
-            anyDirection:  document.getElementById("anyDirection")?.checked || false, 
-            bus: document.getElementById("busLane")?.checked || false,
-            cycle: document.getElementById("cycleLane")?.checked || false
-        };
-    }     
-       
-    // switch to the new lane 
-    currentLane = laneIndex; 
-   
+
+    let currentLaneData = {
+        leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
+        rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
+        leftStraight: document.getElementById("leftStraight")?.checked || false,
+        rightStraight: document.getElementById("rightStraight")?.checked || false,
+        anyDirection: document.getElementById("anyDirection")?.checked || false,
+        bus: document.getElementById("busLane")?.checked || false,
+        cycle: document.getElementById("cycleLane")?.checked || false
+    };
+
+
+
+// **Validate lane settings before switching**
+  if (!validateLaneSettings(currentLaneData)) {
+    return; // 
+  }
+
+  // Save current lane data before switching
+junctionData[currentDirection].lanes[currentLane] = currentLaneData;
+
+// Switch to the new lane
+currentLane = laneIndex;
+
 
  // Ensure lanes exist
  if (!junctionData[currentDirection].lanes[currentLane]) {
@@ -167,32 +240,33 @@ function switchLane(laneIndex){
 
  }
  
- let laneData = junctionData[currentDirection].lanes[currentLane];
+ let newLaneData = junctionData[currentDirection].lanes[currentLane];
 
     resetLaneUI()
 
+    console.log(`Switching to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);
+
     // now load correct values
-    document.getElementById("leftTurnOnly").checked = laneData.leftTurnOnly;
-    document.getElementById("rightTurnOnly").checked = laneData.rightTurnOnly;
-    document.getElementById("leftStraight").checked = laneData.leftStraight;
-    document.getElementById("rightStraight").checked = laneData.rightStraight;
-    document.getElementById("anyDirection").checked = laneData.anyDirection;
-    document.getElementById("busLane").checked = laneData.bus;
-    document.getElementById("cycleLane").checked = laneData.cycle;
+    document.getElementById("leftTurnOnly").checked = newLaneData.leftTurnOnly;
+    document.getElementById("rightTurnOnly").checked = newLaneData.rightTurnOnly;
+    document.getElementById("leftStraight").checked = newLaneData.leftStraight;
+    document.getElementById("rightStraight").checked = newLaneData.rightStraight;
+    document.getElementById("anyDirection").checked = newLaneData.anyDirection;
+    document.getElementById("busLane").checked = newLaneData.bus;
+    document.getElementById("cycleLane").checked = newLaneData.cycle;
 
     // debugging 
-    console.log(`Switched to Lane ${laneIndex + 1}`, laneData);
+    console.log(`Switched to Lane ${laneIndex + 1}`, newLaneData);
 
 }
 
-
 // switches between different junction direction (N,E,S,W) and loads their settings into form
  function switchDirection(direction) {
-   
- // save current lane settings before switching direction
- if (currentDirection !== null && currentLane !== null) {
+
+ //  save current direction's settings
+ if (currentDirection && currentLane !== null) {
+    // Save current lane settings
     junctionData[currentDirection].lanes[currentLane] = {
-        ...junctionData[currentDirection].lanes[currentLane],
         leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
         rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
         leftStraight: document.getElementById("leftStraight")?.checked || false,
@@ -201,57 +275,70 @@ function switchLane(laneIndex){
         bus: document.getElementById("busLane")?.checked || false,
         cycle: document.getElementById("cycleLane")?.checked || false
     };
+
+    // Save pedestrian crossing setting
+    junctionData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian").checked;
 }
 
-   // save current direction settings before switching
-   if (currentDirection !== null ) {
-    junctionData[currentDirection] = {
-        pedestrianCrossing: document.getElementById("pedestrian").checked
-    }
+
+  // Validate direction settings **before switching**
+  if (!validateDirectionSettings(currentDirection)) {
+    return; //  Stop switching if validation fails
 }
-   
+
     // switch to the new direction
     currentDirection = direction;
     console.log("Switched to ", currentDirection);
    
 
-    // Get number of lanes safely. If the no. of lanes in  0 or undefined default to 3 lanes. 
-    let numLanes = parseInt(junctionData[direction]?.lanes?.length) || 3; 
+  // Get number of lanes of the new direction  (default to 3 if not set)
+  let numLanes = junctionData[direction].lanes.length || 3;
 
-    // make sue the direction objects exists. 
-    if (!junctionData[currentDirection]) {
-        junctionData[currentDirection] = {
-            pedestrianCrossing: false,
-            lanes: []
-        };
+
+    // Initialise lanes if they don't exist
+    if (junctionData[direction].lanes.length === 0) {
+        junctionData[direction].lanes = Array.from({ length: numLanes }, () => ({
+            leftTurnOnly: false,
+            rightTurnOnly: false,
+            leftStraight: false,
+            rightStraight: false,
+            anyDirection: false,
+            bus: false,
+            cycle: false
+        }));
     }
 
-   // Make sure all lanes exist
-   if (!Array.isArray(junctionData[direction].lanes) || junctionData[direction].lanes.length !== numLanes) {
-    junctionData[direction].lanes = Array.from({ length: numLanes }, () => ({
-        leftTurnOnly: false,
-        rightTurnOnly: false,
-        leftStraight: false, 
-        rightStraight: false,
-        anyDirection: false,
-        bus: false,
-        cycle: false
-    }));
-}
 
      // Update UI values
      document.getElementById("lanes").value = numLanes;
      document.getElementById("lanesValue").innerText = numLanes;
      document.getElementById("pedestrian").checked = junctionData[direction].pedestrianCrossing;
 
-     resetLaneUI()
+   
      // Generate buttons for each lane
      generateLaneButtons(numLanes);
  
-     // Load first lane by default
-     switchLane(0);
 
-    } 
+    // Switch to first lane and reset UI
+    currentLane = 0;
+    resetLaneUI();
+
+       // Load the first lane's settings
+       if (junctionData[direction].lanes[0]) {
+        const laneData = junctionData[direction].lanes[0];
+        document.getElementById("leftTurnOnly").checked = laneData.leftTurnOnly;
+        document.getElementById("rightTurnOnly").checked = laneData.rightTurnOnly;
+        document.getElementById("leftStraight").checked = laneData.leftStraight;
+        document.getElementById("rightStraight").checked = laneData.rightStraight;
+        document.getElementById("anyDirection").checked = laneData.anyDirection;
+        document.getElementById("busLane").checked = laneData.bus;
+        document.getElementById("cycleLane").checked = laneData.cycle;
+    }
+
+    console.log(`Switched to ${direction}. Current state:`, junctionData[direction]);
+}
+    
+
 
 function submitData() {
 
@@ -281,7 +368,6 @@ function submitData() {
         junctionName: junctionName,
         junctionData: junctionData
     };
-
 
     // Debugging
     console.log("Sent data:", submissionData);
