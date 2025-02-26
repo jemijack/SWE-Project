@@ -9,6 +9,11 @@
 <body>
 <h1> Design a Junction</h1>
 
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="static/image.js"></script> 
+<svg id="junctionCanvas"></svg>
+
+
 <!-- Fixed Side Bar Menu -->
 <div id="directionMenu">
     <button onclick="switchDirection('North')">North</button>
@@ -43,44 +48,19 @@
 </div> 
 
 
+<!--Changed to a drop down -->
     <div id="laneSettings">
-
-        <!-- Bus Lane Toggle-->
-        <label for="busLane">Bus Lane:</label>
-        <input type="checkbox" id="busLane">
-        <span class="Bus Lane toggle"></span>
-    
-        <!-- Cycle Lane Toggle-->
-        <label for="cycleLane">Cycle Lane:</label>
-        <input type="checkbox" id="cycleLane">
-        <span class="Cycle Lane toggle"></span>
-    
-        <!-- Left Turn Lane Toggle-->
-        <label for="leftTurnOnly">Dedicated Left Lane:</label>
-        <input type="checkbox" id="leftTurnOnly">
-        <span class="leftTurn toggle"></span> 
-    
-        <!-- Right Turn Lane Toggle-->
-        <label for="rightTurnOnly">Dedicated Right Lane:</label>
-        <input type="checkbox" id="rightTurnOnly">
-        <span class="rightTurn toggle"></span>
-
-        <!-- Left and Straight Lane Toggle-->
-        <label for="leftStraight"> Left Turn and Straight Lane:</label>
-        <input type="checkbox" id="leftStraight">
-        <span class="leftTurn toggle"></span> 
-
-        <!-- Right and Straight  Lane Toggle-->
-        <label for="rightStraight">Right Turn and Straight Lane:</label>
-        <input type="checkbox" id="rightStraight">
-        <span class="rightTurn toggle"></span>
-
-          <!-- any direction Lane Toggle-->
-          <label for="anyDirection">Any Direction:</label>
-          <input type="checkbox" id="anyDirection">
-          <span class="rightTurn toggle"></span>
-                       
-
+        <select id="directionOptions">
+            <option value="">Select Direction</option>
+            <option value="busLane">Bus Lane</option>
+            <option value="cycleLane">Cycle Lane</option>
+            <option value="leftOnly">Dedicated Left Lane</option>
+            <option value="rightOnly">Dedicated Right Lane</option>
+            <option value="leftStraight">Left & Straight</option>
+            <option value="rightStraight">Right & Straight</option>
+            <option value="anyDirection">Any Direction</option>
+        </select>
+        <span id="direction"></span>
     </div>
 
     <!--Toggles-->

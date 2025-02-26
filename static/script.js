@@ -1,37 +1,55 @@
-// TO DO 22/2/2025: 
-// integration with junction image. 
-// test cases to write 
-// CSS to write
 
 // list of all parmeters in each direction. 
-let junctionData = {
-    "North": {
-        "lanes": [], // 11/02/2025 Making lane creating dynamic so we need to edit the JSON so lanes is an empty array. 
-        "pedestrianCrossing": false
-    }, 
+let layoutData = {
+    "jLayoutName": "", // User enters this
+    "timestamp": new Date().toISOString(),
+    "userId": "11", // This come from other page
+    "junctionID":"56", // This also comes from other page 
 
-    "East": {
-        "lanes": [],
-        "pedestrianCrossing": false
-    }, 
+// we start by default with 3 lanes per direction. 
+        "northArm": {
+            "laneCount": 3,
+            "pedestrianCrossing": false, 
+            "laneDetail": {
+                "lane1": "", //Empty at the start, user selects later. 
+                "lane2": "",
+                "lane3": ""
+            },
+        },
+        "eastArm": {
+            "laneCount": 3,
+            "pedestrianCrossing": false, 
+            "laneDetail": {
+                "lane1": "",
+                "lane2": "",
+                "lane3": ""
+            },
+        },
+        "southArm": {
+            "laneCount": 3,
+            "pedestrianCrossing": false, 
+            "laneDetail": {
+                "lane1": "",
+                "lane2": "",
+                "lane3": "",
+            },
+        },
+        "westArm": {
+            "laneCount": 3,
+            "pedestrianCrossing": false, 
+            "laneDetail": {
+                "lane1": "",
+                "lane2": "",
+                "lane3": ""
+            },
+        },
+}
 
-    "South": {
-        "lanes": [],
-        "pedestrianCrossing": false
-    }, 
 
-    "West": {
-        "lanes": [],
-        "pedestrianCrossing": false
-    }
+//Set up the defaults
 
-};
-
-//Set up th defaults
-let junctionName =""; // Store this globally becuase its not part of the junctionData. 
-let  currentDirection = "North"; 
-let currentLane = 0; 
-
+let  currentDirection = "northArm"; 
+let currentLane = 0;
 
 
 function updateJunctionName() {
@@ -40,43 +58,38 @@ function updateJunctionName() {
      // validation just allow numbers, letters and spaces
      if (!/^[a-zA-Z0-9\s]+$/.test(nameInput)) {
         alert("Junction name can only contain letters, numbers, and spaces.");
-        document.getElementById("junctionName").value = junctionName; // Revert to previous valid name
+        document.getElementById("junctionName").value = layoutData["jLayoutName"]; // Revert to previous valid name
         return;
     }
 
     // Save the junction name
-    junctionName = nameInput;
+    layoutData["jLayoutName"] = nameInput;
 
 
 }
 
-// make sure the name is stored when changed
+// make sure the name updated is stored when changed
 document.getElementById("junctionName").addEventListener("input", updateJunctionName)
 
 
 
 // Make sure that junction  loads the stored name when we swicth direction
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("junctionName").value = junctionName;
+    document.getElementById("junctionName").value = layoutData["jLayoutName"];
 })
 
 
 
-// This loads the 3 lanes buttons first load. 
+// This loads the 3 lanes buttons on first load. 
 document.addEventListener("DOMContentLoaded", function(){
    
    
      // Ensure North has at least 3 lanes becuase its the first direction that loads and therefore it itrs not covered by the switchLane function
-     if (!junctionData["North"].lanes || junctionData["North"].lanes.length === 0) {
-        junctionData["North"].lanes = Array.from({ length: 3 }, () => ({
-            leftTurnOnly: false,
-            rightTurnOnly: false,
-            leftStraight:  false,
-            rightStraight:false,
-            anyDirection: false,
-            bus: false,
-            cycle: false
-        }));
+      if (!layoutData["northArm"].laneDetail || Object.keys(layoutData["northArm"].laneDetail).length === 0) {
+        layoutData["northArm"].laneDetail = {}; // Initialize as an empty object
+        for (let i = 1; i <= 3; i++) {
+            layoutData["northArm"].laneDetail[`lane${i}`] = ""; // Default empty string
+        }
     }
    
 
@@ -85,35 +98,69 @@ document.addEventListener("DOMContentLoaded", function(){
 
 }) 
 
-// Event listener for the slider so it adds the same number of lane arrays as the slider    
+// Event listener for the slider so it dynaically adjusts laneDetail
 document.getElementById("lanes").addEventListener("input", function(){
 
-    let numLanes  = parseInt(this.value) || 3 //  default value of  the slider is 3 
+    let laneCount = parseInt(this.value) || 3 //  default value of  the slider is 3 
 
-     // Ensure the lanes array matches the new lane count
-     if (!Array.isArray(junctionData[currentDirection].lanes) || junctionData[currentDirection].lanes.length !== numLanes) {
-        junctionData[currentDirection].lanes = Array.from({ length: numLanes }, () => ({
-            leftTurnOnly: false,
-            rightTurnOnly: false,
-            leftStraight:  false,
-            rightStraight:false,
-            anyDirection: false,
-            bus: false,
-            cycle: false
-        }));
+    let directionKey = currentDirection; // Ensure it's correctly named
+    if (!layoutData[directionKey]) {
+        layoutData[directionKey] = { laneCount: 3, pedestrianCrossing: false, laneDetail: {} };
     }
 
+     // we need to add new lanes (like lane4 and lane5) or removing lanes of yhe suer reduces the count. 
+     
+    // Ensure `laneDetail` exists
+    if (!layoutData[currentDirection].laneDetail) {
+        layoutData[currentDirection].laneDetail = {};
+    }
+
+    // Update `laneDetail` dynamically to match `numLanes`
+    let laneKeys = Object.keys(layoutData[currentDirection].laneDetail);
+
+    // Add missing lanes
+    for (let i = 1; i <= laneCount; i++) {
+        if (!laneKeys.includes(`lane${i}`)) {
+            layoutData[currentDirection].laneDetail[`lane${i}`] = "";
+        }
+    }
+
+    // Remove extra lanes if the user decreases the number
+    for (let i = laneKeys.length; i > laneCount; i--) {
+        delete layoutData[currentDirection].laneDetail[`lane${i}`];
+    }
+
+ layoutData[currentDirection].laneCount = Object.keys(layoutData[currentDirection].laneDetail).length;
+
    // Regenerate lane buttons dynamically
-   generateLaneButtons(numLanes);
+   generateLaneButtons(laneCount);
   
 });
 
+
+document.getElementById("directionOptions").addEventListener("change", function () {
+    let selectedValue = this.value;
+
+    //  Validate the new selection
+    if (!validateLaneSettings(selectedValue)) {
+        this.value = ""; // Reset dropdown if validation fails
+    }
+
+    //  Save the new selection into layoutData
+    let laneKey = `lane${currentLane + 1}`;
+    layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
+
+    console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+});
+
+
+
 // Creates the corrent numbe of buttons every time the numbe of lanes changes. 
-function generateLaneButtons(numLanes) {
+function generateLaneButtons(laneCount) {
     let container = document.getElementById("laneMenu"); 
     container.innerHTML = ""; // Clear existing buttons
 
-    for (let i = 0; i < numLanes; i++) {
+    for (let i = 0; i < laneCount; i++) {
         let button = document.createElement("button");
         button.innerText = `Lane ${i + 1}`;
         button.onclick = () => switchLane(i);
@@ -122,261 +169,175 @@ function generateLaneButtons(numLanes) {
 
 }
 
-function resetLaneUI() {
-    document.getElementById("leftTurnOnly").checked = false;
-    document.getElementById("rightTurnOnly").checked = false;
-    document.getElementById("leftStraight").checked = false;
-    document.getElementById("rightStraight").checked = false;
-    document.getElementById("anyDirection").checked = false;
-    document.getElementById("busLane").checked = false;
-    document.getElementById("cycleLane").checked = false;
+function resetDropdown() {
+    document.getElementById("directionOptions").value = "";
 }
 
 
 // lane validation
 function validateLaneSettings(laneData) {
-
-//lane can't be both a bus lane and cycle lane at the same time
-if (laneData.bus && laneData.cycle) {
-    alert("A lane cannot be both a Bus Lane and a Cycle Lane.");
-    return false;
+    if (!laneData) {
+        alert("Each lane must have a selected direction.");
+        return false;
+    }
+    return true;
 }
 
-
-// Only ONE of these should be true at a time:
-let directionOptions = [
-    laneData.leftTurnOnly, 
-    laneData.rightTurnOnly, 
-    laneData.leftStraight, 
-    laneData.rightStraight, 
-    laneData.anyDirection
-];
-
-
-let selectedCount = directionOptions.filter(option => option === true).length;
-
-if (selectedCount > 1) {
-    alert("A lane can only have one direction restriction: {Dedicated left lane, Dedicated right lane, Left Turn and Straight lane, Right Turn and Straight lane or Any Direction");
-    return false;
-}
-
-//  if all validation is passed. This validation seems to be working fine. 
-return true; 
-
-} 
 
 function validateDirectionSettings(direction){
 
-    let lanes = junctionData[direction].lanes;
+    let laneDetail = layoutData[direction].laneDetail;
+    let laneKeys = Object.keys(laneDetail); 
+    
+    // Ensure that if there's only one lane, it must be "anyDirection"
+    if (laneKeys.length === 1 && laneDetail["lane1"] !== "anyDirection") {
+        alert("If there is only one lane, it must allow any direction.");
+        return false;
+    }
 
+    // Ensure only one bus lane or one cycle lane per direction
+    let busCount = Object.values(laneDetail).filter(type => type === "busLane").length;
+    let cycleCount = Object.values(laneDetail).filter(type => type === "cycleLane").length;
 
-if (lanes.length === 1 && !lanes[0].anyDirection) {
-    alert(" If there is only one lane in a direction then it must be an any direction lane.");
-    return false;
-}
+    if (busCount > 1 || cycleCount > 1) {
+        alert("A direction can only have one bus or cycle lane.");
+        return false;
+    }
 
-
-// the only lane can't be both a bus lane and cycle lane at the same time
-if (lanes[0].bus && lanes[0].cycle) {
-    alert("A lane cannot be both a Bus Lane and a Cycle Lane.");
-    return false;
-}
-
-
-
-// Can only have 1 lane of bus lane / cycle lane per direction. 
-
-let busLaneCount = lanes.filter(lane => lane.bus).length;
-let cycleLaneCount = lanes.filter(lane => lane.cycle).length;
-
-if (busLaneCount > 1 || cycleLaneCount > 1)  {
-    alert("A direction can only have one bus or cycle lane.");
-    return false;
-}
-
-
-return true; 
-
+    return true;
 }
 
 // updates settinsg for each lane within a direction (look at the JSON  structure at the begining)
 function switchLane(laneIndex){
-
-    let currentLaneData = {
-        leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
-        rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
-        leftStraight: document.getElementById("leftStraight")?.checked || false,
-        rightStraight: document.getElementById("rightStraight")?.checked || false,
-        anyDirection: document.getElementById("anyDirection")?.checked || false,
-        bus: document.getElementById("busLane")?.checked || false,
-        cycle: document.getElementById("cycleLane")?.checked || false
-    };
-
-
-
-// **Validate lane settings before switching**
-  if (!validateLaneSettings(currentLaneData)) {
-    return; // 
+  
+    // Convert laneIndex into the key
+  let laneKey = `lane${laneIndex + 1}`;
+    
+  // Ensure current direction is valid
+  if (!layoutData[currentDirection]) {
+      layoutData[currentDirection] = { laneCount: 3, pedestrianCrossing: false, laneDetail: {} };
   }
-
-  // Save current lane data before switching
-junctionData[currentDirection].lanes[currentLane] = currentLaneData;
-
-// Switch to the new lane
-currentLane = laneIndex;
-
-
- // Ensure lanes exist
- if (!junctionData[currentDirection].lanes[currentLane]) {
-    junctionData[currentDirection].lanes[currentLane] = {
-        leftTurnOnly: false,
-        rightTurnOnly: false,
-        leftStraight: false, 
-        rightStraight: false,
-        anyDirection:false,
-        bus: false,
-        cycle: false
-    };
-
- }
- 
- let newLaneData = junctionData[currentDirection].lanes[currentLane];
-
-    resetLaneUI()
-
-    console.log(`Switching to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);
-
-    // now load correct values
-    document.getElementById("leftTurnOnly").checked = newLaneData.leftTurnOnly;
-    document.getElementById("rightTurnOnly").checked = newLaneData.rightTurnOnly;
-    document.getElementById("leftStraight").checked = newLaneData.leftStraight;
-    document.getElementById("rightStraight").checked = newLaneData.rightStraight;
-    document.getElementById("anyDirection").checked = newLaneData.anyDirection;
-    document.getElementById("busLane").checked = newLaneData.bus;
-    document.getElementById("cycleLane").checked = newLaneData.cycle;
-
-    // debugging 
-    console.log(`Switched to Lane ${laneIndex + 1}`, newLaneData);
+  
+  if (!layoutData[currentDirection].laneDetail) {
+      layoutData[currentDirection].laneDetail = {};
+  }
+  
+  //  save current lane selection before doing anything else
+  if (currentLane !== null) {
+      let previousLaneKey = `lane${currentLane + 1}`;
+      let currentSelection = document.getElementById("directionOptions").value;
+      layoutData[currentDirection].laneDetail[previousLaneKey] = currentSelection;
+  }
+  
+  //  switch to the new lane
+  currentLane = laneIndex;
+  
+  // ensure the new lane exists in data structure
+  if (!layoutData[currentDirection].laneDetail[laneKey]) {
+      layoutData[currentDirection].laneDetail[laneKey] = "";
+  }
+  
+  //  Reset UI before loading new data
+  resetDropdown();
+  
+  // Load the new lane's data
+  let newLaneData = layoutData[currentDirection].laneDetail[laneKey];
+  
+  //  Update the dropdown with the lane's stored value (or empty if none)
+  document.getElementById("directionOptions").value = newLaneData || "";
+  
+  console.log(`Switched to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);   
 
 }
 
 // switches between different junction direction (N,E,S,W) and loads their settings into form
  function switchDirection(direction) {
 
- //  save current direction's settings
- if (currentDirection && currentLane !== null) {
-    // Save current lane settings
-    junctionData[currentDirection].lanes[currentLane] = {
-        leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
-        rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
-        leftStraight: document.getElementById("leftStraight")?.checked || false,
-        rightStraight: document.getElementById("rightStraight")?.checked || false,
-        anyDirection: document.getElementById("anyDirection")?.checked || false,
-        bus: document.getElementById("busLane")?.checked || false,
-        cycle: document.getElementById("cycleLane")?.checked || false
-    };
-
-    // Save pedestrian crossing setting
-    junctionData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian").checked;
-}
-
-
-  // Validate direction settings **before switching**
-  if (!validateDirectionSettings(currentDirection)) {
-    return; //  Stop switching if validation fails
-}
-
-    // switch to the new direction
-    currentDirection = direction;
-    console.log("Switched to ", currentDirection);
-   
-
-  // Get number of lanes of the new direction  (default to 3 if not set)
-  let numLanes = junctionData[direction].lanes.length || 3;
-
-
-    // Initialise lanes if they don't exist
-    if (junctionData[direction].lanes.length === 0) {
-        junctionData[direction].lanes = Array.from({ length: numLanes }, () => ({
-            leftTurnOnly: false,
-            rightTurnOnly: false,
-            leftStraight: false,
-            rightStraight: false,
-            anyDirection: false,
-            bus: false,
-            cycle: false
-        }));
+    let directionKey = direction.toLowerCase() + "Arm"; 
+       
+    // Validate the current direction **before switching**
+       if (!validateDirectionSettings(currentDirection)) {
+        return; 
     }
-
-
-     // Update UI values
-     document.getElementById("lanes").value = numLanes;
-     document.getElementById("lanesValue").innerText = numLanes;
-     document.getElementById("pedestrian").checked = junctionData[direction].pedestrianCrossing;
-
-   
-     // Generate buttons for each lane
-     generateLaneButtons(numLanes);
- 
-
-    // Switch to first lane and reset UI
-    currentLane = 0;
-    resetLaneUI();
-
-       // Load the first lane's settings
-       if (junctionData[direction].lanes[0]) {
-        const laneData = junctionData[direction].lanes[0];
-        document.getElementById("leftTurnOnly").checked = laneData.leftTurnOnly;
-        document.getElementById("rightTurnOnly").checked = laneData.rightTurnOnly;
-        document.getElementById("leftStraight").checked = laneData.leftStraight;
-        document.getElementById("rightStraight").checked = laneData.rightStraight;
-        document.getElementById("anyDirection").checked = laneData.anyDirection;
-        document.getElementById("busLane").checked = laneData.bus;
-        document.getElementById("cycleLane").checked = laneData.cycle;
-    }
-
-    console.log(`Switched to ${direction}. Current state:`, junctionData[direction]);
-}
     
 
 
-function submitData() {
+ // save the current lane’s selection before switching
+ if (currentDirection && currentLane !== null) {
+    let previousLaneKey = `lane${currentLane + 1}`;
+    let selectDirection = document.getElementById("directionOptions").value;
+    layoutData[currentDirection].laneDetail[previousLaneKey] = selectDirection;
+}
 
-    if (currentDirection !== null && currentLane !== null) {
-        // Save the currently selected lane settings before submitting
-        junctionData[currentDirection].lanes[currentLane] = {
-            leftTurnOnly: document.getElementById("leftTurnOnly")?.checked || false,
-            rightTurnOnly: document.getElementById("rightTurnOnly")?.checked || false,
-            leftStraight: document.getElementById("leftStraight")?.checked || false,
-            rightStraight: document.getElementById("rightStraight")?.checked || false, 
-            anyDirection: document.getElementById("anyDirection")?.checked || false,    
-            bus: document.getElementById("busLane")?.checked || false,
-            cycle: document.getElementById("cycleLane")?.checked || false
-        };
+// Save pedestrian crossing setting
+if (currentDirection) {
+    layoutData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian").checked;
+}
+
+    // Switch to the new direction
+    currentDirection = directionKey;
+    console.log("Switched to ", directionKey);
+
+   // Get number of lanes in the new direction (default to 3 if not set)
+   let laneCount;
+   if (layoutData[directionKey].laneDetail) {
+       laneCount = Object.keys(layoutData[directionKey].laneDetail).length || 3;
+   } else {
+       laneCount = 3;
+       layoutData[directionKey].laneDetail = {};
+   }
+
+
+    // ensure all lanes exist in `laneDetail` (initialize missing lanes)
+    for (let i = 1; i <= laneCount; i++) {
+        let laneKey = `lane${i}`;
+        if (!layoutData[currentDirection].laneDetail[laneKey]) {
+            layoutData[currentDirection].laneDetail[laneKey] = ""; // Default empty string
+        }
     }
 
+  // update UI values
+  document.getElementById("lanes").value = laneCount;
+  document.getElementById("lanesValue").innerText = laneCount;
+  document.getElementById("pedestrian").checked = layoutData[directionKey].pedestrianCrossing;
+
+  // generate buttons for each lane
+  generateLaneButtons(laneCount);
+
+  // switch to the first lane and reset UI
+  currentLane = 0;
+  resetDropdown();
+
+ // load the first lane's settings
+ let firstLaneData = layoutData[currentDirection].laneDetail["lane1"];
+    document.getElementById("directionOptions").value = firstLaneData && firstLaneData.trim() ? firstLaneData : "Select Direction";
+ 
+ console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
+
+ }
+
+function submitData() { // refactor after switchDirection is done
+
+    // save the current lanes's slection before submitting
+    if (currentDirection && currentLane !== null) {
+        let previousLaneKey = `lane${currentLane + 1}`;
+        let selectDirection = document.getElementById("directionOptions").value;
+        layoutData[currentDirection].laneDetail[previousLaneKey] = selectDirection;
+    }
+
+// make sure pedistian Crossing is saved without overwriting it. 
     if (currentDirection !== null) {
-        // Update the current direction settings without overwriting lanes
-        junctionData[currentDirection] = {
-            ...junctionData[currentDirection],
-            pedestrianCrossing: document.getElementById("pedestrian")?.checked || false
-        };
+        layoutData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian")?.checked || false;
     }
-
-// pass the junction name along with the submission data to the backend
-    let submissionData = {
-        junctionName: junctionName,
-        junctionData: junctionData
-    };
 
     // Debugging
-    console.log("Sent data:", submissionData);
+    console.log("Sent data:", layoutData);
 
 
         fetch('/save_junction', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(junctionData)
+            body: JSON.stringify(layoutData) 
         })
 
         .then(response => {
@@ -391,9 +352,10 @@ function submitData() {
  }
 
 
-//Update slider value display 
+//update slider value display 
 document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
  
+
