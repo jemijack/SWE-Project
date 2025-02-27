@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "timestamp": "2025-02-13T12:00:00Z",
         "userId": "11",
         "junctionID": "56",
-        "pedestrianCrossing": true, // Set to true to enable pedestrian crossings
+        "pedestrianCrossing": false,
         "northArm": {
             "laneCount": 3,
             "busLane": false,
@@ -117,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /***********************
      * Helper Functions
      ***********************/
+
     function buildDashArray(dashLen, gapLen, totalLen) {
         const patternSize = dashLen + gapLen;
         const repeats = Math.floor(totalLen / patternSize);
@@ -160,24 +161,53 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function drawLaneDividers(x, y, width, height, lanes, vertical, laneDetail, approachDirection) {
-        for (let i = 1; i < lanes; i++) {
+    function drawLaneDividers(x, y, width, height, totalLanes, vertical, laneDetail, approachDirection) {
+        const arrowClearance = 130; // Space to clear for arrows near intersection
+        const enteringLanes = newConfig[approachDirection.toLowerCase() + "Arm"].laneCount;
+        
+        //TODo: Check if this is correct
+        const maxLanesLocal = Math.max(
+            (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
+            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
+            (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
+        );
+
+        // Draw boundary dividers
+        for (let i = 1; i < totalLanes; i++) {
             if (vertical) {
                 let xpos = x + i * laneWidth;
+                let yStart = y;
+                let yEnd = y + height;
+                if (approachDirection === "North" && i >= maxLanesLocal) {
+                    // Entering lanes on right, shorten at bottom (near intersection)
+                    yEnd -= arrowClearance;
+                } else if (approachDirection === "South" && i < enteringLanes) {
+                    // Entering lanes on left, shorten at top (near intersection)
+                    yStart += arrowClearance;
+                }
                 svg.append("line")
                     .attr("x1", xpos)
-                    .attr("y1", y)
+                    .attr("y1", yStart)
                     .attr("x2", xpos)
-                    .attr("y2", y + height)
+                    .attr("y2", yEnd)
                     .attr("stroke", "white")
                     .attr("stroke-width", 4)
                     .attr("stroke-dasharray", "10,10");
             } else {
                 let ypos = y + i * laneWidth;
+                let xStart = x;
+                let xEnd = x + width;
+                if (approachDirection === "East" && i <= enteringLanes) {
+                    // Entering lanes on top, shorten on left (near intersection)
+                    xStart += arrowClearance;
+                } else if (approachDirection === "West" && i > totalLanes - enteringLanes) {
+                    // Entering lanes on top, shorten on right (near intersection)
+                    xEnd -= arrowClearance;
+                }
                 svg.append("line")
-                    .attr("x1", x)
+                    .attr("x1", xStart)
                     .attr("y1", ypos)
-                    .attr("x2", x + width)
+                    .attr("x2", xEnd)
                     .attr("y2", ypos)
                     .attr("stroke", "white")
                     .attr("stroke-width", 4)
@@ -185,17 +215,26 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Draw center lines, stopping before last dash for lanes with arrows
         const dashLen = 80, gapLen = 60;
         const thickness = 6;
         const baseMargin = 20;
-        const arrowClearance = 130;
-        for (let i = 0; i < lanes; i++) {
-            const laneKey = `lane${i + 1}`;
-            const hasArrow = laneDetail && laneDetail[laneKey];
+        const arrowClearanceCenter = 130;
+        for (let i = 0; i < totalLanes; i++) {
+            let laneKey, hasArrow;
+            if (approachDirection === "North") {
+                laneKey = i >= maxLanesLocal ? `lane${i - maxLanesLocal + 1}` : null;
+                hasArrow = laneKey && laneDetail && laneDetail[laneKey];
+            } else if (approachDirection === "South" || approachDirection === "East" || approachDirection === "West") {
+                laneKey = i < enteringLanes ? `lane${i + 1}` : null;
+                hasArrow = laneKey && laneDetail && laneDetail[laneKey];
+            } else {
+                hasArrow = false;
+            }
             if (vertical) {
                 let centerLineX = x + i * laneWidth + laneWidth / 2;
-                const marginStart = (approachDirection === "South" && hasArrow) ? arrowClearance : baseMargin;
-                const marginEnd = (approachDirection === "North" && hasArrow) ? arrowClearance : baseMargin;
+                const marginStart = (approachDirection === "South" && hasArrow) ? arrowClearanceCenter : baseMargin;
+                const marginEnd = (approachDirection === "North" && hasArrow) ? arrowClearanceCenter : baseMargin;
                 drawCenterLineNoPartial(
                     centerLineX, y,
                     centerLineX, y + height,
@@ -203,8 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
             } else {
                 let centerLineY = y + i * laneWidth + laneWidth / 2;
-                const marginStart = (approachDirection === "East" && hasArrow) ? arrowClearance : baseMargin;
-                const marginEnd = (approachDirection === "West" && hasArrow) ? arrowClearance : baseMargin;
+                const marginStart = (approachDirection === "East" && hasArrow) ? arrowClearanceCenter : baseMargin;
+                const marginEnd = (approachDirection === "West" && hasArrow) ? arrowClearanceCenter : baseMargin;
                 drawCenterLineNoPartial(
                     x, centerLineY,
                     x + width, centerLineY,
@@ -280,66 +319,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /***********************
-     * Pedestrian Crossing Functions
-     ***********************/
-    function drawZebraCrossing(x, y, width, height, horizontal) {
-        const stripeWidth = 10;
-        const stripeGap = 10;
-        const stripeCount = Math.floor((horizontal ? height : width) / (stripeWidth + stripeGap));
-        for (let i = 0; i < stripeCount; i++) {
-            if (horizontal) {
-                const stripeY = y + i * (stripeWidth + stripeGap);
-                svg.append("rect")
-                    .attr("x", x)
-                    .attr("y", stripeY)
-                    .attr("width", width)
-                    .attr("height", stripeWidth)
-                    .attr("fill", "white");
-            } else {
-                const stripeX = x + i * (stripeWidth + stripeGap);
-                svg.append("rect")
-                    .attr("x", stripeX)
-                    .attr("y", y)
-                    .attr("width", stripeWidth)
-                    .attr("height", height)
-                    .attr("fill", "white");
-            }
-        }
-    }
-
-    function drawPedestrianCrossing(direction) {
-        if (!newConfig.pedestrianCrossing) return;
-
-        const crossingWidth = laneWidth * 2; // Adjusted to a reasonable size
-        const crossingHeight = curbWidth;
-
-        switch (direction) {
-            case "North":
-                const northX = centerX - intersectionHalf;
-                const northY = centerY - intersectionHalf - crossingHeight;
-                drawZebraCrossing(northX, northY, intersectionSize, crossingHeight, true);
-                break;
-            case "East":
-                const eastX = centerX + intersectionHalf;
-                const eastY = centerY - intersectionHalf;
-                drawZebraCrossing(eastX, eastY, crossingHeight, intersectionSize, false);
-                break;
-            case "South":
-                const southX = centerX - intersectionHalf;
-                const southY = centerY + intersectionHalf;
-                drawZebraCrossing(southX, southY, intersectionSize, crossingHeight, true);
-                break;
-            case "West":
-                const westX = centerX - intersectionHalf - crossingHeight;
-                const westY = centerY - intersectionHalf;
-                drawZebraCrossing(westX, westY, crossingHeight, intersectionSize, false);
-                break;
-        }
-    }
-
-    /***********************
      * Draw the Approaches
      ***********************/
+
     function drawApproach_North(laneCount, specialKey, laneDetail) {
         const maxLanes = Math.max(
             (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
@@ -391,8 +373,8 @@ document.addEventListener("DOMContentLoaded", function () {
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
 
-        for (let i = 0; i < lanes; i++) {
-            const laneKey = `lane${i + 1}`;
+        for (let i = lanes - 1; i < totalLanes + 1; i++) {
+            const laneKey = `lane${i - lanes + 1}`;
             const laneType = laneDetail[laneKey];
             if (laneType) {
                 const imgX = innerX + (i + 0.5) * laneWidth;
@@ -410,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (specialKey) {
-            const specialX = innerX + innerWidth - laneWidth;
+            const specialX = innerX;
             if (specialKey === "Bus") {
                 svg.append("rect")
                     .attr("x", specialX)
@@ -449,9 +431,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("transform", `rotate(270, ${imgX}, ${imgY})`);
             }
         }
-
-        // Draw pedestrian crossing
-        drawPedestrianCrossing("North");
     }
 
     function drawApproach_East(laneCount, specialKey, laneDetail) {
@@ -574,9 +553,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("height", imgHeight);
             }
         }
-
-        // Draw pedestrian crossing
-        drawPedestrianCrossing("East");
     }
 
     function drawApproach_South(laneCount, specialKey, laneDetail) {
@@ -686,16 +662,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("transform", `rotate(90, ${imgX}, ${imgY})`);
             }
         }
-
-        // Draw pedestrian crossing
-        drawPedestrianCrossing("South");
     }
 
     function drawApproach_West(laneCount, specialKey, laneDetail) {
         const maxLanes = Math.max(
             (newConfig["northArm"] ? newConfig["northArm"].laneCount : 0),
             (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
+            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0)
         );
 
         const lanes = laneCount;
@@ -800,9 +773,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("transform", `rotate(180, ${imgX}, ${imgY})`);
             }
         }
-
-        // Draw pedestrian crossing
-        drawPedestrianCrossing("West");
     }
 
     // Render each approach if it exists
