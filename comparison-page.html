@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Layout Comparison</title>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<style>
+    .chart-container {
+        min-width: 310px;
+        height: 400px;
+        margin: 0 auto;
+    }
+</style>
+</head>
+<body>
+
+
+    <h1>Junction Layout Comparison</h1>
+    
+    <!-- Container for the average wait time chart -->
+    <div id="averageWaitTimeChart" class="chart-container"></div>
+    
+    <!-- Container for the max wait time chart -->
+    <div id="maxWaitTimeChart" class="chart-container"></div>
+    
+    <!-- Container for the max queue length chart -->
+    <div id="maxQueueLengthChart" class="chart-container"></div>
+
+
+
+    
+    <script>
+            // On comparison-page.html
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get selected JLIDs from URL
+                const params = new URLSearchParams(window.location.search);
+                const selectedJLIDs = params.getAll('selected_jlids');
+                
+                // Fetch the JSON data again
+                fetch('results.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Find the layouts that match the selected JLIDs
+                        const selectedLayouts = [];
+                        
+                        data.junctions.forEach(junction => {
+                            junction.layouts.forEach(layout => {
+                                if (selectedJLIDs.includes(layout.metadata.JLID)) {
+                                    // Add junction name for context
+                                    layout.junctionName = junction.junctionName;
+                                    layout.JID = junction.JID;
+                                    selectedLayouts.push(layout);
+                                }
+                            });
+                        });
+                        
+                        // Now display the comparison using selectedLayouts
+                        // displayComparison(selectedLayouts);
+                        console.log(selectedLayouts);
+                        createCharts(selectedLayouts);
+                    });
+            });
+
+
+        function createCharts(layouts) {
+            // Process data for charts
+            const categories = ['North', 'South', 'East', 'West'];
+            
+            // Create series for average wait time
+            const avgWaitTimeSeries = layouts.map(layout => {
+                return {
+                    name: layout.metadata.JLID,
+                    data: [
+                        layout.results.north.averageWaitTime,
+                        layout.results.south.averageWaitTime,
+                        layout.results.east.averageWaitTime,
+                        layout.results.west.averageWaitTime
+                    ]
+                };
+            });
+
+            
+            const maxWaitTimeSeries = layouts.map(layout => {
+                return {
+                    name: layout.metadata.JLID,
+                    data: [
+                        layout.results.north.maxWaitTime,
+                        layout.results.south.maxWaitTime,
+                        layout.results.east.maxWaitTime,
+                        layout.results.west.maxWaitTime
+                    ]
+                };
+            });
+            
+
+            const maxQueueLengthSeries = layouts.map(layout => {
+                return {
+                    name: layout.metadata.JLID,
+                    data: [
+                        layout.results.north.maxQueueLength,
+                        layout.results.south.maxQueueLength,
+                        layout.results.east.maxQueueLength,
+                        layout.results.west.maxQueueLength
+                    ]
+                };
+            });
+
+                // Create chart for average wait time
+                Highcharts.chart('averageWaitTimeChart', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Average Wait Time Comparison'
+                    },
+                    xAxis: {
+                        categories: categories,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Time (seconds)'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} seconds</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    series: avgWaitTimeSeries
+                });
+
+                // Create chart for average wait time
+                Highcharts.chart('maxWaitTimeChart', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Maximum Wait Time'
+                    },
+                    xAxis: {
+                        categories: categories,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Time (seconds)'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} seconds</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    series: maxWaitTimeSeries
+                });
+
+                // Create chart for average wait time
+                Highcharts.chart('maxQueueLengthChart', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Maximum Queue Length'
+                    },
+                    xAxis: {
+                        categories: categories,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Vehicle (Cars)'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} cars</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    series: maxQueueLengthSeries
+                });
+        
+
+        // TODO add more charts here
+        }
+        
+            const content = document.createElement("div");
+            content.innerHTML = "<p>Hello World</p>";
+            document.body.appendChild(content);
+    
+    </script>
+
+</body>
+</html>
