@@ -53,6 +53,23 @@
     <!-- Junction Set Name -->
     <label for="junctionSetName">Junction Set Name:</label>
     <input type="text" id="junctionSetName" name="junctionSetName" required>
+    <!-- Crossing duration for pedestrians -->
+    <br>
+    <label for="crossingDuration">Pedestrian Crossing Duration (in seconds):</label>
+    <input type="text" id="crossingDuration" name="crossingDuration" required oninput="validateDecimal(this)">
+    <div id="crossingDurationError" class="error-message"></div>
+    <!-- User priorities of key junction attributes-->
+    <label for="AverageWait">Average Wait Time Priority (%):</label>
+    <input type="text" id="AverageWait" name="AverageWait" required oninput="validateInteger(this)">
+    <div id="AverageWaitError" class="error-message"></div>
+
+    <label for="MaxWait">Maximum Wait Time Priority (%):</label>
+    <input type="text" id="MaxWait" name="MaxWait" required oninput="validateInteger(this)">
+    <div id="MaxWaitError" class="error-message"></div>
+
+    <label for="MaxQueue">Maximum Wait Time Priority (%):</label>
+    <input type="text" id="MaxQueue" name="MaxQueue" required oninput="validateInteger(this)">
+    <div id="MaxQueueError" class="error-message"></div>
 
     <!-- Direction buttons to show input forms for each direction -->
     <div class="direction-buttons">
@@ -85,7 +102,7 @@
       <input type="text" id="northCarPercentage" name="northCarPercentage" required oninput="validateDecimal(this)">
       <div id="northCarPercentageError" class="error-message"></div>
 
-      <label for="northBusPercentage">Percentage of Busses:</label>
+      <label for="northBusPercentage">Percentage of Buses:</label>
       <input type="text" id="northBusPercentage" name="northBusPercentage" required oninput="validateDecimal(this)">
       <div id="northBusPercentageError" class="error-message"></div>
 
@@ -96,6 +113,14 @@
       <label for="northPriority">Direction Priority:</label>
       <input type="range" id="northPriority" name="northPriority" min="0" max="4" value="0" oninput="updatePriorityText('north')">
       <span id="northPriorityText" class="priority-number">0</span>
+      <!-- Forces a line break -->
+      <br>
+      <label for="northPedestrian"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="northPedestrian" name="northPedestrian" value="1" onclick="northPedestrianToggle()">
+      <br>
+      <label id="northPedestrianTextbox" for="northRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="northRequestFrequency" name="northRequestFrequency" style="display:none;">
+      <div id="northRequestFrequencyError" class="error-message"></div>
     </div>
 
     <!-- South Form Inputs -->
@@ -121,7 +146,7 @@
       <input type="text" id="southCarPercentage" name="southCarPercentage" required oninput="validateDecimal(this)">
       <div id="southCarPercentageError" class="error-message"></div>
 
-      <label for="southBusPercentage">Percentage of Busses:</label>
+      <label for="southBusPercentage">Percentage of Buses:</label>
       <input type="text" id="southBusPercentage" name="southBusPercentage" required oninput="validateDecimal(this)">
       <div id="southBusPercentageError" class="error-message"></div>
 
@@ -132,6 +157,14 @@
       <label for="southPriority">Direction Priority:</label>
       <input type="range" id="southPriority" name="southPriority" min="0" max="4" value="0" oninput="updatePriorityText('south')">
       <span id="southPriorityText" class="priority-number">0</span>
+      <!-- Forces a line break -->
+      <br>
+      <label for="southPedestrian"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="southPedestrian" name="southPedestrian" value="1" onclick="southPedestrianToggle()">
+      <br>
+      <label id="southPedestrianTextbox" for="southRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="southRequestFrequency" name="southRequestFrequency" style="display:none;">
+      <div id="southRequestFrequencyError" class="error-message"></div>
     </div>
 
     <!-- East Form Inputs -->
@@ -157,7 +190,7 @@
       <input type="text" id="eastCarPercentage" name="eastCarPercentage" required oninput="validateDecimal(this)">
       <div id="eastCarPercentageError" class="error-message"></div>
 
-      <label for="eastBusPercentage">Percentage of Busses:</label>
+      <label for="eastBusPercentage">Percentage of Buses:</label>
       <input type="text" id="eastBusPercentage" name="eastBusPercentage" required oninput="validateDecimal(this)">
       <div id="eastBusPercentageError" class="error-message"></div>
 
@@ -168,6 +201,14 @@
       <label for="eastPriority">Direction Priority:</label>
       <input type="range" id="eastPriority" name="eastPriority" min="0" max="4" value="0" oninput="updatePriorityText('east')">
       <span id="eastPriorityText" class="priority-number">0</span>
+      <!-- Forces a line break -->
+      <br>
+      <label for="eastPedestrian"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="eastPedestrian" name="eastPedestrian" value="1" onclick="eastPedestrianToggle()">
+      <br>
+      <label id="eastPedestrianTextbox" for="eastRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="eastRequestFrequency" name="eastRequestFrequency" style="display:none;">
+      <div id="eastRequestFrequencyError" class="error-message"></div>
     </div>
 
     <!-- West form inputs -->
@@ -193,7 +234,7 @@
       <input type="text" id="westCarPercentage" name="westCarPercentage" required oninput="validateDecimal(this)">
       <div id="westCarPercentageError" class="error-message"></div>
 
-      <label for="westBusPercentage">Percentage of Busses:</label>
+      <label for="westBusPercentage">Percentage of Buses:</label>
       <input type="text" id="westBusPercentage" name="westBusPercentage" required oninput="validateDecimal(this)">
       <div id="westBusPercentageError" class="error-message"></div>
 
@@ -204,13 +245,49 @@
       <label for="westPriority">Direction Priority:</label>
       <input type="range" id="westPriority" name="westPriority" min="0" max="4" value="0" oninput="updatePriorityText('west')">
       <span id="westPriorityText" class="priority-number">0</span>
+      <!-- Forces a line break -->
+      <br>
+      <label for="westPedestrian"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="westPedestrian" name="westPedestrian" value="1" onclick="westPedestrianToggle()">
+      <br>
+      <label id="westPedestrianTextbox" for="westRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="westRequestFrequency" name="westRequestFrequency" style="display:none;">
+      <div id="westRequestFrequencyError" class="error-message"></div>
     </div>
 
     <!-- Submit the form -->
     <button type="submit">Submit Junction Set</button>
   </form>
 
+  <!-- Return to home page. Sends a get request to /home, which Flask picks up, causing home page to be rendered at /home -->
+  <button onclick="window.location.href='/home'">Back to Home</button>
+
+
+
   <script>
+    //This will clear the junction set design form every time the CreateNewSet page is loaded. So, for example, if we navigate back to this page post-submission, we will navigate back to an empty form.
+    window.addEventListener("pageshow", function() {
+      document.getElementById("junctionForm").reset();
+    });
+    //Boolean that tracks whether or not a warning should be flagged upon attempting to leave the current page
+    let formChanged = false;
+
+    //This will detect whether or not the user has provided any input to the username textbox.
+    document.getElementById("junctionForm").addEventListener("input", function() {
+        formChanged = true;
+    });
+
+    //In the case that the user presses submit as their means of navigating away from the website, no warning message will appear
+    document.getElementById("junctionForm").addEventListener("submit", function() {
+        formChanged = false; 
+    });
+    //This will display a warning message if the user attempts to navigate away from the warning page after having provdided input, indicating progress will be lost
+    window.addEventListener("beforeunload", function(event) {
+        if (formChanged) { 
+            event.preventDefault();
+            event.returnValue = "Your progress will be lost if you leave this page.";
+        }
+    });
     // Initialize the page with the North direction form displayed by default, thus highlighting the North button before the user has pressed any button
     showDirectionForm('north');
     // Validate for integer (>= 0)
@@ -229,6 +306,137 @@
       errorMessage.textContent = "Please enter a non-negative integer."; // Show error message
     }
   }
+
+  function validateTextboxInput(event) {
+    const textbox = event.target;  // The textbox that triggered the 'input' event
+    validateDecimal(textbox);  // Pass the textbox to the validation function
+  }
+
+    //If the checkbox for pedestrian crossing is checked, the user will be prompted to specify the frequency of crossing requests that will occur.
+    function northPedestrianToggle(){
+      const checkbox = document.getElementById("northPedestrian")
+      const textbox = document.getElementById("northRequestFrequency")
+      const textboxLabel = document.getElementById("northPedestrianTextbox")
+      
+
+      //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
+      if (checkbox.checked) {
+          textbox.style.display = "inline-block";
+          textboxLabel.style.display = "inline-block";
+          textbox.setAttribute("required", "true")
+          textbox.setAttribute("pattern", "^[0-9]+(\.[0-9]{1})?$")
+
+          // Add event listener for input validation when the textbox is visible
+          textbox.addEventListener("input", validateTextboxInput);
+
+          // Validate immediately when the checkbox is checked (for any pre-existing input)
+          validateDecimal(textbox);  // Only pass the textbox
+      } else {
+          textbox.style.display = "none";
+          textboxLabel.style.display = "none";
+          textbox.removeAttribute("required")
+          textbox.removeAttribute("pattern");  // Remove the pattern when unchecked
+          // Remove event listener for validation when the textbox is hidden
+          textbox.removeEventListener("input", validateTextboxInput);
+          //Revalidate the textbox when the checkbox is unchecked
+          resetTextBox(textbox)
+      }
+    }
+
+    function southPedestrianToggle(){
+      const checkbox = document.getElementById("southPedestrian")
+      const textbox = document.getElementById("southRequestFrequency")
+      const textboxLabel = document.getElementById("southPedestrianTextbox")
+
+      //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
+      if (checkbox.checked) {
+          textbox.style.display = "inline-block";
+          textboxLabel.style.display = "inline-block";
+          textbox.setAttribute("required", "true")
+          textbox.setAttribute("pattern", "^[0-9]+(\.[0-9]{1})?$")
+
+          // Add event listener for input validation when the textbox is visible
+          textbox.addEventListener("input", validateTextboxInput);
+
+          // Validate immediately when the checkbox is checked (for any pre-existing input)
+          validateDecimal(textbox);  // Only pass the textbox
+      } else {
+          textbox.style.display = "none";
+          textboxLabel.style.display = "none";
+          textbox.removeAttribute("required")
+          textbox.removeAttribute("pattern");  // Remove the pattern when unchecked
+          // Remove event listener for validation when the textbox is hidden
+          textbox.removeEventListener("input", validateTextboxInput);
+          //Revalidate the textbox when the checkbox is unchecked
+          resetTextBox(textbox)
+      }
+    }
+
+    function eastPedestrianToggle(){
+      const checkbox = document.getElementById("eastPedestrian")
+      const textbox = document.getElementById("eastRequestFrequency")
+      const textboxLabel = document.getElementById("eastPedestrianTextbox")
+
+      //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
+      if (checkbox.checked) {
+          textbox.style.display = "inline-block";
+          textboxLabel.style.display = "inline-block";
+          textbox.setAttribute("required", "true")
+          textbox.setAttribute("pattern", "^[0-9]+(\.[0-9]{1})?$")
+
+          // Add event listener for input validation when the textbox is visible
+          textbox.addEventListener("input", validateTextboxInput);
+
+          // Validate immediately when the checkbox is checked (for any pre-existing input)
+          validateDecimal(textbox);  // Only pass the textbox
+      } else {
+          textbox.style.display = "none";
+          textboxLabel.style.display = "none";
+          textbox.removeAttribute("required")
+          textbox.removeAttribute("pattern");  // Remove the pattern when unchecked
+          // Remove event listener for validation when the textbox is hidden
+          textbox.removeEventListener("input", validateTextboxInput);
+          //Revalidate the textbox when the checkbox is unchecked
+          resetTextBox(textbox)
+      }
+    }
+
+    function westPedestrianToggle(){
+      const checkbox = document.getElementById("westPedestrian")
+      const textbox = document.getElementById("westRequestFrequency")
+      const textboxLabel = document.getElementById("westPedestrianTextbox")
+
+      //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
+      if (checkbox.checked) {
+          textbox.style.display = "inline-block";
+          textboxLabel.style.display = "inline-block";
+          textbox.setAttribute("required", "true")
+          textbox.setAttribute("pattern", "^[0-9]+(\.[0-9]{1})?$")
+
+          // Add event listener for input validation when the textbox is visible
+          textbox.addEventListener("input", validateTextboxInput);
+
+          // Validate immediately when the checkbox is checked (for any pre-existing input)
+          validateDecimal(textbox);  // Only pass the textbox
+      } else {
+          textbox.style.display = "none";
+          textboxLabel.style.display = "none";
+          textbox.removeAttribute("required")
+          textbox.removeAttribute("pattern");  // Remove the pattern when unchecked
+          // Remove event listener for validation when the textbox is hidden
+          textbox.removeEventListener("input", validateTextboxInput);
+          //Revalidate the textbox when the checkbox is unchecked
+          resetTextBox(textbox)
+      }
+    }
+
+    //When checkbox is unchecked, validate the textbox associated and remove any error message
+    function resetTextBox(input){
+      const errorMessage = document.getElementById(input.id + "Error");
+      input.classList.add("valid");
+      input.classList.remove("invalid");
+      errorMessage.textContent = ""; // Clear error message
+    }
 
     // Validate for decimal (>= 0, with one decimal place)
     function validateDecimal(input) {
@@ -287,6 +495,8 @@
     });
 
     // 1. Validate that the percentages add up to 100 for all directions
+
+    //parseFloat is used since value retrieved from the object produced by document.getElementId is a string
     const nCarPercentage = parseFloat(document.getElementById('northCarPercentage').value);
     const nBusPercentage = parseFloat(document.getElementById('northBusPercentage').value);
     const nCyclePercentage = parseFloat(document.getElementById('northCyclePercentage').value);
@@ -369,6 +579,18 @@
 
     if (wIncoming !== wTotalExiting) {
       alert("West Direction: The total incoming vehicles must equal the total exiting vehicles.");
+      isValid = false;
+    }
+
+    //Valide that the priorities allocated to the 3 key attributes of the junction add up to 100%
+    const avgWait = parseInt(document.getElementById('AverageWait').value);
+    const maxWait = parseInt(document.getElementById('MaxWait').value);
+    const maxQueue = parseInt(document.getElementById('MaxQueue').value);
+    const totalPriority = avgWait + maxWait + maxQueue;
+
+    //Make the isValid variable false to denote that there is an issue with a value that the user has provided to the form, as well as clarifying this issue with an alert
+    if (totalPriority != 100){
+      alert("The sum of attribute priorities must be 100.");
       isValid = false;
     }
 
