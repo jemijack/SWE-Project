@@ -271,7 +271,6 @@ drawPedestrianCrossing(currentDirection, totalLaneCount, laneWidth, innerX, inne
    }
 } 
 
-
 // Call this function whenever you switch lanes
 document.getElementById("directionOptions").addEventListener("change", function () {
     let selectedValue = this.value;
