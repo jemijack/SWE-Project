@@ -9,6 +9,8 @@
 <body>
 <h1> Design a Junction</h1>
 
+
+
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script src="static/image.js"></script> 
 <svg id="junctionCanvas"></svg>
@@ -51,28 +53,27 @@
 <!--Changed to a drop down -->
     <div id="laneSettings">
         <select id="directionOptions">
-            <option value="">Select Direction</option>
-            <option value="busLane">Bus Lane</option>
-            <option value="cycleLane">Cycle Lane</option>
+            <option value="">Select Lane Type</option>
+            <option value="bus" class="special">Bus Lane</option>
+            <option value="cycle" class="special">Cycle Lane</option>
             <option value="leftOnly">Dedicated Left Lane</option>
             <option value="rightOnly">Dedicated Right Lane</option>
+            <option value="straightOnly">Straight Only</option>
             <option value="leftStraight">Left & Straight</option>
             <option value="rightStraight">Right & Straight</option>
-            <option value="anyDirection">Any Direction</option>
+            <option value="allDirs">Any Direction</option>
         </select>
         <span id="direction"></span>
     </div>
 
-    <!--Toggles-->
-    <!--TODO  Make round and style with CSS -->
-
+  
     <!-- Pedistrian Crossing Slider-->
     <label for="pedestrian">Pedestrian Crossing:</label>
     <input type="checkbox" id="pedestrian">
     <span class="Crossing toggle"></span>
 
     <br><br> 
-    <button onclick="submitData()"> Save Junction </button>
+    <button onclick="submitData()"> Save Layout</button>
 </div>
 
 

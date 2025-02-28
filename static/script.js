@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 
-
 // This loads the 3 lanes buttons on first load. 
 document.addEventListener("DOMContentLoaded", function(){
    
@@ -95,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     document.getElementById("lanes").value = 3; 
     generateLaneButtons(3);
+   
 
 }) 
 
@@ -131,26 +131,47 @@ document.getElementById("lanes").addEventListener("input", function(){
     }
 
  layoutData[currentDirection].laneCount = Object.keys(layoutData[currentDirection].laneDetail).length;
+ 
+ // just checking that lane count actually updates. 
+ console.log("LaneCount", laneCount); 
+
+// LaneCount of Bassils code gets updated to match mine :) 
+ layoutData[currentDirection].laneCount = laneCount;
+
+ console.log("test", layoutData[currentDirection].laneCount); 
+
+    // Re-render the SVG
+    redrawJunction();
 
    // Regenerate lane buttons dynamically
    generateLaneButtons(laneCount);
   
+
+
+
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    let dropdown = document.getElementById("directionOptions");
 
-document.getElementById("directionOptions").addEventListener("change", function () {
-    let selectedValue = this.value;
+   updateLaneOptions(); 
+    
+    if (dropdown) {
+        dropdown.addEventListener("change", function () {
+            let selectedValue = this.value;
 
-    //  Validate the new selection
-    if (!validateLaneSettings(selectedValue)) {
-        this.value = ""; // Reset dropdown if validation fails
+            // Validate lane selection
+            if (!validateLaneSettings(selectedValue)) {
+                this.value = ""; // Reset dropdown if validation fails
+            }
+
+            // Save selection into layoutData
+            let laneKey = `lane${currentLane + 1}`;
+            layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
+
+            console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+        });
     }
-
-    //  Save the new selection into layoutData
-    let laneKey = `lane${currentLane + 1}`;
-    layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
-
-    console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
 });
 
 
@@ -189,23 +210,57 @@ function validateDirectionSettings(direction){
     let laneDetail = layoutData[direction].laneDetail;
     let laneKeys = Object.keys(laneDetail); 
     
-    // Ensure that if there's only one lane, it must be "anyDirection"
-    if (laneKeys.length === 1 && laneDetail["lane1"] !== "anyDirection") {
+    // Ensure that if there's only one lane, it must be "anyDirs"
+    if (laneKeys.length === 1 && laneDetail["lane1"] !== "anyDirs") {
         alert("If there is only one lane, it must allow any direction.");
-        return false;
-    }
-
-    // Ensure only one bus lane or one cycle lane per direction
-    let busCount = Object.values(laneDetail).filter(type => type === "busLane").length;
-    let cycleCount = Object.values(laneDetail).filter(type => type === "cycleLane").length;
-
-    if (busCount > 1 || cycleCount > 1) {
-        alert("A direction can only have one bus or cycle lane.");
         return false;
     }
 
     return true;
 }
+
+//HTML menu customistations per lane. We want lane1 to ahve the option of being a bus or cycle lanes. We dont want that option to show up else where. 
+
+function updateLaneOptions() {
+    let dropdown = document.getElementById("directionOptions");
+    let specialOptions = dropdown.querySelectorAll(".special"); // Bus & Cycle options
+
+    if (currentLane === 0) {
+        // Lane 1 (Leftmost): Show Bus & Cycle options
+        specialOptions.forEach(option => option.hidden = false);
+    } else {
+        // Other lanes: Hide Bus & Cycle options
+        specialOptions.forEach(option => option.hidden = true);
+
+        // If a hidden option was previously selected, reset the dropdown
+        if (["bus", "cycle"].includes(dropdown.value)) {
+            dropdown.value = "";
+        }
+    }
+}
+
+
+function redrawJunction() {
+    d3.select("#junctionCanvas").selectAll("*").remove(); // Clear SVG
+    drawApproach_North(layoutData["northArm"].laneCount, "North");
+    drawApproach_East(layoutData["eastArm"].laneCount, "East");
+    drawApproach_South(layoutData["southArm"].laneCount, "South");
+    drawApproach_West(layoutData["westArm"].laneCount, "West");
+} 
+
+
+// Call this function whenever you switch lanes
+document.getElementById("directionOptions").addEventListener("change", function () {
+    let selectedValue = this.value;
+    
+    // Save new selection
+    let laneKey = `lane${currentLane + 1}`;
+    layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
+
+    console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+});
+
+
 
 // updates settinsg for each lane within a direction (look at the JSON  structure at the begining)
 function switchLane(laneIndex){
@@ -231,12 +286,15 @@ function switchLane(laneIndex){
   
   //  switch to the new lane
   currentLane = laneIndex;
-  
+ 
   // ensure the new lane exists in data structure
   if (!layoutData[currentDirection].laneDetail[laneKey]) {
       layoutData[currentDirection].laneDetail[laneKey] = "";
   }
   
+// Call updateLaneOptions() when switching lanes
+    updateLaneOptions();
+
   //  Reset UI before loading new data
   resetDropdown();
   
@@ -260,8 +318,6 @@ function switchLane(laneIndex){
         return; 
     }
     
-
-
  // save the current lane’s selection before switching
  if (currentDirection && currentLane !== null) {
     let previousLaneKey = `lane${currentLane + 1}`;
@@ -308,13 +364,23 @@ if (currentDirection) {
   currentLane = 0;
   resetDropdown();
 
- // load the first lane's settings
- let firstLaneData = layoutData[currentDirection].laneDetail["lane1"];
-    document.getElementById("directionOptions").value = firstLaneData && firstLaneData.trim() ? firstLaneData : "Select Direction";
+
+ //make sure that the drop down updates 
+  updateLaneOptions();
  
+  let firstLaneData = layoutData[currentDirection].laneDetail["lane1"];
+    if (firstLaneData && firstLaneData.trim()) {
+        document.getElementById("directionOptions").value = firstLaneData;
+    } else {
+        // This ensures dropdown shows default text
+        document.getElementById("directionOptions").value = "";
+
+
  console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
 
  }
+ 
+}
 
 function submitData() { // refactor after switchDirection is done
 
@@ -357,5 +423,3 @@ document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
- 
-
