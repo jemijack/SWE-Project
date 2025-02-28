@@ -1,6 +1,16 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify 
 
 app = Flask(__name__) 
+
+
+@app.route('/static/image.js')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, image.js)
+
+@app.route('/static/script.js')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, script.js)
+
 
 # Route for the home page (renders the form)
 @app.route("/", methods=["GET"])
@@ -21,7 +31,6 @@ def junction_form():
     # Get the form data
     junctionSetName = request.form.get("junctionSetName")
     northVehiclesIn = request.form.get("northVehiclesIn")
-    
     return render_template("LayoutDesignPage.html")
 
 if __name__ == "__main__":

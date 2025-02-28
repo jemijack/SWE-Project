@@ -145,11 +145,21 @@ document.getElementById("lanes").addEventListener("input", function(){
 
    // Regenerate lane buttons dynamically
    generateLaneButtons(laneCount);
-  
-
 
 
 });
+
+// Listen for changes on pedistrian crossing
+document.getElementById("pedestrian").addEventListener("change", function() {
+    
+    // update if changed
+    layoutData[currentDirection].pedestrianCrossing = this.checked;
+
+    // redraw to show new visuialisation
+    redrawJunction();
+
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
     let dropdown = document.getElementById("directionOptions");
@@ -249,6 +259,16 @@ function redrawJunction() {
     window.drawApproach_West(layoutData["westArm"].laneCount, "West");
     */
    window.initializeJunction(layoutData);
+
+   if (layoutData[currentDirection]?.pedestrianCrossing) {
+    let totalLaneCount = layoutData[currentDirection]?.laneCount || 3; // Default to 3 lanes
+    let laneWidth = 100; // Adjust based on your layout
+    let innerX = 0, innerY = 0, innerWidth = 500, innerHeight = 500; //
+
+// Call the function to draw pedestrian crossing
+drawPedestrianCrossing(currentDirection, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight);
+
+   }
 } 
 
 
