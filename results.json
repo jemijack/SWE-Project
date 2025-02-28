@@ -1,286 +1,216 @@
 {
-  "junctions": [
+  "JID": "junction_A01",
+  "junctionName": "Main Street & Broadway Intersection",
+  "layouts": [
     {
-      "JID": "junction_A01",
-      "junctionName": "Main Street & Broadway Intersection",
-      "layouts": [
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.4,
-            "maxWaitTime": 0.3,
-            "maxQueueLength": 0.3
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 45.2,
+      "scoringWeights": {
+        "averageWaitTime": 0.4,
+        "maxWaitTime": 0.3,
+        "maxQueueLength": 0.3
+      },
+      "results": {
+        "north": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 42.5,
+              "maxWaitTime": 118.2,
+              "maxQueueLength": 14
+            },
+            {
+              "laneNumber": 2,
+              "averageWaitTime": 45.8,
               "maxWaitTime": 120.5,
               "maxQueueLength": 15
             },
-            "south": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 47.3,
+              "maxWaitTime": 115.7,
+              "maxQueueLength": 13
+            }
+          ]
+        },
+        "south": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 36.2,
+              "maxWaitTime": 90.5,
+              "maxQueueLength": 11
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 38.6,
               "maxWaitTime": 95.2,
               "maxQueueLength": 12
             },
-            "east": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 41.0,
+              "maxWaitTime": 93.8,
+              "maxQueueLength": 10
+            }
+          ]
+        },
+        "east": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 40.5,
+              "maxWaitTime": 105.8,
+              "maxQueueLength": 12
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 42.8,
               "maxWaitTime": 110.3,
               "maxQueueLength": 14
             },
-            "west": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 45.1,
+              "maxWaitTime": 108.6,
+              "maxQueueLength": 13
+            }
+          ]
+        },
+        "west": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 38.6,
+              "maxWaitTime": 94.2,
+              "maxQueueLength": 11
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 40.1,
               "maxWaitTime": 98.7,
               "maxQueueLength": 13
+            },
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 41.6,
+              "maxWaitTime": 97.5,
+              "maxQueueLength": 12
             }
-          },
-          "metadata": {
-            "JLID": "sim_123456",
-            "timestamp": "2025-02-12T14:30:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        },
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.5,
-            "maxWaitTime": 0.3,
-            "maxQueueLength": 0.2
-          },
-          "results": {
-            "north": {
+          ]
+        }
+      },
+      "metadata": {
+        "JLID": "sim_123456",
+        "timestamp": "2025-02-12T14:30:00Z",
+        "totalSimulationTime": 3600,
+        "timeUnit": "seconds",
+        "queueLengthUnit": "vehicles"
+      }
+    },
+    {
+      "scoringWeights": {
+        "averageWaitTime": 0.5,
+        "maxWaitTime": 0.3,
+        "maxQueueLength": 0.2
+      },
+      "results": {
+        "north": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 35.9,
+              "maxWaitTime": 100.8,
+              "maxQueueLength": 10
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 38.3,
               "maxWaitTime": 105.2,
               "maxQueueLength": 12
             },
-            "south": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 40.7,
+              "maxWaitTime": 102.5,
+              "maxQueueLength": 11
+            }
+          ]
+        },
+        "south": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 30.5,
+              "maxWaitTime": 78.4,
+              "maxQueueLength": 9
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 32.1,
               "maxWaitTime": 82.7,
               "maxQueueLength": 10
             },
-            "east": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 33.7,
+              "maxWaitTime": 80.9,
+              "maxQueueLength": 8
+            }
+          ]
+        },
+        "east": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 34.2,
+              "maxWaitTime": 88.5,
+              "maxQueueLength": 9
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 36.5,
               "maxWaitTime": 92.8,
               "maxQueueLength": 11
             },
-            "west": {
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 38.8,
+              "maxWaitTime": 91.2,
+              "maxQueueLength": 10
+            }
+          ]
+        },
+        "west": {
+          "lanes": [
+            {
+              "laneNumber": 1,
+              "averageWaitTime": 32.7,
+              "maxWaitTime": 83.1,
+              "maxQueueLength": 8
+            },
+            {
+              "laneNumber": 2,
               "averageWaitTime": 34.2,
               "maxWaitTime": 87.4,
               "maxQueueLength": 10
+            },
+            {
+              "laneNumber": 3,
+              "averageWaitTime": 35.8,
+              "maxWaitTime": 86.0,
+              "maxQueueLength": 9
             }
-          },
-          "metadata": {
-            "JLID": "sim_234567",
-            "timestamp": "2025-02-12T15:30:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
+          ]
         }
-      ],
-      "createdAt": "2025-02-10T09:00:00Z",
-      "lastUpdated": "2025-02-12T16:45:00Z"
-    },
-    {
-      "JID": "junction_B02",
-      "junctionName": "5th Avenue & Park Avenue Intersection",
-      "layouts": [
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.35,
-            "maxWaitTime": 0.35,
-            "maxQueueLength": 0.3
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 52.7,
-              "maxWaitTime": 135.2,
-              "maxQueueLength": 18
-            },
-            "south": {
-              "averageWaitTime": 48.9,
-              "maxWaitTime": 125.6,
-              "maxQueueLength": 16
-            },
-            "east": {
-              "averageWaitTime": 50.3,
-              "maxWaitTime": 128.4,
-              "maxQueueLength": 17
-            },
-            "west": {
-              "averageWaitTime": 47.2,
-              "maxWaitTime": 122.1,
-              "maxQueueLength": 15
-            }
-          },
-          "metadata": {
-            "JLID": "sim_456789",
-            "timestamp": "2025-02-13T10:15:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        },
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.4,
-            "maxWaitTime": 0.4,
-            "maxQueueLength": 0.2
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 45.8,
-              "maxWaitTime": 118.3,
-              "maxQueueLength": 15
-            },
-            "south": {
-              "averageWaitTime": 42.5,
-              "maxWaitTime": 110.7,
-              "maxQueueLength": 14
-            },
-            "east": {
-              "averageWaitTime": 44.1,
-              "maxWaitTime": 115.2,
-              "maxQueueLength": 15
-            },
-            "west": {
-              "averageWaitTime": 41.3,
-              "maxWaitTime": 107.9,
-              "maxQueueLength": 13
-            }
-          },
-          "metadata": {
-            "JLID": "sim_567890",
-            "timestamp": "2025-02-13T11:15:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        },
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.3,
-            "maxWaitTime": 0.3,
-            "maxQueueLength": 0.4
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 48.2,
-              "maxWaitTime": 122.5,
-              "maxQueueLength": 16
-            },
-            "south": {
-              "averageWaitTime": 44.6,
-              "maxWaitTime": 114.8,
-              "maxQueueLength": 15
-            },
-            "east": {
-              "averageWaitTime": 46.3,
-              "maxWaitTime": 119.2,
-              "maxQueueLength": 16
-            },
-            "west": {
-              "averageWaitTime": 43.9,
-              "maxWaitTime": 112.6,
-              "maxQueueLength": 14
-            }
-          },
-          "metadata": {
-            "JLID": "sim_678901",
-            "timestamp": "2025-02-13T12:15:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        }
-      ],
-      "createdAt": "2025-02-11T08:30:00Z",
-      "lastUpdated": "2025-02-13T12:30:00Z"
-    },
-    {
-      "JID": "junction_C03",
-      "junctionName": "Lexington Avenue & 42nd Street Intersection",
-      "layouts": [
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.45,
-            "maxWaitTime": 0.35,
-            "maxQueueLength": 0.2
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 58.3,
-              "maxWaitTime": 145.7,
-              "maxQueueLength": 20
-            },
-            "south": {
-              "averageWaitTime": 55.1,
-              "maxWaitTime": 138.4,
-              "maxQueueLength": 19
-            },
-            "east": {
-              "averageWaitTime": 56.9,
-              "maxWaitTime": 142.8,
-              "maxQueueLength": 19
-            },
-            "west": {
-              "averageWaitTime": 54.2,
-              "maxWaitTime": 136.5,
-              "maxQueueLength": 18
-            }
-          },
-          "metadata": {
-            "JLID": "sim_789012",
-            "timestamp": "2025-02-14T09:00:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        },
-        {
-          "scoringWeights": {
-            "averageWaitTime": 0.4,
-            "maxWaitTime": 0.3,
-            "maxQueueLength": 0.3
-          },
-          "results": {
-            "north": {
-              "averageWaitTime": 50.6,
-              "maxWaitTime": 128.9,
-              "maxQueueLength": 17
-            },
-            "south": {
-              "averageWaitTime": 47.8,
-              "maxWaitTime": 122.5,
-              "maxQueueLength": 16
-            },
-            "east": {
-              "averageWaitTime": 49.3,
-              "maxWaitTime": 126.7,
-              "maxQueueLength": 17
-            },
-            "west": {
-              "averageWaitTime": 46.9,
-              "maxWaitTime": 120.2,
-              "maxQueueLength": 16
-            }
-          },
-          "metadata": {
-            "JLID": "sim_890123",
-            "timestamp": "2025-02-14T10:00:00Z",
-            "totalSimulationTime": 3600,
-            "timeUnit": "seconds",
-            "queueLengthUnit": "vehicles"
-          }
-        }
-      ],
-      "createdAt": "2025-02-12T10:15:00Z",
-      "lastUpdated": "2025-02-14T10:30:00Z"
+      },
+      "metadata": {
+        "JLID": "sim_234567",
+        "timestamp": "2025-02-12T15:30:00Z",
+        "totalSimulationTime": 3600,
+        "timeUnit": "seconds",
+        "queueLengthUnit": "vehicles"
+      }
     }
   ],
-  "metadata": {
-    "version": "1.0.2",
-    "generatedBy": "TrafficSim Pro",
-    "generatedAt": "2025-02-25T08:45:22Z",
-    "description": "Traffic simulation results for downtown intersections"
-  }
+  "createdAt": "2025-02-10T09:00:00Z",
+  "lastUpdated": "2025-02-12T16:45:00Z"
 }
