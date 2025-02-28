@@ -80,90 +80,81 @@ document.addEventListener("DOMContentLoaded", function () {
         return arrParts.join(",");
     }
 
-    function drawPedestrianCrossing(direction, totalLaneCount, laneWidth, innerX, innerY, intersectionSize) {
-        // Check if pedestrianCrossing flag is true for this direction
-        console.log("T1")
-        if (!config[direction.toLowerCase() + "Arm"].pedestrianCrossing) return;
-        console.log("T2")
-    
-        // Define constants for the crossing
-        const crossingSize = 20; // Reasonable width (for east/west) or height (for north/south)
-        const stripeWidth = 5;   // Width of each white stripe
-        const stripeGap = 5;     // Gap between white stripes
-        const crossingOffset = 20; // Offset from the intersection, behind the arrows
-    
-        // Variables for position and size of the crossing
-        let crossingX, crossingY, crossingWidth, crossingHeight;
-    
-        // Calculate position and size based on direction
-        switch (direction) {
-            case "East":
-                // Starting y is innerY (top of the road), x is away from arrows (right of intersection)
-                crossingX = innerX + intersectionSize + crossingOffset;
-                crossingY = innerY;
-                crossingWidth = crossingSize;
-                crossingHeight = totalLaneCount * laneWidth;
-                break;
-    
-            case "West":
-                // Starting y is innerY (top of the road), x is away from arrows (left of intersection)
-                crossingX = innerX - crossingSize - crossingOffset;
-                crossingY = innerY;
-                crossingWidth = crossingSize;
-                crossingHeight = totalLaneCount * laneWidth;
-                break;
-    
-            case "North":
-                // Starting x is innerX (left of the road), y is away from arrows (above intersection)
-                crossingX = innerX;
-                crossingY = innerY - crossingSize - crossingOffset;
-                crossingWidth = totalLaneCount * laneWidth;
-                crossingHeight = crossingSize;
-                break;
-    
-            case "South":
-                // Starting x is innerX (left of the road), y is away from arrows (below intersection)
-                crossingX = innerX;
-                crossingY = innerY + intersectionSize + crossingOffset;
-                crossingWidth = totalLaneCount * laneWidth;
-                crossingHeight = crossingSize;
-                break;
-    
-            default:
-                console.log("Invalid direction");
-                return; // Invalid direction
+    function drawPedestrianCrossing(direction, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight) {
+        // Check if pedestrian crossing is enabled for this direction
+        const armKey = direction.toLowerCase() + "Arm";
+        if (!config[armKey]?.pedestrianCrossing) {
+            return;
         }
     
-        // Draw the black rectangle (base of the pedestrian crossing)
+        // Define crossing dimensions and position
+        const crossingSize = 50; // Increased size for a larger crossing
+        const stripeWidth = 5;
+        const stripeGap = 10; // Increased gap to have fewer stripes
+        const offsetFromIntersection = 100; // Moved further back from intersection
+    
+        let crossingX, crossingY, crossingWidth, crossingHeight;
+    
+        // Position the crossing based on direction
+        switch (direction) {
+            case "North":
+                crossingX = innerX;
+                crossingY = innerY + innerHeight - offsetFromIntersection - crossingSize;
+                crossingWidth = innerWidth;
+                crossingHeight = crossingSize;
+                break;
+            case "South":
+                crossingX = innerX;
+                crossingY = innerY + offsetFromIntersection;
+                crossingWidth = innerWidth;
+                crossingHeight = crossingSize;
+                break;
+            case "East":
+                crossingX = innerX + offsetFromIntersection;
+                crossingY = innerY;
+                crossingWidth = crossingSize;
+                crossingHeight = innerHeight;
+                break;
+            case "West":
+                crossingX = innerX + innerWidth - offsetFromIntersection - crossingSize;
+                crossingY = innerY;
+                crossingWidth = crossingSize;
+                crossingHeight = innerHeight;
+                break;
+            default:
+                return;
+        }
+    
+        // Draw the black base rectangle
         svg.append("rect")
             .attr("x", crossingX)
             .attr("y", crossingY)
             .attr("width", crossingWidth)
             .attr("height", crossingHeight)
             .attr("fill", "black");
-
-        console.log("T3")
     
-        // Draw white stripes to create the zebra crossing pattern
-        // Stripes go across the width (for east/west) or height (for north/south)
-        const isHorizontal = (direction === "East" || direction === "West");
+        // Determine stripe orientation: parallel to lanes
+        const isHorizontal = (direction === "North" || direction === "South");
         const stripeDimension = isHorizontal ? crossingWidth : crossingHeight;
         const stripeCount = Math.floor(stripeDimension / (stripeWidth + stripeGap));
     
+        // Draw stripes parallel to the lanes
         for (let i = 0; i < stripeCount; i++) {
             if (isHorizontal) {
-                // Stripes across width for east/west
+                // North/South: Vertical stripes
+                const stripeX = crossingX + i * (stripeWidth + stripeGap);
                 svg.append("rect")
-                    .attr("x", crossingX + i * (stripeWidth + stripeGap))
+                    .attr("x", stripeX)
                     .attr("y", crossingY)
                     .attr("width", stripeWidth)
                     .attr("height", crossingHeight)
                     .attr("fill", "white");
             } else {
-                // Stripes across height for north/south
+                // East/West: Horizontal stripes
+                const stripeY = crossingY + i * (stripeWidth + stripeGap);
                 svg.append("rect")
                     .attr("x", crossingX)
-                    .attr("y", crossingY + i * (stripeWidth + stripeGap))
+                    .attr("y", stripeY)
                     .attr("width", crossingWidth)
                     .attr("height", stripeWidth)
                     .attr("fill", "white");
@@ -262,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const innerWidth = totalLanes * laneWidth;
         const innerHeight = outerHeight;
 
-        drawPedestrianCrossing("North", totalLanes, laneWidth, innerX, innerY, innerWidth);
+        
 
         svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
         
@@ -317,6 +308,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const laneCenterX = innerX + (i + 0.5) * laneWidth;
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
+
+        drawPedestrianCrossing("North", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
 
        
     }
