@@ -1,57 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-    /***********************
-     * Configuration Data  *
-     ***********************/
-    const newConfig = {
+    /*** Configuration Data ***/
+    const config = {
         "jLayoutName": "layout1",
         "timestamp": "2025-02-13T12:00:00Z",
         "userId": "11",
         "junctionID": "56",
-        "pedestrianCrossing": false,
-        "northArm": {
-            "laneCount": 3,
-            "busLane": false,
-            "cycleLane": true,
-            "laneDetail": {
-                "lane1": "straightOnly",
-                "lane2": "leftStraight",
-                "lane3": "rightOnly"
-            }
-        },
-        "eastArm": {
-            "laneCount": 3,
-            "busLane": false,
-            "cycleLane": false,
-            "laneDetail": {
-                "lane1": "leftOnly",
-                "lane2": "straightOnly",
-                "lane3": "rightOnly"
-            }
-        },
-        "southArm": {
-            "laneCount": 3,
-            "busLane": false,
-            "cycleLane": false,
-            "laneDetail": {
-                "lane1": "leftStraight",
-                "lane2": "rightOnly"
-            }
-        },
-        "westArm": {
-            "laneCount": 3,
-            "busLane": true,
-            "cycleLane": false,
-            "laneDetail": {
-                "lane1": "leftStraight",
-                "lane2": "straightOnly",
-                "lane3": "rightOnly"
-            }
-        }
+        "northArm": { "laneCount": 3, "laneDetail": { "lane1": "busLane", "lane2": "straightOnly" }, "pedestrianCrossing": true },
+        "eastArm": { "laneCount": 3, "laneDetail": { "lane1": "cycleLane", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true },
+        "southArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "rightOnly" }, "pedestrianCrossing": true },
+        "westArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true }
     };
 
-    /***********************
-     * SVG Setup & Globals *
-     ***********************/
+    /*** SVG Setup & Globals ***/
     const svgSize = 1000;
     const svg = d3.select("#junctionCanvas")
         .attr("width", svgSize)
@@ -65,17 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const centerY = svgSize / 2;
 
     const maxLanes = Math.max(
-        (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-        (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
-        (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
+        (config["eastArm"] ? config["eastArm"].laneCount : 0),
+        (config["southArm"] ? config["southArm"].laneCount : 0),
+        (config["westArm"] ? config["westArm"].laneCount : 0)
     );
 
     const intersectionSize = maxLanes * laneWidth * 2;
     const intersectionHalf = intersectionSize / 2;
 
-    /***********************
-     * Define Grass Pattern *
-     ***********************/
+    /*** Define Grass Pattern ***/
     const defs = svg.append("defs");
     const pattern = defs.append("pattern")
         .attr("id", "grassPattern")
@@ -92,9 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("stroke-width", 2)
         .attr("fill", "none");
 
-    /***********************
-     * Draw Background (Grass)
-     ***********************/
+    /*** Draw Background (Grass) ***/
     svg.append("rect")
         .attr("x", 0)
         .attr("y", 0)
@@ -102,9 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("height", svgSize)
         .attr("fill", "url(#grassPattern)");
 
-    /***********************
-     * Draw the Intersection
-     ***********************/
+    /*** Draw the Intersection ***/
     svg.append("rect")
         .attr("x", centerX - intersectionHalf)
         .attr("y", centerY - intersectionHalf)
@@ -114,9 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("stroke", "black")
         .attr("stroke-width", 2);
 
-    /***********************
-     * Helper Functions
-     ***********************/
+    /*** Helper Functions ***/
 
     function buildDashArray(dashLen, gapLen, totalLen) {
         const patternSize = dashLen + gapLen;
@@ -128,63 +80,106 @@ document.addEventListener("DOMContentLoaded", function () {
         return arrParts.join(",");
     }
 
-    function drawCenterLineNoPartial(x1, y1, x2, y2, marginStart, marginEnd, dashLen, gapLen, thickness) {
-        let xStart = x1, yStart = y1, xEnd = x2, yEnd = y2;
-        if (x1 === x2) { // Vertical
-            yStart += marginStart;
-            yEnd -= marginEnd;
-            const lineLen = Math.abs(yEnd - yStart);
-            if (lineLen <= 0) return;
-            const dashArray = buildDashArray(dashLen, gapLen, lineLen);
-            svg.append("line")
-                .attr("x1", x1)
-                .attr("y1", yStart)
-                .attr("x2", x2)
-                .attr("y2", yEnd)
-                .attr("stroke", "white")
-                .attr("stroke-width", thickness)
-                .attr("stroke-dasharray", dashArray);
-        } else if (y1 === y2) { // Horizontal
-            xStart += marginStart;
-            xEnd -= marginEnd;
-            const lineLen = Math.abs(xEnd - xStart);
-            if (lineLen <= 0) return;
-            const dashArray = buildDashArray(dashLen, gapLen, lineLen);
-            svg.append("line")
-                .attr("x1", xStart)
-                .attr("y1", y1)
-                .attr("x2", xEnd)
-                .attr("y2", y2)
-                .attr("stroke", "white")
-                .attr("stroke-width", thickness)
-                .attr("stroke-dasharray", dashArray);
+    function drawPedestrianCrossing(direction, totalLaneCount, laneWidth, innerX, innerY, intersectionSize) {
+        // Check if pedestrianCrossing flag is true for this direction
+        console.log("T1")
+        if (!config[direction.toLowerCase() + "Arm"].pedestrianCrossing) return;
+        console.log("T2")
+    
+        // Define constants for the crossing
+        const crossingSize = 20; // Reasonable width (for east/west) or height (for north/south)
+        const stripeWidth = 5;   // Width of each white stripe
+        const stripeGap = 5;     // Gap between white stripes
+        const crossingOffset = 20; // Offset from the intersection, behind the arrows
+    
+        // Variables for position and size of the crossing
+        let crossingX, crossingY, crossingWidth, crossingHeight;
+    
+        // Calculate position and size based on direction
+        switch (direction) {
+            case "East":
+                // Starting y is innerY (top of the road), x is away from arrows (right of intersection)
+                crossingX = innerX + intersectionSize + crossingOffset;
+                crossingY = innerY;
+                crossingWidth = crossingSize;
+                crossingHeight = totalLaneCount * laneWidth;
+                break;
+    
+            case "West":
+                // Starting y is innerY (top of the road), x is away from arrows (left of intersection)
+                crossingX = innerX - crossingSize - crossingOffset;
+                crossingY = innerY;
+                crossingWidth = crossingSize;
+                crossingHeight = totalLaneCount * laneWidth;
+                break;
+    
+            case "North":
+                // Starting x is innerX (left of the road), y is away from arrows (above intersection)
+                crossingX = innerX;
+                crossingY = innerY - crossingSize - crossingOffset;
+                crossingWidth = totalLaneCount * laneWidth;
+                crossingHeight = crossingSize;
+                break;
+    
+            case "South":
+                // Starting x is innerX (left of the road), y is away from arrows (below intersection)
+                crossingX = innerX;
+                crossingY = innerY + intersectionSize + crossingOffset;
+                crossingWidth = totalLaneCount * laneWidth;
+                crossingHeight = crossingSize;
+                break;
+    
+            default:
+                console.log("Invalid direction");
+                return; // Invalid direction
+        }
+    
+        // Draw the black rectangle (base of the pedestrian crossing)
+        svg.append("rect")
+            .attr("x", crossingX)
+            .attr("y", crossingY)
+            .attr("width", crossingWidth)
+            .attr("height", crossingHeight)
+            .attr("fill", "black");
+
+        console.log("T3")
+    
+        // Draw white stripes to create the zebra crossing pattern
+        // Stripes go across the width (for east/west) or height (for north/south)
+        const isHorizontal = (direction === "East" || direction === "West");
+        const stripeDimension = isHorizontal ? crossingWidth : crossingHeight;
+        const stripeCount = Math.floor(stripeDimension / (stripeWidth + stripeGap));
+    
+        for (let i = 0; i < stripeCount; i++) {
+            if (isHorizontal) {
+                // Stripes across width for east/west
+                svg.append("rect")
+                    .attr("x", crossingX + i * (stripeWidth + stripeGap))
+                    .attr("y", crossingY)
+                    .attr("width", stripeWidth)
+                    .attr("height", crossingHeight)
+                    .attr("fill", "white");
+            } else {
+                // Stripes across height for north/south
+                svg.append("rect")
+                    .attr("x", crossingX)
+                    .attr("y", crossingY + i * (stripeWidth + stripeGap))
+                    .attr("width", crossingWidth)
+                    .attr("height", stripeWidth)
+                    .attr("fill", "white");
+            }
         }
     }
 
     function drawLaneDividers(x, y, width, height, totalLanes, vertical, laneDetail, approachDirection) {
-        const arrowClearance = 130; // Space to clear for arrows near intersection
-        const enteringLanes = newConfig[approachDirection.toLowerCase() + "Arm"].laneCount;
-        
-        //TODo: Check if this is correct
-        const maxLanesLocal = Math.max(
-            (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
-            (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
-        );
-
-        // Draw boundary dividers
+        const enteringLanes = config[approachDirection.toLowerCase() + "Arm"].laneCount;
+        // Draw boundary dividers (lines between adjacent lanes)
         for (let i = 1; i < totalLanes; i++) {
+            let isDashed = true;
+            if (i===enteringLanes) isDashed = false;
             if (vertical) {
                 let xpos = x + i * laneWidth;
-                let yStart = y;
-                let yEnd = y + height;
-                if (approachDirection === "North" && i >= maxLanesLocal) {
-                    // Entering lanes on right, shorten at bottom (near intersection)
-                    yEnd -= arrowClearance;
-                } else if (approachDirection === "South" && i < enteringLanes) {
-                    // Entering lanes on left, shorten at top (near intersection)
-                    yStart += arrowClearance;
-                }
+                let yStart = y, yEnd = y + height;
                 svg.append("line")
                     .attr("x1", xpos)
                     .attr("y1", yStart)
@@ -192,18 +187,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("y2", yEnd)
                     .attr("stroke", "white")
                     .attr("stroke-width", 4)
-                    .attr("stroke-dasharray", "10,10");
+                    .attr("stroke-dasharray", isDashed ? "10,10" : "none");
             } else {
                 let ypos = y + i * laneWidth;
-                let xStart = x;
-                let xEnd = x + width;
-                if (approachDirection === "East" && i <= enteringLanes) {
-                    // Entering lanes on top, shorten on left (near intersection)
-                    xStart += arrowClearance;
-                } else if (approachDirection === "West" && i > totalLanes - enteringLanes) {
-                    // Entering lanes on top, shorten on right (near intersection)
-                    xEnd -= arrowClearance;
-                }
+                let xStart = x, xEnd = x + width;
                 svg.append("line")
                     .attr("x1", xStart)
                     .attr("y1", ypos)
@@ -211,54 +198,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     .attr("y2", ypos)
                     .attr("stroke", "white")
                     .attr("stroke-width", 4)
-                    .attr("stroke-dasharray", "10,10");
-            }
-        }
-
-        // Draw center lines, stopping before last dash for lanes with arrows
-        const dashLen = 80, gapLen = 60;
-        const thickness = 6;
-        const baseMargin = 20;
-        const arrowClearanceCenter = 130;
-        for (let i = 0; i < totalLanes; i++) {
-            let laneKey, hasArrow;
-            if (approachDirection === "North") {
-                laneKey = i >= maxLanesLocal ? `lane${i - maxLanesLocal + 1}` : null;
-                hasArrow = laneKey && laneDetail && laneDetail[laneKey];
-            } else if (approachDirection === "South" || approachDirection === "East" || approachDirection === "West") {
-                laneKey = i < enteringLanes ? `lane${i + 1}` : null;
-                hasArrow = laneKey && laneDetail && laneDetail[laneKey];
-            } else {
-                hasArrow = false;
-            }
-            if (vertical) {
-                let centerLineX = x + i * laneWidth + laneWidth / 2;
-                const marginStart = (approachDirection === "South" && hasArrow) ? arrowClearanceCenter : baseMargin;
-                const marginEnd = (approachDirection === "North" && hasArrow) ? arrowClearanceCenter : baseMargin;
-                drawCenterLineNoPartial(
-                    centerLineX, y,
-                    centerLineX, y + height,
-                    marginStart, marginEnd, dashLen, gapLen, thickness
-                );
-            } else {
-                let centerLineY = y + i * laneWidth + laneWidth / 2;
-                const marginStart = (approachDirection === "East" && hasArrow) ? arrowClearanceCenter : baseMargin;
-                const marginEnd = (approachDirection === "West" && hasArrow) ? arrowClearanceCenter : baseMargin;
-                drawCenterLineNoPartial(
-                    x, centerLineY,
-                    x + width, centerLineY,
-                    marginStart, marginEnd, dashLen, gapLen, thickness
-                );
+                    .attr("stroke-dasharray", isDashed ? "10,10" : "none");
             }
         }
     }
 
     function drawIntersectionLines(cx, cy, length, horizontal, doubleLine) {
-        const offset = 3;
-        const halfLen = length / 2;
-        const strokeWidth = 2;
-        const dashPattern = "10,10";
-
+        const offset = 3, halfLen = length / 2, strokeWidth = 2, dashPattern = "10,10";
         if (!doubleLine) {
             if (horizontal) {
                 svg.append("line")
@@ -281,54 +227,24 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else {
             if (horizontal) {
-                svg.append("line")
-                    .attr("x1", cx - halfLen)
-                    .attr("y1", cy - offset)
-                    .attr("x2", cx + halfLen)
-                    .attr("y2", cy - offset)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", dashPattern);
-                svg.append("line")
-                    .attr("x1", cx - halfLen)
-                    .attr("y1", cy + offset)
-                    .attr("x2", cx + halfLen)
-                    .attr("y2", cy + offset)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", dashPattern);
+                svg.append("line").attr("x1", cx - halfLen).attr("y1", cy - offset).attr("x2", cx + halfLen).attr("y2", cy - offset)
+                    .attr("stroke", "white").attr("stroke-width", strokeWidth).attr("stroke-dasharray", dashPattern);
+                svg.append("line").attr("x1", cx - halfLen).attr("y1", cy + offset).attr("x2", cx + halfLen).attr("y2", cy + offset)
+                    .attr("stroke", "white").attr("stroke-width", strokeWidth).attr("stroke-dasharray", dashPattern);
             } else {
-                svg.append("line")
-                    .attr("x1", cx - offset)
-                    .attr("y1", cy - halfLen)
-                    .attr("x2", cx - offset)
-                    .attr("y2", cy + halfLen)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", dashPattern);
-                svg.append("line")
-                    .attr("x1", cx + offset)
-                    .attr("y1", cy - halfLen)
-                    .attr("x2", cx + offset)
-                    .attr("y2", cy + halfLen)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", dashPattern);
+                svg.append("line").attr("x1", cx - offset).attr("y1", cy - halfLen).attr("x2", cx - offset).attr("y2", cy + halfLen)
+                    .attr("stroke", "white").attr("stroke-width", strokeWidth).attr("stroke-dasharray", dashPattern);
+                svg.append("line").attr("x1", cx + offset).attr("y1", cy - halfLen).attr("x2", cx + offset).attr("y2", cy + halfLen)
+                    .attr("stroke", "white").attr("stroke-width", strokeWidth).attr("stroke-dasharray", dashPattern);
             }
         }
     }
 
-    /***********************
-     * Draw the Approaches
-     ***********************/
 
-    function drawApproach_North(laneCount, specialKey, laneDetail) {
-        const maxLanes = Math.max(
-            (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
-            (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
-        );
 
+    /*** Draw the Approaches ***/
+
+    function drawApproach_North(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
         const outerHeight = centerY - intersectionHalf;
@@ -336,51 +252,50 @@ document.addEventListener("DOMContentLoaded", function () {
         const outerX = centerX - outerWidth / 2;
         const outerY = 0;
 
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY)
-            .attr("width", curbWidth)
-            .attr("height", outerHeight)
-            .attr("fill", "#cccccc");
 
-        svg.append("rect")
-            .attr("x", outerX + totalLanes * laneWidth + curbWidth)
-            .attr("y", outerY)
-            .attr("width", curbWidth)
-            .attr("height", outerHeight)
-            .attr("fill", "#cccccc");
+
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
 
         const innerX = outerX + curbWidth;
         const innerY = outerY;
         const innerWidth = totalLanes * laneWidth;
         const innerHeight = outerHeight;
 
-        svg.append("rect")
-            .attr("x", innerX)
-            .attr("y", innerY)
-            .attr("width", innerWidth)
-            .attr("height", innerHeight)
-            .attr("fill", "black");
+        drawPedestrianCrossing("North", totalLanes, laneWidth, innerX, innerY, innerWidth);
 
-        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, true, laneDetail, "North");
-
-        const exitingCount = lanes;
-        const markY = innerY + innerHeight;
-        const markLen = 30;
-        for (let i = 0; i < totalLanes; i++) {
-            const isDouble = (i >= exitingCount);
-            const laneCenterX = innerX + (i + 0.5) * laneWidth;
-            drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
-        }
-
-        for (let i = lanes - 1; i < totalLanes + 1; i++) {
-            const laneKey = `lane${i - lanes + 1}`;
-            const laneType = laneDetail[laneKey];
-            if (laneType) {
-                const imgX = innerX + (i + 0.5) * laneWidth;
-                const imgY = innerY + innerHeight - 60;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
+        svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
+        
+        for (let k = 0; k < lanes; k++) {
+            let i = totalLanes - 1 - k;
+            let laneKey = `lane${k + 1}`;
+            let laneType = laneDetail[laneKey];
+            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
+                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+                svg.append("rect")
+                    .attr("x", innerX + i * laneWidth)
+                    .attr("y", innerY)
+                    .attr("width", laneWidth)
+                    .attr("height", innerHeight)
+                    .attr("fill", color);
+                let imgX = innerX + (i + 0.5) * laneWidth;
+                let imgY = innerY + innerHeight - 80;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
+                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let transform = `rotate(180, ${imgX}, ${imgY})`;
+                svg.append("image")
+                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("x", imgX - imgWidth / 2)
+                    .attr("y", imgY - imgHeight / 2)
+                    .attr("width", imgWidth)
+                    .attr("height", imgHeight)
+                    .attr("transform", transform);
+            } else if (laneType) {
+                let imgX = innerX + (i + 0.5) * laneWidth;
+                let imgY = innerY + innerHeight - 80;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
                 svg.append("image")
                     .attr("xlink:href", `utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
@@ -391,119 +306,69 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        if (specialKey) {
-            const specialX = innerX;
-            if (specialKey === "Bus") {
-                svg.append("rect")
-                    .attr("x", specialX)
-                    .attr("y", innerY)
-                    .attr("width", laneWidth)
-                    .attr("height", innerHeight)
-                    .attr("fill", "#FF6347");
-                const imgX = specialX + laneWidth / 2;
-                const imgY = innerY + innerHeight / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/busLane.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(180, ${imgX}, ${imgY})`);
-            } else if (specialKey === "Cycle") {
-                svg.append("rect")
-                    .attr("x", specialX)
-                    .attr("y", innerY)
-                    .attr("width", laneWidth)
-                    .attr("height", innerHeight)
-                    .attr("fill", "#4682B4");
-                const imgX = specialX + laneWidth / 2;
-                const imgY = innerY + innerHeight / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/cycle.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(270, ${imgX}, ${imgY})`);
-            }
+        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, true, laneDetail, "North");
+
+
+        const exitingCount = lanes;
+        const markY = innerY + innerHeight;
+        const markLen = 30;
+        for (let i = 0; i < totalLanes; i++) {
+            const isDouble = (i >= totalLanes - exitingCount);
+            const laneCenterX = innerX + (i + 0.5) * laneWidth;
+            drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
+
+       
     }
 
-    function drawApproach_East(laneCount, specialKey, laneDetail) {
-        const maxLanes = Math.max(
-            (newConfig["northArm"] ? newConfig["northArm"].laneCount : 0),
-            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0),
-            (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
-        );
-
+    function drawApproach_East(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
-        const outerWidth = svgSize - (centerX + intersectionHalf);
+        const outerWidth = centerX - intersectionHalf;
         const outerHeight = totalLanes * laneWidth + 2 * curbWidth;
         const outerX = centerX + intersectionHalf;
         const outerY = centerY - outerHeight / 2;
 
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY)
-            .attr("width", outerWidth)
-            .attr("height", curbWidth)
-            .attr("fill", "#cccccc");
-
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY + totalLanes * laneWidth + curbWidth)
-            .attr("width", outerWidth)
-            .attr("height", curbWidth)
-            .attr("fill", "#cccccc");
-
-        const southOuterWidth = totalLanes * laneWidth + 2 * curbWidth;
-        const southOuterX = centerX - southOuterWidth / 2;
-        const gapLeft = southOuterX - (outerX + outerWidth);
-        if (gapLeft > 0) {
-            svg.append("rect")
-                .attr("x", outerX + outerWidth)
-                .attr("y", outerY + lanes * laneWidth + curbWidth)
-                .attr("width", gapLeft)
-                .attr("height", curbWidth)
-                .attr("fill", "#cccccc");
-        }
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
 
         const innerX = outerX;
         const innerY = outerY + curbWidth;
         const innerWidth = outerWidth;
         const innerHeight = totalLanes * laneWidth;
 
-        svg.append("rect")
-            .attr("x", innerX)
-            .attr("y", innerY)
-            .attr("width", innerWidth)
-            .attr("height", innerHeight)
-            .attr("fill", "black");
+        svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
 
-        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, false, laneDetail, "East");
-
-        const enteringCount = lanes;
-        const markLen = 30;
-        const markX = innerX;
-        for (let i = 0; i < totalLanes; i++) {
-            const isDouble = (i >= enteringCount);
-            const laneCenterY = innerY + (i + 0.5) * laneWidth;
-            drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
-        }
-
-        for (let i = 0; i < lanes; i++) {
-            const laneKey = `lane${i + 1}`;
-            const laneType = laneDetail[laneKey];
-            if (laneType) {
-                const imgX = innerX + 60;
-                const imgY = innerY + (i + 0.5) * laneWidth;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
+        for (let k = 0; k < lanes; k++) {
+            let i = totalLanes - 1 - k;
+            let laneKey = `lane${k + 1}`;
+            let laneType = laneDetail[laneKey];
+            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
+                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+                svg.append("rect")
+                    .attr("x", innerX)
+                    .attr("y", innerY + i * laneWidth)
+                    .attr("width", innerWidth)
+                    .attr("height", laneWidth)
+                    .attr("fill", color);
+                let imgX = innerX + 80;
+                let imgY = innerY + (i + 0.5) * laneWidth;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
+                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let transform = `rotate(270, ${imgX}, ${imgY})`;
+                svg.append("image")
+                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("x", imgX - imgWidth / 2)
+                    .attr("y", imgY - imgHeight / 2)
+                    .attr("width", imgWidth)
+                    .attr("height", imgHeight)
+                    .attr("transform", transform);
+            } else if (laneType) {
+                let imgX = innerX + 80;
+                let imgY = innerY + (i + 0.5) * laneWidth;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
                 svg.append("image")
                     .attr("xlink:href", `utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
@@ -514,86 +379,75 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        if (specialKey) {
-            const specialY = innerY + innerHeight - laneWidth;
-            if (specialKey === "Bus") {
-                svg.append("rect")
-                    .attr("x", innerX)
-                    .attr("y", specialY)
-                    .attr("width", innerWidth)
-                    .attr("height", laneWidth)
-                    .attr("fill", "#FF6347");
-                const imgX = innerX + innerWidth / 2;
-                const imgY = specialY + laneWidth / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/busLane.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(270, ${imgX}, ${imgY})`);
-            } else if (specialKey === "Cycle") {
-                svg.append("rect")
-                    .attr("x", innerX)
-                    .attr("y", specialY)
-                    .attr("width", innerWidth)
-                    .attr("height", laneWidth)
-                    .attr("fill", "#4682B4");
-                const imgX = innerX + innerWidth / 2;
-                const imgY = specialY + laneWidth / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/cycle.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight);
-            }
+        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, false, laneDetail, "East");
+
+        const exitingCount = lanes;
+        const markX = innerX;
+        const markLen = 30;
+        for (let i = 0; i < totalLanes; i++) {
+            const isDouble = (i >= totalLanes - exitingCount);
+            const laneCenterY = innerY + (i + 0.5) * laneWidth;
+            drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
     }
 
-    function drawApproach_South(laneCount, specialKey, laneDetail) {
-        const maxLanes = Math.max(
-            (newConfig["northArm"] ? newConfig["northArm"].laneCount : 0),
-            (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-            (newConfig["westArm"] ? newConfig["westArm"].laneCount : 0)
-        );
-
+    function drawApproach_South(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
-        const outerHeight = svgSize - (centerY + intersectionHalf);
+        const outerHeight = centerY - intersectionHalf;
         const outerWidth = totalLanes * laneWidth + 2 * curbWidth;
         const outerX = centerX - outerWidth / 2;
         const outerY = centerY + intersectionHalf;
 
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY)
-            .attr("width", curbWidth)
-            .attr("height", outerHeight)
-            .attr("fill", "#cccccc");
-
-        svg.append("rect")
-            .attr("x", outerX + totalLanes * laneWidth + curbWidth)
-            .attr("y", outerY)
-            .attr("width", curbWidth)
-            .attr("height", outerHeight)
-            .attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
 
         const innerX = outerX + curbWidth;
         const innerY = outerY;
         const innerWidth = totalLanes * laneWidth;
         const innerHeight = outerHeight;
 
-        svg.append("rect")
-            .attr("x", innerX)
-            .attr("y", innerY)
-            .attr("width", innerWidth)
-            .attr("height", innerHeight)
-            .attr("fill", "black");
+        svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
+
+        for (let k = 0; k < lanes; k++) {
+            let i = k;
+            let laneKey = `lane${k + 1}`;
+            let laneType = laneDetail[laneKey];
+            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
+                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+                svg.append("rect")
+                    .attr("x", innerX + i * laneWidth)
+                    .attr("y", innerY)
+                    .attr("width", laneWidth)
+                    .attr("height", innerHeight)
+                    .attr("fill", color);
+                let imgX = innerX + (i + 0.5) * laneWidth;
+                let imgY = innerY + 80;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
+                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let transform = `rotate(0, ${imgX}, ${imgY})`;
+                svg.append("image")
+                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("x", imgX - imgWidth / 2)
+                    .attr("y", imgY - imgHeight / 2)
+                    .attr("width", imgWidth)
+                    .attr("height", imgHeight)
+                    .attr("transform", transform);
+            } else if (laneType) {
+                let imgX = innerX + (i + 0.5) * laneWidth;
+                let imgY = innerY + 80;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
+                svg.append("image")
+                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("x", imgX - imgWidth / 2)
+                    .attr("y", imgY - imgHeight / 2)
+                    .attr("width", imgWidth)
+                    .attr("height", imgHeight)
+                    .attr("transform", `rotate(0, ${imgX}, ${imgY})`);
+            }
+        }
 
         drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, true, laneDetail, "South");
 
@@ -605,72 +459,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const laneCenterX = innerX + (i + 0.5) * laneWidth;
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
-
-        for (let i = 0; i < lanes; i++) {
-            const laneKey = `lane${i + 1}`;
-            const laneType = laneDetail[laneKey];
-            if (laneType) {
-                const imgX = innerX + (i + 0.5) * laneWidth;
-                const imgY = innerY + 60;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight);
-            }
-        }
-
-        if (specialKey) {
-            const specialX = innerX + innerWidth - laneWidth;
-            if (specialKey === "Bus") {
-                svg.append("rect")
-                    .attr("x", specialX)
-                    .attr("y", innerY)
-                    .attr("width", laneWidth)
-                    .attr("height", innerHeight)
-                    .attr("fill", "#FF6347");
-                const imgX = specialX + laneWidth / 2;
-                const imgY = innerY + innerHeight / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/busLane.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight);
-            } else if (specialKey === "Cycle") {
-                svg.append("rect")
-                    .attr("x", specialX)
-                    .attr("y", innerY)
-                    .attr("width", laneWidth)
-                    .attr("height", innerHeight)
-                    .attr("fill", "#4682B4");
-                const imgX = specialX + laneWidth / 2;
-                const imgY = innerY + innerHeight / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/cycle.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(90, ${imgX}, ${imgY})`);
-            }
-        }
     }
 
-    function drawApproach_West(laneCount, specialKey, laneDetail) {
-        const maxLanes = Math.max(
-            (newConfig["northArm"] ? newConfig["northArm"].laneCount : 0),
-            (newConfig["eastArm"] ? newConfig["eastArm"].laneCount : 0),
-            (newConfig["southArm"] ? newConfig["southArm"].laneCount : 0)
-        );
-
+    function drawApproach_West(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
         const outerWidth = centerX - intersectionHalf;
@@ -678,51 +469,46 @@ document.addEventListener("DOMContentLoaded", function () {
         const outerX = 0;
         const outerY = centerY - outerHeight / 2;
 
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY)
-            .attr("width", outerWidth)
-            .attr("height", curbWidth)
-            .attr("fill", "#cccccc");
-
-        svg.append("rect")
-            .attr("x", outerX)
-            .attr("y", outerY + totalLanes * laneWidth + curbWidth)
-            .attr("width", outerWidth)
-            .attr("height", curbWidth)
-            .attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
 
         const innerX = outerX;
         const innerY = outerY + curbWidth;
         const innerWidth = outerWidth;
         const innerHeight = totalLanes * laneWidth;
 
-        svg.append("rect")
-            .attr("x", innerX)
-            .attr("y", innerY)
-            .attr("width", innerWidth)
-            .attr("height", innerHeight)
-            .attr("fill", "black");
+        svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
 
-        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, false, laneDetail, "West");
-
-        const enteringCount = lanes;
-        const markLen = 30;
-        const markX = innerX + innerWidth;
-        for (let i = 0; i < totalLanes; i++) {
-            const isDouble = (i < enteringCount);
-            const laneCenterY = innerY + (i + 0.5) * laneWidth;
-            drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
-        }
-
-        for (let i = 0; i < lanes; i++) {
-            const laneKey = `lane${i + 1}`;
-            const laneType = laneDetail[laneKey];
-            if (laneType) {
-                const imgX = innerX + innerWidth - 60;
-                const imgY = innerY + (i + 0.5) * laneWidth;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
+        for (let k = 0; k < lanes; k++) {
+            let i = k;
+            let laneKey = `lane${k + 1}`;
+            let laneType = laneDetail[laneKey];
+            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
+                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+                svg.append("rect")
+                    .attr("x", innerX)
+                    .attr("y", innerY + i * laneWidth)
+                    .attr("width", innerWidth)
+                    .attr("height", laneWidth)
+                    .attr("fill", color);
+                let imgX = innerX + innerWidth - 80;
+                let imgY = innerY + (i + 0.5) * laneWidth;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
+                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let transform = `rotate(90, ${imgX}, ${imgY})`;
+                svg.append("image")
+                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("x", imgX - imgWidth / 2)
+                    .attr("y", imgY - imgHeight / 2)
+                    .attr("width", imgWidth)
+                    .attr("height", imgHeight)
+                    .attr("transform", transform);
+            } else if (laneType) {
+                let imgX = innerX + innerWidth - 80;
+                let imgY = innerY + (i + 0.5) * laneWidth;
+                let imgWidth = laneWidth * 0.8;
+                let imgHeight = laneWidth * 0.8;
                 svg.append("image")
                     .attr("xlink:href", `utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
@@ -733,67 +519,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        if (specialKey) {
-            const specialY = innerY + innerHeight - laneWidth;
-            if (specialKey === "Bus") {
-                svg.append("rect")
-                    .attr("x", innerX)
-                    .attr("y", specialY)
-                    .attr("width", innerWidth)
-                    .attr("height", laneWidth)
-                    .attr("fill", "#FF6347");
-                const imgX = innerX + innerWidth / 2;
-                const imgY = specialY + laneWidth / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/busLane.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(90, ${imgX}, ${imgY})`);
-            } else if (specialKey === "Cycle") {
-                svg.append("rect")
-                    .attr("x", innerX)
-                    .attr("y", specialY)
-                    .attr("width", innerWidth)
-                    .attr("height", laneWidth)
-                    .attr("fill", "#4682B4");
-                const imgX = innerX + innerWidth / 2;
-                const imgY = specialY + laneWidth / 2;
-                const imgWidth = laneWidth * 0.8;
-                const imgHeight = laneWidth * 0.8;
-                svg.append("image")
-                    .attr("xlink:href", "utils/cycle.png")
-                    .attr("x", imgX - imgWidth / 2)
-                    .attr("y", imgY - imgHeight / 2)
-                    .attr("width", imgWidth)
-                    .attr("height", imgHeight)
-                    .attr("transform", `rotate(180, ${imgX}, ${imgY})`);
-            }
+        drawLaneDividers(innerX, innerY, innerWidth, innerHeight, totalLanes, false, laneDetail, "West");
+
+        const exitingCount = lanes;
+        const markX = innerX + innerWidth;
+        const markLen = 30;
+        for (let i = 0; i < totalLanes; i++) {
+            const isDouble = (i >= totalLanes - exitingCount);
+            const laneCenterY = innerY + (i + 0.5) * laneWidth;
+            drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
     }
 
-    // Render each approach if it exists
-    if (newConfig["northArm"]) {
-        const arm = newConfig["northArm"];
-        const specialKey = arm.busLane ? "Bus" : (arm.cycleLane ? "Cycle" : null);
-        drawApproach_North(arm.laneCount, specialKey, arm.laneDetail);
-    }
-    if (newConfig["eastArm"]) {
-        const arm = newConfig["eastArm"];
-        const specialKey = arm.busLane ? "Bus" : (arm.cycleLane ? "Cycle" : null);
-        drawApproach_East(arm.laneCount, specialKey, arm.laneDetail);
-    }
-    if (newConfig["southArm"]) {
-        const arm = newConfig["southArm"];
-        const specialKey = arm.busLane ? "Bus" : (arm.cycleLane ? "Cycle" : null);
-        drawApproach_South(arm.laneCount, specialKey, arm.laneDetail);
-    }
-    if (newConfig["westArm"]) {
-        const arm = newConfig["westArm"];
-        const specialKey = arm.busLane ? "Bus" : (arm.cycleLane ? "Cycle" : null);
-        drawApproach_West(arm.laneCount, specialKey, arm.laneDetail);
-    }
+    /*** Render Approaches ***/
+    if (config["northArm"]) drawApproach_North(config["northArm"].laneCount, config["northArm"].laneDetail);
+    if (config["eastArm"]) drawApproach_East(config["eastArm"].laneCount, config["eastArm"].laneDetail);
+    if (config["southArm"]) drawApproach_South(config["southArm"].laneCount, config["southArm"].laneDetail);
+    if (config["westArm"]) drawApproach_West(config["westArm"].laneCount, config["westArm"].laneDetail);
 });

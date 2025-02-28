@@ -6,7 +6,10 @@ SVG Fixes:
 4. Implement the kurb gap for when there is less lanes than 2x max. 
 5. HP: Full test suite and corresponding fixes. 
 5. LP: Refactor code for added modularity
-6. 
+
+SVG Testing
+0. The resizing function of the middle intersection. 
+1. The correct arrow configuration for all 
 
 ---SVG Finished----
 1. Integrate with Junction design for real time rendering. 
