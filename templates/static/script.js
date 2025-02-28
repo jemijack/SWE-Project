@@ -242,10 +242,13 @@ function updateLaneOptions() {
 
 function redrawJunction() {
     d3.select("#junctionCanvas").selectAll("*").remove(); // Clear SVG
+    /** 
     window.drawApproach_North(layoutData["northArm"].laneCount, "North");
     window.drawApproach_East(layoutData["eastArm"].laneCount, "East");
     window.drawApproach_South(layoutData["southArm"].laneCount, "South");
     window.drawApproach_West(layoutData["westArm"].laneCount, "West");
+    */
+   window.initializeJunction(layoutData);
 } 
 
 

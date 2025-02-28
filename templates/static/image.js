@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initializeJunction(config) {
     /*** Configuration Data ***/
+    /** 
     const config = {
         "jLayoutName": "layout1",
         "timestamp": "2025-02-13T12:00:00Z",
@@ -10,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "southArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "rightOnly" }, "pedestrianCrossing": true },
         "westArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true }
     };
+    */
 
     /*** SVG Setup & Globals ***/
     const svgSize = 1000;
@@ -314,6 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
        
     }
 
+    window.drawApproach_East = drawApproach_East;
     function drawApproach_East(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
@@ -383,7 +386,8 @@ document.addEventListener("DOMContentLoaded", function () {
             drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
     }
-
+    
+    window.drawApproach_South = drawApproach_South;
     function drawApproach_South(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
@@ -453,7 +457,8 @@ document.addEventListener("DOMContentLoaded", function () {
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
     }
-
+    
+    window.drawApproach_West = drawApproach_West;
     function drawApproach_West(laneCount, laneDetail) {
         const lanes = laneCount;
         const totalLanes = lanes + maxLanes;
@@ -529,4 +534,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (config["eastArm"]) drawApproach_East(config["eastArm"].laneCount, config["eastArm"].laneDetail);
     if (config["southArm"]) drawApproach_South(config["southArm"].laneCount, config["southArm"].laneDetail);
     if (config["westArm"]) drawApproach_West(config["westArm"].laneCount, config["westArm"].laneDetail);
-});
+
+}
+
+/*** Make Function Globally Available ***/
+window.initializeJunction = initializeJunction;
+
+/*** Automatically Run When DOM Loads ***/
+document.addEventListener("DOMContentLoaded", initializeJunction);
