@@ -10,11 +10,10 @@
 <h1> Design a Junction</h1>
 
 
-
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="static/image.js"></script> 
+<script src="static/image.js" defer></script> 
+<script src="static/script.js" defer></script>
 <svg id="junctionCanvas"></svg>
-
 
 <!-- Fixed Side Bar Menu -->
 <div id="directionMenu">
@@ -76,8 +75,6 @@
     <button onclick="submitData()"> Save Layout</button>
 </div>
 
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
