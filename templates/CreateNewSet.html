@@ -115,11 +115,11 @@
       <span id="northPriorityText" class="priority-number">0</span>
       <!-- Forces a line break -->
       <br>
-      <label for="northPedestrian"> Pedestrian Crossing: </label>
-      <input type="checkbox" id="northPedestrian" name="northPedestrian" value="1" onclick="northPedestrianToggle()">
+      <label for="northPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="northPedestrianCheckbox" name="northPedestrian" value="1" onclick="northPedestrianToggle()">
       <br>
-      <label id="northPedestrianTextbox" for="northRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
-      <input type="text" id="northRequestFrequency" name="northRequestFrequency" style="display:none;">
+      <label id="northPedestrianLabel" for="northPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="northPedestrian" name="northRequestFrequency" style="display:none;">
       <div id="northRequestFrequencyError" class="error-message"></div>
     </div>
 
@@ -159,11 +159,11 @@
       <span id="southPriorityText" class="priority-number">0</span>
       <!-- Forces a line break -->
       <br>
-      <label for="southPedestrian"> Pedestrian Crossing: </label>
-      <input type="checkbox" id="southPedestrian" name="southPedestrian" value="1" onclick="southPedestrianToggle()">
+      <label for="southPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="southPedestrianCheckbox" name="southPedestrian" value="1" onclick="southPedestrianToggle()">
       <br>
-      <label id="southPedestrianTextbox" for="southRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
-      <input type="text" id="southRequestFrequency" name="southRequestFrequency" style="display:none;">
+      <label id="southPedestrianLabel" for="southPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="southPedestrian" name="southRequestFrequency" style="display:none;">
       <div id="southRequestFrequencyError" class="error-message"></div>
     </div>
 
@@ -203,11 +203,11 @@
       <span id="eastPriorityText" class="priority-number">0</span>
       <!-- Forces a line break -->
       <br>
-      <label for="eastPedestrian"> Pedestrian Crossing: </label>
-      <input type="checkbox" id="eastPedestrian" name="eastPedestrian" value="1" onclick="eastPedestrianToggle()">
+      <label for="eastPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="eastPedestrianCheckbox" name="eastPedestrian" value="1" onclick="eastPedestrianToggle()">
       <br>
-      <label id="eastPedestrianTextbox" for="eastRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
-      <input type="text" id="eastRequestFrequency" name="eastRequestFrequency" style="display:none;">
+      <label id="eastPedestrianLabel" for="eastPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="eastPedestrian" name="eastRequestFrequency" style="display:none;">
       <div id="eastRequestFrequencyError" class="error-message"></div>
     </div>
 
@@ -247,11 +247,11 @@
       <span id="westPriorityText" class="priority-number">0</span>
       <!-- Forces a line break -->
       <br>
-      <label for="westPedestrian"> Pedestrian Crossing: </label>
-      <input type="checkbox" id="westPedestrian" name="westPedestrian" value="1" onclick="westPedestrianToggle()">
+      <label for="westPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="westPedestrianCheckbox" name="westPedestrian" value="1" onclick="westPedestrianToggle()">
       <br>
-      <label id="westPedestrianTextbox" for="westRequestFrequency" style="display:none;">Crossing Requests (per hour):</label>
-      <input type="text" id="westRequestFrequency" name="westRequestFrequency" style="display:none;">
+      <label id="westPedestrianLabel" for="westPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="westPedestrian" name="westRequestFrequency" style="display:none;">
       <div id="westRequestFrequencyError" class="error-message"></div>
     </div>
 
@@ -314,9 +314,9 @@
 
     //If the checkbox for pedestrian crossing is checked, the user will be prompted to specify the frequency of crossing requests that will occur.
     function northPedestrianToggle(){
-      const checkbox = document.getElementById("northPedestrian")
-      const textbox = document.getElementById("northRequestFrequency")
-      const textboxLabel = document.getElementById("northPedestrianTextbox")
+      const checkbox = document.getElementById("northPedestrianCheckbox")
+      const textbox = document.getElementById("northPedestrian")
+      const textboxLabel = document.getElementById("northPedestrianLabel")
       
 
       //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
@@ -344,9 +344,9 @@
     }
 
     function southPedestrianToggle(){
-      const checkbox = document.getElementById("southPedestrian")
-      const textbox = document.getElementById("southRequestFrequency")
-      const textboxLabel = document.getElementById("southPedestrianTextbox")
+      const checkbox = document.getElementById("southPedestrianCheckbox")
+      const textbox = document.getElementById("southPedestrian")
+      const textboxLabel = document.getElementById("southPedestrianLabel")
 
       //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
       if (checkbox.checked) {
@@ -373,9 +373,9 @@
     }
 
     function eastPedestrianToggle(){
-      const checkbox = document.getElementById("eastPedestrian")
-      const textbox = document.getElementById("eastRequestFrequency")
-      const textboxLabel = document.getElementById("eastPedestrianTextbox")
+      const checkbox = document.getElementById("eastPedestrianCheckbox")
+      const textbox = document.getElementById("eastPedestrian")
+      const textboxLabel = document.getElementById("eastPedestrianLabel")
 
       //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
       if (checkbox.checked) {
@@ -402,9 +402,9 @@
     }
 
     function westPedestrianToggle(){
-      const checkbox = document.getElementById("westPedestrian")
-      const textbox = document.getElementById("westRequestFrequency")
-      const textboxLabel = document.getElementById("westPedestrianTextbox")
+      const checkbox = document.getElementById("westPedestrianCheckbox")
+      const textbox = document.getElementById("westPedestrian")
+      const textboxLabel = document.getElementById("westPedestrianLabel")
 
       //If the checkbox is checked, show the textbox allowing the user to specify crossing request frequency and the textbox's label
       if (checkbox.checked) {
@@ -497,13 +497,28 @@
       }
     });
 
+    if (!document.getElementById("northPedestrianCheckbox").checked) {
+        document.getElementById("northPedestrian").value = "0";
+    }
+    if (!document.getElementById("southPedestrianCheckbox").checked) {
+        document.getElementById("southPedestrian").value = "0";
+    }
+    if (!document.getElementById("eastPedestrianCheckbox").checked) {
+        document.getElementById("eastPedestrian").value = "0";
+    }
+    if (!document.getElementById("westPedestrianCheckbox").checked) {
+        document.getElementById("westPedestrian").value = "0";
+    }
+
     //Check if there are any empty textboxes
     let hasEmptyTextbox = false;
 
     // Check only textboxes for empty values
     textInputs.forEach(input => {
+
+        // Validate only if the textbox isn't linked to an unchecked checkbox
         if (input.value.trim() === "") {
-            hasEmptyTextbox = true; // Found at least one empty textbox
+            hasEmptyTextbox = true; // Found an empty, required textbox
             isValid = false;
         }
     });
