@@ -14,6 +14,8 @@ function initializeJunction(config) {
     */
 
     /*** SVG Setup & Globals ***/
+    window.drawPedestrianCrossing = drawPedestrianCrossing;
+
     const svgSize = 1000;
     const svg = d3.select("#junctionCanvas")
         .attr("width", svgSize)
@@ -83,6 +85,9 @@ function initializeJunction(config) {
     }
 
     function drawPedestrianCrossing(direction, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight) {
+        console.log(`🛑 drawPedestrianCrossing() called for ${direction}`);
+        console.log(`Pedestrian Crossing Active?`, config[direction.toLowerCase() + "Arm"]?.pedestrianCrossing);
+        
         // Check if pedestrian crossing is enabled for this direction
         const armKey = direction.toLowerCase() + "Arm";
         if (!config[armKey]?.pedestrianCrossing) {
@@ -97,36 +102,48 @@ function initializeJunction(config) {
     
         let crossingX, crossingY, crossingWidth, crossingHeight;
     
+
+
+    console.log(`Positioning pedestrian crossing for ${direction}...`);
+
         // Position the crossing based on direction
         switch (direction) {
             case "North":
+                console.log("✅ Entered case for N");
                 crossingX = innerX;
                 crossingY = innerY + innerHeight - offsetFromIntersection - crossingSize;
                 crossingWidth = innerWidth;
                 crossingHeight = crossingSize;
                 break;
             case "South":
+                console.log("✅ Entered case for South");
                 crossingX = innerX;
                 crossingY = innerY + offsetFromIntersection;
                 crossingWidth = innerWidth;
                 crossingHeight = crossingSize;
                 break;
             case "East":
+                console.log("✅ Entered case for East");
                 crossingX = innerX + offsetFromIntersection;
                 crossingY = innerY;
                 crossingWidth = crossingSize;
                 crossingHeight = innerHeight;
                 break;
             case "West":
+                console.log("✅ Entered case for west");
                 crossingX = innerX + innerWidth - offsetFromIntersection - crossingSize;
                 crossingY = innerY;
                 crossingWidth = crossingSize;
                 crossingHeight = innerHeight;
                 break;
             default:
+                console.log("❌ Invalid direction:", direction);
                 return;
         }
     
+
+        console.log(` Drawing pedestrian crossing at (${crossingX}, ${crossingY}) with size ${crossingWidth}x${crossingHeight}`);
+
         // Draw the black base rectangle
         svg.append("rect")
             .attr("x", crossingX)
@@ -134,12 +151,19 @@ function initializeJunction(config) {
             .attr("width", crossingWidth)
             .attr("height", crossingHeight)
             .attr("fill", "black");
-    
-        // Determine stripe orientation: parallel to lanes
+           
+      
+            console.log(`✅ Drew black rectangle for ${direction}`); // Debug checkpoint 5
+        
+            // Determine stripe orientation: parallel to lanes
         const isHorizontal = (direction === "North" || direction === "South");
         const stripeDimension = isHorizontal ? crossingWidth : crossingHeight;
         const stripeCount = Math.floor(stripeDimension / (stripeWidth + stripeGap));
     
+        console.log(`🔄 Drawing ${stripeCount} stripes for ${direction}`); // Debug checkpoint 6
+
+
+
         // Draw stripes parallel to the lanes
         for (let i = 0; i < stripeCount; i++) {
             if (isHorizontal) {
@@ -194,6 +218,9 @@ function initializeJunction(config) {
                     .attr("stroke-dasharray", isDashed ? "10,10" : "none");
             }
         }
+    
+        console.log(`Completed pedestrian crossing for ${direction}`); 
+    
     }
 
     function drawIntersectionLines(cx, cy, length, horizontal, doubleLine) {
@@ -385,6 +412,11 @@ function initializeJunction(config) {
             const laneCenterY = innerY + (i + 0.5) * laneWidth;
             drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
+    
+    
+        drawPedestrianCrossing("East", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+    
+    
     }
     
     window.drawApproach_South = drawApproach_South;
@@ -456,6 +488,10 @@ function initializeJunction(config) {
             const laneCenterX = innerX + (i + 0.5) * laneWidth;
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
+    
+        drawPedestrianCrossing("South", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+    
+    
     }
     
     window.drawApproach_West = drawApproach_West;
@@ -527,6 +563,9 @@ function initializeJunction(config) {
             const laneCenterY = innerY + (i + 0.5) * laneWidth;
             drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
+        
+        drawPedestrianCrossing("West", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+    
     }
 
     /*** Render Approaches ***/

@@ -1,4 +1,3 @@
-
 // list of all parmeters in each direction. 
 let layoutData = {
     "jLayoutName": "", // User enters this
@@ -252,24 +251,10 @@ function updateLaneOptions() {
 
 function redrawJunction() {
     d3.select("#junctionCanvas").selectAll("*").remove(); // Clear SVG
-    /** 
-    window.drawApproach_North(layoutData["northArm"].laneCount, "North");
-    window.drawApproach_East(layoutData["eastArm"].laneCount, "East");
-    window.drawApproach_South(layoutData["southArm"].laneCount, "South");
-    window.drawApproach_West(layoutData["westArm"].laneCount, "West");
-    */
+   
    window.initializeJunction(layoutData);
 
-   if (layoutData[currentDirection]?.pedestrianCrossing) {
-    let totalLaneCount = layoutData[currentDirection]?.laneCount || 3; // Default to 3 lanes
-    let laneWidth = 100; // Adjust based on your layout
-    let innerX = 0, innerY = 0, innerWidth = 500, innerHeight = 500; //
-
-// Call the function to draw pedestrian crossing
-drawPedestrianCrossing(currentDirection, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight);
-
-   }
-} 
+}
 
 // Call this function whenever you switch lanes
 document.getElementById("directionOptions").addEventListener("change", function () {
@@ -382,6 +367,8 @@ if (currentDirection) {
   // generate buttons for each lane
   generateLaneButtons(laneCount);
 
+
+  
   // switch to the first lane and reset UI
   currentLane = 0;
   resetDropdown();
@@ -397,6 +384,8 @@ if (currentDirection) {
         // This ensures dropdown shows default text
         document.getElementById("directionOptions").value = "";
 
+
+    redrawJunction();
 
  console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
 
