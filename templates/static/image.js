@@ -565,3 +565,4 @@ window.initializeJunction = initializeJunction;
 
 /*** Automatically Run When DOM Loads ***/
 document.addEventListener("DOMContentLoaded", initializeJunction);
+

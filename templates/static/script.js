@@ -90,10 +90,10 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
    
-
     document.getElementById("lanes").value = 3; 
     generateLaneButtons(3);
-   
+    redrawJunction();
+ 
 
 }) 
 
@@ -247,6 +247,7 @@ function updateLaneOptions() {
         }
     }
 }
+
 
 
 function redrawJunction() {
