@@ -1,7 +1,8 @@
-from __init__ import connect, createCursor
+from ..__init__ import connect, createCursor
+from ..Objects import VPHObject, ConfigurationObject
 import psycopg2
 import logging  # More flexible than print statements
-
+import json
 
 # Hard Coded Junction States
 J_NEW = 1
@@ -24,7 +25,7 @@ def insertUser(username):
         WHERE Username = (%s)
     """
     insertUserQuery = """
-        INSERT INTO users Username
+        INSERT INTO users (Username)
         VALUES (%s)
         RETURNING UID
     """
@@ -77,13 +78,16 @@ def insertUser(username):
             connection.close()  # Still need to close the connection manually
 
 
-# This shi don't work since idk how the state shi finna work
-def insertJunction(VPHObject):
+# Inserts a junction into the database using its VPHObject
+def insertJunction(vphObject):
     insertJunctionQuery = """
         INSERT INTO junctions (UID, JName, VPHObject, JStateID, CreatedAt, LastUpdatedAt)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s)
         RETURNING JID
     """
+
+    jsonString = json.dumps(vphObject.json)
+    #print(vphObject.json)
 
     connection = None
 
@@ -97,8 +101,8 @@ def insertJunction(VPHObject):
             with createCursor(connection) as cursor:
 
                 # Define data to be inserted
-                data = (VPHObject.uid, VPHObject.name, VPHObject, J_NEW,
-                        VPHObject.timestamp, VPHObject.timestamp)
+                data = (vphObject.uid, vphObject.name, jsonString, J_NEW,
+                        vphObject.timestamp, vphObject.timestamp)
 
                 cursor.execute(insertJunctionQuery, data)
 
@@ -287,86 +291,6 @@ def insertJunctionLayoutState(jlState):
         return None
     except psycopg2.DatabaseError as error:
         logging.error(f"General database error in insertJunctionLayoutState: {error}")
-        return None
-    finally:
-        if connection is not None:
-            connection.close()  # Still need to close the connection manually
-
-
-def checkJState(jid):
-    # Natural Joins are considered an anti-pattern
-    # as they go against the modularity rule
-    # https://stackoverflow.com/questions/6039719/is-natural-join-considered-harmful-in-production-environment
-    checkJStateQuery = """
-        SELECT st.JStateName, st.JStateDescription
-        FROM junctions AS j
-        INNER JOIN junction_states AS st
-        ON j.JStateID = st.JStateID
-        WHERE j.JID = %s;
-    """
-
-    connection = None
-
-    try:
-        connection = connect()
-        with connection:
-
-            with createCursor(connection) as cursor:
-
-                cursor.execute(checkJStateQuery, (jid,))
-                jState_tuple = cursor.fetchone()
-                if jState_tuple is not None:
-
-                    jStateName, jStateDescription = jState_tuple
-                    logging.info(f"Current Junction State: {jStateDescription}")
-                    return (jStateName, jStateDescription)
-
-                # The jStateID cannot be found for that particular state
-                return None
-
-    except psycopg2.OperationalError as error:
-        logging.error(f"Database operational error in checkJState: {error}")
-        return None
-    except psycopg2.DatabaseError as error:
-        logging.error(f"General database error in checkJState: {error}")
-        return None
-    finally:
-        if connection is not None:
-            connection.close()  # Still need to close the connection manually
-
-
-def getSimulationResults(jid):
-    getSimulationResultsQuery = """
-        SELECT sr.ResultsObject
-        FROM junctions AS j
-        INNER JOIN junction_layouts AS jl ON j.JID = jl.JID
-        INNER JOIN simulation_results AS sr ON jl.JLID = sr.JLID
-        WHERE j.JID = %s
-    """
-    connection = None
-
-    try:
-        connection = connect()
-
-        with connection:
-
-            # A cursor lets us perform queries
-            with createCursor(connection) as cursor:
-
-                cursor.execute(getSimulationResultsQuery, (jid,))
-                results_tuple_list = cursor.fetchall()
-                if results_tuple_list is not None:
-                    # Do stuff regarding the resultsObjects
-                    return None
-
-                # The jStateID cannot be found for that particular state
-                return None
-
-    except psycopg2.OperationalError as error:
-        logging.error(f"Database operational error in getSimulationResults(jid): {error}")
-        return None
-    except psycopg2.DatabaseError as error:
-        logging.error(f"General database error in getSimulationResults(jid): {error}")
         return None
     finally:
         if connection is not None:
