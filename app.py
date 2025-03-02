@@ -1,12 +1,34 @@
-from flask import Flask, render_template, request, jsonify 
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__) 
 
+# Route for the login page, which will be the start page. Note that dropping the methods parameter means only GET requests will be read, by default
+@app.route("/")
+def login():
+    # Displays the login page at the specified url, i.e /
+    return render_template("LoginPage.html")   
 
-# Route for the home page (renders the form)
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("CreateNewSet.html")  # Displays the create new set form page at the specified url
+# Route to the junction set design page from the home page
+@app.route("/setform")
+def setForm():
+    # Displays the junction set design page at the specified url, i.e setform
+    return render_template("CreateNewSet.html")
+
+# Route to get back to the home page from the junction set creation page
+@app.route("/home")
+def setFormToHome():
+    # Displays the home page at the url /home
+    return render_template("HomePage.html")
+
+
+# Route to handle login. Takes user to the home page
+@app.route("/home", methods=["POST"])
+def loginToHome():
+    # Get the username provided by the user
+    username = request.form.get("username")
+    print(username)
+    # Displays the create new set form page at the specified url
+    return render_template("HomePage.html")  
 
 
 @app.route('/save_junction', methods=['POST']) # The endpoint matches the figma button. This is when the user has finished designing their junction and wants to create a new one. 
