@@ -242,7 +242,7 @@ function updateLaneOptions() {
         specialOptions.forEach(option => option.hidden = true);
 
         // If a hidden option was previously selected, reset the dropdown
-        if (["bus", "cycle"].includes(dropdown.value)) {
+        if (["busLane", "cycleLane"].includes(dropdown.value)) {
             dropdown.value = "";
         }
     }
@@ -266,6 +266,10 @@ document.getElementById("directionOptions").addEventListener("change", function 
     layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
 
     console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+
+    //redraw juction to show the changes
+    redrawJunction();
+
 });
 
 
