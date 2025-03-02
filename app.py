@@ -2,50 +2,11 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__) 
 
-<<<<<<< HEAD
-
-@app.route('/static/image.js')
-def serve_static(filename):
-    return send_from_directory(app.static_folder, image.js)
-
-@app.route('/static/script.js')
-def serve_static(filename):
-    return send_from_directory(app.static_folder, script.js)
-
 
 # Route for the home page (renders the form)
 @app.route("/", methods=["GET"])
 def home():
     return render_template("CreateNewSet.html")  # Displays the create new set form page at the specified url
-=======
-# Route for the login page, which will be the start page. Note that dropping the methods parameter means only GET requests will be read, by default
-@app.route("/")
-def login():
-    # Displays the login page at the specified url, i.e /
-    return render_template("LoginPage.html")   
-
-# Route to the junction set design page from the home page
-@app.route("/setform")
-def setForm():
-    # Displays the junction set design page at the specified url, i.e setform
-    return render_template("CreateNewSet.html")
-
-# Route to get back to the home page from the junction set creation page
-@app.route("/home")
-def setFormToHome():
-    # Displays the home page at the url /home
-    return render_template("HomePage.html")
-
-
-# Route to handle login. Takes user to the home page
-@app.route("/home", methods=["POST"])
-def loginToHome():
-    # Get the username provided by the user
-    username = request.form.get("username")
-    print(username)
-    # Displays the create new set form page at the specified url
-    return render_template("HomePage.html")  
->>>>>>> f9a35477c1608e8987fc9e4da5b67397af55b2d0
 
 
 @app.route('/save_junction', methods=['POST']) # The endpoint matches the figma button. This is when the user has finished designing their junction and wants to create a new one. 
@@ -61,8 +22,6 @@ def junctionForm():
     # Get the form data
     junctionSetName = request.form.get("junctionSetName")
     northVehiclesIn = request.form.get("northVehiclesIn")
-<<<<<<< HEAD
-=======
     # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
     northPedestrian = request.form.get("northPedestrian")
     southPedestrian = request.form.get("southPedestrian")
@@ -115,7 +74,6 @@ def junctionForm():
     print(maximumWaitPriority)
 
     
->>>>>>> f9a35477c1608e8987fc9e4da5b67397af55b2d0
     return render_template("LayoutDesignPage.html")
 
 if __name__ == "__main__":
