@@ -87,21 +87,15 @@ AS $$
         SELECT NOT EXISTS (
             SELECT 1
             FROM junction_layout AS jl
-            JOIN junction_layout_states AS jls ON jl.JLStateID = jls.JLStateID
             WHERE jl.JID = junction_id
-            AND jls.JLStateName <> 'Finished'
-        ) INTO all_finished;
+            AND jl.JLStateID <> 3
+        ) INTO all_finished; -- all_finished will be true if all junction layouts have state 'Finished'
 
-        -- If all layouts are finished, update the junction_states table to reflect that
+        -- If all layouts are finished, update the junction's state to reflect that
         IF all_finished THEN
-            UPDATE junction_states
-            SET JStateName = 'Finished',
-                JStateDescription = 'All layouts for this junction have finished simulating'
-            WHERE JStateID = (
-                SELECT JStateID
-                FROM junctions
-                WHERE JID = junction_id
-            );
+            UPDATE junctions
+            SET JStateID = 4
+            WHERE JID = junctions_id;
         END IF;
 
         RETURN NEW;

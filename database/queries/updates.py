@@ -14,3 +14,106 @@ L_IN_PROGRESS = 2
 L_FINISHED = 3
 L_SIMULATION_ERROR = 4
 L_SCORE_CALCULATION_ERROR = 5
+
+
+def updateJState(jid, st):
+    return updateState(id=jid, isJunction=True, state=st)
+
+
+def updateJLState(jlid, st):
+    return updateState(id=jlid, isJunction=False, state=st)
+
+
+# def updateJState(jid, stateID):
+#     updateJStateQuery = """
+#         UPDATE junctions
+#         SET JStateID = (%s)
+#         WHERE JID = (%s)
+#     """
+#     data = (stateID, jid)
+
+#     connection = None
+#     try:
+#         connection = connect()  # Connect to the database
+
+#         # Use context manager to ensure the connection is committed or rolled back safely
+#         with connection:
+
+#             with createCursor() as cursor:
+
+#                 cursor.execute(updateJState, data)
+#                 rows_affected = cursor.rowcount
+
+#                 # If the query executes successfully, only one row should change since JID is the primary key
+#                 if rows_affected == 1:
+#                     logging.info(f"The JStateID for junction {jid}, was successfully changed to {stateID}")
+#                     return True
+
+#                 logging.info(f"The JStateID for junction {jid}, failed to change")
+#                 return False
+
+#     # Error handling
+#     except psycopg2.OperationalError as error:
+#         logging.error(f"Database operational error in checkJState on jid: {jid}: {error}")
+#         return None
+#     except psycopg2.DatabaseError as error:
+#         logging.error(f"General database error in checkJState on jid: {jid}: {error}")
+#         return None
+#     finally:
+#         if connection is not None:
+#             connection.close()  # Connection still needs to be closed manually
+
+
+def updateState(id, isJunction, stateID):
+    updateJStateQuery = """
+        UPDATE junctions
+        SET JStateID = (%s)
+        WHERE JID = (%s)
+    """
+
+    updateJLStateQuery = """
+        UPDATE junction_layouts
+        SET JLStateID = (%s)
+        WHERE JLID = (%s)
+    """
+   
+    data = (stateID, id)
+
+    # Select arguments based on whether a junction or junction layout is being updated
+    if isJunction:
+        query = updateJStateQuery
+        subject = "Junction"
+    else:
+        query = updateJLStateQuery
+        subject = "Layout"
+
+    connection = None
+    try:
+        connection = connect()  # Connect to the database
+
+        # Use context manager to ensure the connection is committed or rolled back safely
+        with connection:
+
+            with createCursor(connection) as cursor:
+
+                cursor.execute(query, data)
+                rows_affected = cursor.rowcount
+
+                # If the query executes successfully, only one row should change since JID/JLID are primary keys
+                if rows_affected == 1:
+                    logging.info(f"The StateID for {subject}: {id}, was successfully changed to {stateID}")
+                    return True
+
+                logging.error(f"The StateID for {subject}: {id}, failed to change to {stateID}")
+                return False
+
+    # Error handling
+    except psycopg2.OperationalError as error:
+        logging.error(f"Database operational error in updateState on {subject}: {id}: {error}")
+        return None
+    except psycopg2.DatabaseError as error:
+        logging.error(f"General database error in updateState on {subject}: {id}: {error}")
+        return None
+    finally:
+        if connection is not None:
+            connection.close()  # Connection still needs to be closed manually

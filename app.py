@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify, session
-from database import initialiseDatabase, insertUser, insertJunction
-from database.Objects import VPHObject, ConfigurationObject
+import database
+from database.Objects import VPHObject, LayoutObject
 import logging
 from datetime import datetime, timezone
+import json
 from os import urandom
 
 app = Flask(__name__)
@@ -32,7 +33,7 @@ def setFormToHome():
 def loginToHome():
     # Get the username provided by the user
     username = request.form.get("username")
-    uid = insertUser(username)
+    uid = database.insertUser(username)
     if uid is None:
         return jsonify({"error": f"Unable to generate a uid for the username {username}"}), 500
 
@@ -42,11 +43,53 @@ def loginToHome():
     return render_template("HomePage.html")  
 
 
-@app.route('/save_junction', methods=['POST']) # The endpoint matches the figma button. This is when the user has finished designing their junction and wants to create a new one. 
+@app.route('/save_junction', methods=['Get', 'POST']) # The endpoint matches the figma button. This is when the user has finished designing their junction and wants to create a new one. 
 def save_junction(): 
-    data = request.get_json() # get JSON from frontend 
-    print("Recieved JSON:", data) # print statement  because idk what to do with the data for now. mb connect to the database?? 
-    return jsonify({"message": "Data received!", "data" : data}) #send back a responce so that i know that backend and front end can talk to eachother. 
+    # data = request.get_json() # get JSON from frontend 
+    # print("Recieved JSON:", data) # print statement  because idk what to do with the data for now. mb connect to the database?? 
+    # return jsonify({"message": "Data received!", "data" : data}) #send back a responce so that i know that backend and front end can talk to eachother.
+    
+    # Get the JSON from the frontend and create it's database Object representation
+    data = request.get_json()
+    
+    jid = session.get("jid")
+    data["junctionID"] = jid
+    print(json.dumps(obj=data, indent=4))
+    confObject = LayoutObject(json=data)
+
+    # If the confObject contains all necessary information, insert it into the database
+    if confObject.populateFields():
+        jlid = database.insertLayout(confObject)
+
+        # jlid will be the id of the newly inserted junction layout if the query executes successfully
+        if jlid is not None:
+            logging.info(f"Layout for junction: {jid} inserted with jlid: jlid")
+
+            # Store the currently desgined layouts in the session for later use
+            if session.get("jlids") is None:
+
+                # If this is the first configuration made in the session, it is the first configuration
+                # made for that junction so it's JStateID should be set to "Not Started" instead of "New"
+                session["jlids"] = [jlid]
+                changed = database.updateState(id=jid, isJunction=True, stateID=2)  # JState 2 = NOT_STARTED
+                if not changed:
+                    logging.warning(f"Junction with jid: {jid} failed to update it's state to 'Not Started'")
+            else:
+                session["jlids"].append(jlid)
+                jlids = session["jlids"]
+                logging.info(f"The jlids in the session are now: {jlids}")
+
+                # The user will be allowed to create up to 4 layouts for the same junction
+                # Once four have been created, start simulating them
+                if len(jlids) == 4:
+                    logging.info(f"The user has now submitted 4 layouts for junction: {jid}")
+            return render_template("LayoutDesignPage.html")
+        
+        else:
+            logging.info(f"jlid = {jlid}")
+            return jsonify({"error": f"Layout insertion for junction: {jid} failed"}), 500
+    else:
+        return jsonify({"error": "LayoutObject is missing some key details"}), 400
 
 
 # Route to handle the form submission (POST request)
@@ -55,43 +98,44 @@ def junctionForm():
     # # Get the form data
     # junctionSetName = request.form.get("junctionSetName")
     # northVehiclesIn = request.form.get("northVehiclesIn")
-    # # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
-    # northPedestrian = request.form.get("northPedestrian")
-    # southPedestrian = request.form.get("southPedestrian")
-    # eastPedestrian = request.form.get("eastPedestrian")
-    # westPedestrian = request.form.get("westPedestrian")
-    # # Gets the duration of the pedestrian crossings in seconds
+
+    # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
+    northPedestrian = request.form.get("northPedestrian")
+    southPedestrian = request.form.get("southPedestrian")
+    eastPedestrian = request.form.get("eastPedestrian")
+    westPedestrian = request.form.get("westPedestrian")
+    # Gets the duration of the pedestrian crossings in seconds
     # crossingDuration = request.form.get("crossingDuration")
 
-    # if northPedestrian is None:
-    #     northPedestrian = 0
+    if northPedestrian is None:
+        northPedestrian = 0
 
-    # if southPedestrian is None:
-    #     southPedestrian = 0
+    if southPedestrian is None:
+        southPedestrian = 0
 
-    # if eastPedestrian is None:
-    #     eastPedestrian = 0
+    if eastPedestrian is None:
+        eastPedestrian = 0
 
-    # if westPedestrian is None:
-    #     westPedestrian = 0
+    if westPedestrian is None:
+        westPedestrian = 0
 
-    # # Finds how many pedestrians are coming from each direction, and if there is no crossing, then we will set the number to -1 to differentiate between cases where we have 0 pedestrians. If a checkbox is unchecked, then the corresponding request frequency textbox will have a None value in Flask 
-    # northRequestFrequency = request.form.get("northRequestFrequency")
-    # southRequestFrequency = request.form.get("southRequestFrequency")
-    # eastRequestFrequency = request.form.get("eastRequestFrequency")
-    # westRequestFrequency = request.form.get("westRequestFrequency")
+    # Finds how many pedestrians are coming from each direction, and if there is no crossing, then we will set the number to -1 to differentiate between cases where we have 0 pedestrians. If a checkbox is unchecked, then the corresponding request frequency textbox will have a None value in Flask 
+    northRequestFrequency = request.form.get("northRequestFrequency")
+    southRequestFrequency = request.form.get("southRequestFrequency")
+    eastRequestFrequency = request.form.get("eastRequestFrequency")
+    westRequestFrequency = request.form.get("westRequestFrequency")
 
-    # if northPedestrian == 0:
-    #     northRequestFrequency = -1
+    if northPedestrian == 0:
+        northRequestFrequency = -1
     
-    # if southPedestrian == 0:
-    #     southRequestFrequency = -1
+    if southPedestrian == 0:
+        southRequestFrequency = -1
 
-    # if eastPedestrian == 0:
-    #     eastRequestFrequency = -1
+    if eastPedestrian == 0:
+        eastRequestFrequency = -1
 
-    # if westPedestrian == 0:
-    #     westRequestFrequency = -1
+    if westPedestrian == 0:
+        westRequestFrequency = -1
 
     # print(northRequestFrequency)
     # print(southRequestFrequency)
@@ -106,7 +150,7 @@ def junctionForm():
     # print(maximumQueuePriority)
     # print(maximumWaitPriority)
 
-    # Extract all of the form data into a dictionary
+    # Extract all of the form data into a dictionary representating a predefined JSON Structure
     form_data = {
         "JName": request.form.get("junctionSetName"),
         "priorities": {
@@ -175,16 +219,16 @@ def junctionForm():
         "pedestrianData": {
             "crossingDuration": request.form.get("crossingDuration"),
             "hasCrossing": {
-                "north": request.form.get("northPedestrian"),
-                "east": request.form.get("eastPedestrian"),
-                "south": request.form.get("southPedestrian"),
-                "west": request.form.get("westPedestrian"),
+                "north": northPedestrian,
+                "east": eastPedestrian,
+                "south": southPedestrian,
+                "west": westPedestrian,
             },
             "rph": {
-                "north": request.form.get("northRequestFrequency"),
-                "east": request.form.get("eastRequestFrequency"),
-                "south": request.form.get("southRequestFrequency"),
-                "west": request.form.get("westRequestFrequency")
+                "north": northRequestFrequency,
+                "east": eastRequestFrequency,
+                "south": southRequestFrequency,
+                "west": westRequestFrequency
             }
         }
     }
@@ -201,24 +245,35 @@ def junctionForm():
 
     # If the VPHObject contains the necessary information, insert it into the database
     if success:
-        # Converts the dictionary to a JSON string, indent for readibility
-        # json_data = json.dumps(vphObject.json, indent=4)
-        # print(json_data)
-        jid = insertJunction(vphObject)
+
+        jid = database.insertJunction(vphObject)
         if jid is not None:
-            session["jid"] = jid
-            return jsonify({
-                "jid": jid,
-                "message": "Junction Ready"
-            }), 201
+
+            session["jid"] = jid  # Store jid into the session for easy access
+            logging.info(f"Junction with json {json.dumps(vphObject.json, indent=4)} inserted with jid {jid}")
+            return render_template("LayoutDesignPage.html")
+
         else:
             return jsonify({"error": "Junction insertion failed"}), 500
     else:
         return jsonify({"error": "VPHObject is missing some key details"}), 400
 
-    #return render_template("LayoutDesignPage.html")
+
+def simulateJunction():
+
+    jlids = session.get("jlids")
+    jid = session.get("jid")
+    if jid is None:
+        return jsonify({"error": "Jid not found"}), 500
+    if jlids is None:
+        return jsonify({"error": "Jlids not found"})
+
+    # If there are configured layouts for this sessoin, simulate them
+    for jlid in jlids:
+        # simulate(jid, jlid)
+        print("Hmm")
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-    initialiseDatabase()
+    database.initialiseDatabase()

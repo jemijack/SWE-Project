@@ -1,5 +1,5 @@
 from ..__init__ import connect, createCursor
-from ..Objects import VPHObject, ConfigurationObject
+from ..Objects import VPHObject, LayoutObject
 import psycopg2
 import logging  # More flexible than print statements
 import json
@@ -86,8 +86,8 @@ def insertJunction(vphObject):
         RETURNING JID
     """
 
+    # Psycopg2 isn't able to adapt the field as it is, so it is turned into a string first
     jsonString = json.dumps(vphObject.json)
-    #print(vphObject.json)
 
     connection = None
 
@@ -128,15 +128,18 @@ def insertJunction(vphObject):
             connection.close()  # Still need to close the connection manually
 
 
+# Insert a junction layout into the database using its LayoutObject
 def insertLayout(layoutObject):
     insertLayoutQuery = """
-        INSERT INTO junction_layouts (JID, ConfigurationObject, JLStateID, CreatedAt, LastUpdatedAt)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO junction_layouts (JID, JLName, ConfigurationObject, JLStateID, CreatedAt, LastUpdatedAt)
+        VALUES (%s, %s, %s, %s, %s, %s)
         RETURNING JLID
     """
 
+    # Psycopg2 isn't able to adapt the field as it is, so it is turned into a string first
+    jsonString = json.dumps(layoutObject.json)
     # Define data to be inserted
-    data = (layoutObject.jid, layoutObject, L_NOT_STARTED,
+    data = (layoutObject.jid, layoutObject.name, jsonString, L_NOT_STARTED,
             layoutObject.timestamp, layoutObject.timestamp)
 
     connection = None
@@ -158,10 +161,12 @@ def insertLayout(layoutObject):
                     jlid = jlid_tuple[0]
                     logging.info(f"New junction layout inserted with jlid: {jlid}")
                     return jlid
+
                 else:
                     logging.warning("No junction layout id returned.")
                     return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in insertLayout: {error}")
         return None

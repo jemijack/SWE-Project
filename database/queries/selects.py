@@ -18,13 +18,17 @@ def checkJState(jid):
     connection = None
 
     try:
-        connection = connect()
+        connection = connect() # Connect to the database
+
+        # Use context manager to ensure the connection is committed or rolled back safely
         with connection:
 
             with createCursor(connection) as cursor:
 
-                cursor.execute(checkJStateQuery, (jid,))
-                jState_tuple = cursor.fetchone()
+                cursor.execute(checkJStateQuery, (jid,)) # Execute the query
+                jState_tuple = cursor.fetchone() 
+
+                # If the query is successful, jState_tuple will be a 3-tuple
                 if jState_tuple is not None:
 
                     jStateID, jStateName, jStateDescription = jState_tuple
@@ -34,6 +38,7 @@ def checkJState(jid):
                 # The jStateID cannot be found for that particular state
                 return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in checkJState on jid: {jid}: {error}")
         return None
@@ -55,15 +60,16 @@ def getSimulationResults(jlid):
     connection = None
 
     try:
-        connection = connect()
+        connection = connect() # Connect to the database
 
+        # Use context manager to ensure the connection is committed or rolled back safely
         with connection:
 
-            # A cursor lets us perform queries
             with createCursor(connection) as cursor:
 
                 cursor.execute(getSimulationResultsQuery, (jlid,))
                 results_tuple = cursor.fetchone()
+                # If the query executes successfully, results_tuple will be a 1-tuple
                 if results_tuple is not None:
                     # Do stuff regarding the resultsObjects
                     return results_tuple[0]
@@ -71,6 +77,7 @@ def getSimulationResults(jlid):
                 # The jlid cannot be found for that particular state
                 return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in getSimulationResults for jlid: {jlid}: {error}")
         return None
@@ -79,4 +86,4 @@ def getSimulationResults(jlid):
         return None
     finally:
         if connection is not None:
-            connection.close()  # Still need to close the connection manually
+            connection.close()  # Connection still needs to be closed manually

@@ -33,27 +33,29 @@ class VPHObject:
             # of. Since the self.timestamp now contains the field, it
             # should be fine to turn into a string now
             self.json["timestamp"] = self.json["timestamp"].isoformat()
-            
+
         if errOccur:
-            logging.warning("Warning:" + errString)
+            logging.error("Error: " + errString)
             return False
         logging.info(f"Name = {self.name}, UID = {self.uid}, timestamp = {self.timestamp}")
         return True
 
 
 @dataclass
-class ConfigurationObject:
+class LayoutObject:
     name: Optional[str] = None
     timestamp: Optional[str] = None
     uid: Optional[int] = None
     jid: Optional[int] = None
+    jlname: Optional[str] = None
     json: Optional[dict] = None
 
     def populateFields(self):
-        self.name = self.json["configurationName"]
-        self.uid = self.json["uid"]
+        self.name = self.json["jLayoutName"]
+        self.uid = self.json["userId"]
         self.timestamp = self.json["timestamp"]
-        self.jid = self.json["jid"]
+        self.jid = self.json["junctionID"]
+        self.jlname = self.json["jLayoutName"]
         errOccur = False
         errString = ""
         if self.name is None:
@@ -65,18 +67,15 @@ class ConfigurationObject:
         if self.timestamp is None:
             errString += "Timestamp is None,"
             errOccur = True
-        else:
-            # Since psycopg2 can't convert a dictionary to a psql JSONB if
-            # it contains a datetime valuie, which json["timestamp"] is
-            # of. Since the self.timestamp now contains the field, it
-            # should be fine to turn into a string now
-            self.json["timestamp"] = self.json["timestamp"].isoformat()
+        # else:
+        #     # So that pyscopg2 can convert the json to a psql JSONB
+        #     self.json["timestamp"] = self.json["timestamp"].isoformat()
 
         if self.jid is None:
             errString += "Jid is None"
             errOccur = True
         if errOccur:
-            logging.warning("Error:" + errOccur)
+            logging.error("Error: " + errString)
             return False
         return True
 

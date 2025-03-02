@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +12,8 @@
 
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="static/image.js" defer></script> 
-<script src="static/script.js" defer></script>
+<script src="{{ url_for('static', filename='image.js') }}" defer></script> 
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
 <svg id="junctionCanvas"></svg>
 
 <!-- Fixed Side Bar Menu -->
@@ -53,8 +54,8 @@
     <div id="laneSettings">
         <select id="directionOptions">
             <option value="">Select Lane Type</option>
-            <option value="bus" class="special">Bus Lane</option>
-            <option value="cycle" class="special">Cycle Lane</option>
+            <option value="busLane" class="special">Bus Lane</option>
+            <option value="cycleLane" class="special">Cycle Lane</option>
             <option value="leftOnly">Dedicated Left Lane</option>
             <option value="rightOnly">Dedicated Right Lane</option>
             <option value="straightOnly">Straight Only</option>
@@ -78,12 +79,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-

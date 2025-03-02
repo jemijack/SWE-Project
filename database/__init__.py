@@ -43,7 +43,7 @@ def executeSqlFile(filename):
     # Resolve the file path to make the code more robust
     script_dir = Path(__file__).resolve().parent
     filePath = script_dir / filename
-    print(filePath)
+    #print(filePath)
 
     connection = None
     try:
@@ -55,7 +55,7 @@ def executeSqlFile(filename):
                 with open(filePath, 'r') as file:
                     sql_commands = file.read()
                     cursor.execute(sql_commands)
-                    logging.info(f"Succesfully executed sql file: {filePath}")
+                    logging.info(f"Succesfully executed sql file: {filename}")
 
     except psycopg2.OperationalError as error:
         logging.error(f"Operational error during cursor creation: {error}")
@@ -71,4 +71,6 @@ def initialiseDatabase():
     # because it enables version history to be tracked better, doesn't
     # clutter the python code (making debugging easier) and promotes
     # modularity as this python file can remain focused on application logic
+    logging.info("Initialising the database...")
     executeSqlFile("schema.sql")
+    logging.info("Database successfully initialised")
