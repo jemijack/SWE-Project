@@ -1,7 +1,7 @@
-from selects import getVphObject, getName, getSimulationResults
+from .selects import getVphObject, getName, getSimulationResults
 
 
-def comparisonPageResultsObject(jid):
+def getComparisonPageResultsObject(jid):
 
     results = {}  # Initialise the dictionary to be returned
 

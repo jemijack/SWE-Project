@@ -292,12 +292,8 @@ def comparison_page():
         return jsonify({"error": "Not implemented yet"}), 404
 
     # The comparison page takes two newly formatted JSONs
-    junctionlayouts = database.getLayoutObjects(jid)
-
-    # Second JSON - results
-    junctionResults = database.getSimulationResults(jid)
-    junctionScoreWeights = database.getScoreWeights(jid)
-    results = {}
+    resultsObj = database.getComparisonPageResultsObject(jid)
+    configsObj = database.getLayoutObjects(jid)
 
 
 @app.route("/compare_new_kunctoin")

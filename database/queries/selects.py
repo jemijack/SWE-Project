@@ -59,7 +59,7 @@ def checkJState(jid):
     connection = None
 
     try:
-        connection = connect() # Connect to the database
+        connection = connect()  # Connect to the database
 
         # Use context manager to ensure the connection is committed or rolled back safely
         with connection:
@@ -191,6 +191,7 @@ def getSimulationResults(jid):
             connection.close()  # Connection still needs to be closed manually
 
 
+# Gets all of the layoutsObjects for a particular jid
 def getLayoutObjects(jid):
     getLayoutsObjectsQuery = """
         SELECT JLID, ConfigurationObject
