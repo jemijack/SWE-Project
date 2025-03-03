@@ -2,21 +2,6 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__) 
 
-<<<<<<< HEAD
-
-@app.route('/static/script.js')
-def serve_static(filename):
-    return send_from_directory(app.static_folder, script.js)
-
-
-# Route for the home page (renders the form)
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("CreateNewSet.html")  # Displays the create new set form page at the specified url
-
-
-=======
->>>>>>> ff8dbe6c35fa71ef737fb625c5093fd1f8be6d99
 # Route for the login page, which will be the start page. Note that dropping the methods parameter means only GET requests will be read, by default
 @app.route("/")
 def login():
@@ -59,10 +44,6 @@ def junctionForm():
     # Get the form data
     junctionSetName = request.form.get("junctionSetName")
     northVehiclesIn = request.form.get("northVehiclesIn")
-<<<<<<< HEAD
-
-=======
->>>>>>> ff8dbe6c35fa71ef737fb625c5093fd1f8be6d99
     # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
     northPedestrian = request.form.get("northPedestrian")
     southPedestrian = request.form.get("southPedestrian")
