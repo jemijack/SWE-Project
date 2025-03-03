@@ -54,13 +54,15 @@ let currentLane = 0;
 function updateJunctionName() {
     let nameInput = document.getElementById("junctionName").value.trim(); 
 
+    // Check for empty input
+    if (nameInput !== "") {
      // validation just allow numbers, letters and spaces
      if (!/^[a-zA-Z0-9\s]+$/.test(nameInput)) {
-        alert("Junction name can only contain letters, numbers, and spaces.");
+        alert(" Junction name can only contain letters, numbers, and spaces.");
         document.getElementById("junctionName").value = layoutData["jLayoutName"]; // Revert to previous valid name
         return;
     }
-
+} 
     // Save the junction name
     layoutData["jLayoutName"] = nameInput;
 
@@ -219,12 +221,7 @@ function validateDirectionSettings(direction){
     let laneDetail = layoutData[direction].laneDetail;
     let laneKeys = Object.keys(laneDetail); 
     
-    // Ensure that if there's only one lane, it must be "anyDirs"
-    if (laneKeys.length === 1 && laneDetail["lane1"] !== "anyDirs") {
-        alert("If there is only one lane, it must allow any direction.");
-        return false;
-    }
-
+   
     return true;
 }
 
@@ -298,7 +295,7 @@ function switchLane(laneIndex){
   
   //  switch to the new lane
   currentLane = laneIndex;
- 
+  
   // ensure the new lane exists in data structure
   if (!layoutData[currentDirection].laneDetail[laneKey]) {
       layoutData[currentDirection].laneDetail[laneKey] = "";
@@ -309,13 +306,14 @@ function switchLane(laneIndex){
 
   //  Reset UI before loading new data
   resetDropdown();
+
   
   // Load the new lane's data
   let newLaneData = layoutData[currentDirection].laneDetail[laneKey];
   
-  //  Update the dropdown with the lane's stored value (or empty if none)
-  document.getElementById("directionOptions").value = newLaneData || "";
-  
+  //  Update the dropdown with the lane's stored value 
+  document.getElementById("directionOptions").value = newLaneData 
+
   console.log(`Switched to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);   
 
 }
@@ -397,8 +395,14 @@ if (currentDirection) {
  }
  
 }
-
 function submitData() { // refactor after switchDirection is done
+
+    // Check if junction name is empty
+    if (!layoutData["jLayoutName"] || layoutData["jLayoutName"].trim() === "") {
+        alert("Junction name cannot be empty. Please enter a valid name before submitting.");
+        return; 
+    }
+
 
     // save the current lanes's slection before submitting
     if (currentDirection && currentLane !== null) {
@@ -411,6 +415,26 @@ function submitData() { // refactor after switchDirection is done
     if (currentDirection !== null) {
         layoutData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian")?.checked || false;
     }
+
+ // Validate all lanes in all directions
+ const directions = ["northArm", "eastArm", "southArm", "westArm"];
+    
+ for (const direction of directions) {
+     const laneDetail = layoutData[direction].laneDetail;
+     
+     for (const laneKey in laneDetail) {
+         if (laneDetail[laneKey] === "") {
+             alert(`Please select a lane type for ${laneKey} in ${direction.replace("Arm", "")}.`);
+             
+             // Switch to the problematic direction and lane
+             const directionName = direction.replace("Arm", "");
+             switchDirection(directionName.charAt(0).toUpperCase() + directionName.slice(1));
+             switchLane(parseInt(laneKey.replace("lane", "")) - 1);
+             
+             return; // Prevent submission
+         }
+     }
+ }
 
     // Debugging
     console.log("Sent data:", layoutData);
