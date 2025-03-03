@@ -292,7 +292,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(180, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href",`static/utils/${icon}`   )
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -304,7 +304,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -388,7 +388,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(270, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/utils/${icon}` )
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -400,7 +400,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -485,7 +485,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(0, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/utils/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -497,7 +497,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -583,7 +583,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(90, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/utils/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -595,7 +595,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/utils/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)

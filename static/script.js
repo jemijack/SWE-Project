@@ -80,18 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // This loads the 3 lanes buttons on first load. 
 document.addEventListener("DOMContentLoaded", function(){
-    
-    layoutData = 
-             {
-        "jLayoutName": "layout1",
-        "timestamp": "2025-02-13T12:00:00Z",
-        "userId": "11",
-        "junctionID": "56",
-        "northArm": { "laneCount": 3, "laneDetail": {},"pedestrianCrossing": false },
-        "eastArm": { "laneCount": 3, "laneDetail": {}, "pedestrianCrossing": false },
-        "southArm": { "laneCount": 3, "laneDetail": {}, "pedestrianCrossing": false },
-        "westArm": { "laneCount": 3, "laneDetail": {}, "pedestrianCrossing": false }
-    };
    
    
      // Ensure North has at least 3 lanes becuase its the first direction that loads and therefore it itrs not covered by the switchLane function
@@ -170,43 +158,6 @@ document.getElementById("pedestrian").addEventListener("change", function() {
     redrawJunction();
 
 });
-
-
-// TODo: tHESE VARIABLES Need to be fixed. 
-document.getElementById("directionOptions").addEventListener("input", function () {
-    let selectedLaneType = this.value;  // e.g., "busLane", "cycleLane", or other lane types
-    let laneKey = currentLane;          // currentLane should be set elsewhere (e.g., "lane1", "lane2", etc.)
-    let directionKey = currentDirection; // currentDirection should also be defined globally
-
-    console.log("T1"); 
-    // Ensure the layout data for the current direction exists
-    if (!layoutData[directionKey]) {
-        layoutData[directionKey] = { laneCount: 3, pedestrianCrossing: false, laneDetail: {} };
-    }
-    // Ensure laneDetail exists
-    if (!layoutData[directionKey].laneDetail) {
-        layoutData[directionKey].laneDetail = {};
-    }
-
-    console.log("T2"); 
-
-    // Validation: Only lane1 can be set to busLane or cycleLane
-    if ((selectedLaneType === "busLane" || selectedLaneType === "cycleLane") && laneKey !== "lane1") {
-        alert("Only lane1 can be configured as a busLane or cycleLane. Please choose a different lane type.");
-        // Reset the selection
-        this.value = "";
-        layoutData[directionKey].laneDetail[laneKey] = "";
-    } else {
-        // Update laneDetail with the chosen lane type
-        layoutData[directionKey].laneDetail[laneKey] = selectedLaneType;
-    }
-
-    console.log("T3");
-
-    // Optionally re-render the junction to reflect changes
-    redrawJunction(layoutData);
-});
-
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -291,11 +242,12 @@ function updateLaneOptions() {
         specialOptions.forEach(option => option.hidden = true);
 
         // If a hidden option was previously selected, reset the dropdown
-        if (["bus", "cycle"].includes(dropdown.value)) {
+        if (["busLane", "cycleLane"].includes(dropdown.value)) {
             dropdown.value = "";
         }
     }
 }
+
 
 
 function redrawJunction() {
@@ -314,6 +266,10 @@ document.getElementById("directionOptions").addEventListener("change", function 
     layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
 
     console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+
+    //redraw juction to show the changes
+    redrawJunction();
+
 });
 
 
@@ -365,7 +321,7 @@ function switchLane(laneIndex){
 }
 
 // switches between different junction direction (N,E,S,W) and loads their settings into form
-function switchDirection(direction) {
+ function switchDirection(direction) {
 
     let directionKey = direction.toLowerCase() + "Arm"; 
        
