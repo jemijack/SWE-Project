@@ -191,84 +191,6 @@ def getSimulationResults(jid):
             connection.close()  # Connection still needs to be closed manually
 
 
-# Reshapes a list of simulationResults so that they're in the format required for the comparison page
-def reshapeSimulationResults(simulationResults):
-    reshapedResults = {}  # Stores the reshaped dictionary
-
-    # Iterate through each arm of the junction
-    for arm in ["north", "south", "east", "west"]:
-        armDic = {}  # Dictionary for fromatting
-        lanes = []  # Will store the stats of each lane
-        i = 1
-        laneStats = simulationResults["results"][arm + "Arm"]["laneStats"]
-
-        # Restructure the stats for each lane
-        for lane in laneStats:
-            stats = {}
-            stats["laneNumber"] = i
-            stats["averageWaitTime"] = laneStats[lane]["average wait time"]
-            stats["maxWaitTime"] = laneStats[lane]["max wait time"]
-            stats["maxQueueLength"] = laneStats[lane]["max queue length"]
-
-            lanes.append(stats)
-            i += 1
-
-        armDic["lanes"] = lanes
-        reshapedResults[arm] = armDic
-
-    detailedReshapedResults = {}
-    detailedReshapedResults["results"] = reshapedResults
-    detailedReshapedResults["metadata"] = simulationResults["metadata"]
-
-
-def getDirectionPriorities(jid):
-
-    # Get the json for the junction
-    vphObject = getVphObject(jid)
-
-    # Extract the prioritiy of each arm
-    trafficFlows = vphObject["trafficFlows"]
-    directionPriorities = {}
-    for direction in trafficFlows:
-        directionPriorities[direction] = trafficFlows[direction]["priority"]
-
-    return directionPriorities
-
-
-def comparisonPageResultsObject(jid):
-
-    results = {}  # Initialise the dictionary to be returned
-
-    # Get the name of the junction
-    name = getName(jid)
-
-    # Get the reshaped simulation results
-    sr = getSimulationResults(jid)
-    reshaped = reshapeSimulationResults(sr)
-
-    # Get the other components
-    sw = getScoreWeights(jid)
-    dp = getDirectionPriorities(jid)
-
-    # Add the direction priorities to the arms
-    for arm in ["north", "east", "south", "west"]:
-        reshaped["results"][arm]["priority"] = dp[arm]
-
-    # Add the weightings to the layouts
-    withWeightings = {}
-    withWeightings["scoringWeights"] = sw
-    withWeightings["metadata"] = reshaped["metadata"]
-    reshaped.pop("metadata")
-    withWeightings["results"] = reshaped
-
-    # Put all of the components into the dictionary
-    results["JID"] = jid
-    results["junctionName"] = name
-    results["layouts"] = withWeightings
-
-    return results
-
-
 def getLayoutObjects(jid):
     getLayoutsObjectsQuery = """
         SELECT JLID, ConfigurationObject
@@ -309,12 +231,6 @@ def getLayoutObjects(jid):
     finally:
         if connection is not None:
             connection.close()  # Connection still needs to be closed manually
-
-
-# Get the score metric wiehgtings for a particular junction, for use in the junction comparison page
-def getScoreWeights(jid):
-    vphObject = getVphObject(jid)
-    return vphObject["priorities"]
 
 
 def getVphObject(jid):
