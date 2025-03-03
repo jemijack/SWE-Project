@@ -63,7 +63,7 @@ def save_junction():
 
         # jlid will be the id of the newly inserted junction layout if the query executes successfully
         if jlid is not None:
-            logging.info(f"Layout for junction: {jid} inserted with jlid: jlid")
+            logging.info(f"Layout for junction: {jid} inserted with jlid: {jlid}")
 
             # Store the currently desgined layouts in the session for later use
             jlids = session.get("jlids", [])
@@ -78,12 +78,17 @@ def save_junction():
             jlids.append(jlid)
             session["jlids"] = jlids
             logging.info(f"The jlids in the session are now: {jlids}")
+            submissionCount = len(jlids)
 
             # The user will be allowed to create up to 4 layouts for the same junction
             # Once four have been created, start simulating them
-            if len(jlids) == 4:
-                logging.info(f"The user has now submitted 4 layouts for junction: {jid}")
-            return jsonify({f"status": "success", "message": "Layout saved with id: {jlid}"})
+            if submissionCount == 4:
+                logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
+            return jsonify({
+                "status": "success",
+                "message": "Layout saved with id: {jlid}",
+                "submissionCount": submissionCount
+            })
         
         else:
             logging.info(f"jlid = {jlid}")
@@ -150,7 +155,9 @@ def junctionForm():
     # print(maximumQueuePriority)
     # print(maximumWaitPriority)
 
-    # Extract all of the form data into a dictionary representating a predefined JSON Structure
+    # Extract all of the form data into a dictionary representing a predefined JSON Structure
+    # Stored in the session for later reference
+    
     form_data = {
         "JName": request.form.get("junctionSetName"),
         "priorities": {
@@ -243,9 +250,9 @@ def junctionForm():
     vphObject = VPHObject(json=form_data)
     success = vphObject.populateFields()
 
-    # If the VPHObject contains the necessary information, insert it into the database
+    # If the VPHObject contains the necessary information, insert it into the database, and store it in the sess
     if success:
-
+        session["junction"] = vphObject
         jid = database.insertJunction(vphObject)
         if jid is not None:
 
@@ -274,6 +281,32 @@ def simulateJunction():
         print("Hmm")
 
 
+@app.route("/comparison_page")
+def comparison_page():
+    jid = session.get("jid")
+    
+    # In the case that jid is None, it means that the user has made a new junction set in
+    # this session, meaning that they have pressed the "View Previous Designs" button from
+    # the home page, which we have not added functionality for in this prototype
+    if jid is None:
+        return jsonify({"error": "Not implemented yet"}), 404
+
+    # The comparison page takes two newly formatted JSONs
+    junctionlayouts = database.getLayoutObjects(jid)
+
+    # Second JSON - results
+    junctionResults = database.getSimulationResults(jid)
+    junctionScoreWeights = database.getScoreWeights(jid)
+    results = {}
+
+
+@app.route("/compare_new_kunctoin")
+def compare_new_junction():
+    jid = session.get("jid")
+    if jid is None:
+        return jsonify("")
+
+    
 if __name__ == "__main__":
     app.run(debug=True)
     database.initialiseDatabase()
