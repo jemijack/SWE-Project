@@ -405,7 +405,7 @@ if (currentDirection) {
 }
 
 function submitData() { // refactor after switchDirection is done
-
+    
     // save the current lanes's slection before submitting
     if (currentDirection && currentLane !== null) {
         let previousLaneKey = `lane${currentLane + 1}`;
@@ -427,15 +427,23 @@ function submitData() { // refactor after switchDirection is done
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(layoutData) 
         })
-
+        // .then(response => response.json()) // Now expects JSON
+        // .then(data => {
+        //     console.log("Response from backend:", data);
+        //     window.location.reload(); // Force a page reload here
+        // })
+        // .catch(error => console.error('Error:', error));
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            //window.location.reload();
             return response.json();
         })
         // debuging dont remove because at least I know that we are conncted to the backend!! 
-        .then(data => console.log("Response from backend:", data))
+        .then(data => {
+            console.log("Response from backend:", data);
+        })
         .catch(error => console.error('Error:', error));
  }
 

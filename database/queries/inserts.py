@@ -190,7 +190,7 @@ def insertSimulationResults(resultsObject):
     try:
         connection = connect()
 
-        # Use context manager to ensure the connection is committed or rolled back safely        
+        # Use context manager to ensure the connection is committed or rolled back safely
         with connection:
 
             # A cursor lets us perform queries

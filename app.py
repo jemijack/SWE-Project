@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import database
 from database.Objects import VPHObject, LayoutObject
 import logging
@@ -66,24 +66,24 @@ def save_junction():
             logging.info(f"Layout for junction: {jid} inserted with jlid: jlid")
 
             # Store the currently desgined layouts in the session for later use
-            if session.get("jlids") is None:
-
-                # If this is the first configuration made in the session, it is the first configuration
-                # made for that junction so it's JStateID should be set to "Not Started" instead of "New"
-                session["jlids"] = [jlid]
+            jlids = session.get("jlids", [])
+            
+            # If this is the first configuration made in the session, it is the first configuration
+            # made for that junction so it's JStateID should be set to "Not Started" instead of "New"
+            if jlids == []:
                 changed = database.updateState(id=jid, isJunction=True, stateID=2)  # JState 2 = NOT_STARTED
                 if not changed:
                     logging.warning(f"Junction with jid: {jid} failed to update it's state to 'Not Started'")
-            else:
-                session["jlids"].append(jlid)
-                jlids = session["jlids"]
-                logging.info(f"The jlids in the session are now: {jlids}")
 
-                # The user will be allowed to create up to 4 layouts for the same junction
-                # Once four have been created, start simulating them
-                if len(jlids) == 4:
-                    logging.info(f"The user has now submitted 4 layouts for junction: {jid}")
-            return render_template("LayoutDesignPage.html")
+            jlids.append(jlid)
+            session["jlids"] = jlids
+            logging.info(f"The jlids in the session are now: {jlids}")
+
+            # The user will be allowed to create up to 4 layouts for the same junction
+            # Once four have been created, start simulating them
+            if len(jlids) == 4:
+                logging.info(f"The user has now submitted 4 layouts for junction: {jid}")
+            return jsonify({f"status": "success", "message": "Layout saved with id: {jlid}"})
         
         else:
             logging.info(f"jlid = {jlid}")
