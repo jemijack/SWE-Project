@@ -41,78 +41,20 @@ def loginToHome():
     logging.info(f"The User ID for this session is: {uid}")
     session["uid"] = uid
     # Displays the create new set form page at the specified url
-    return render_template("HomePage.html")  
+    return render_template("HomePage.html") 
 
-
-@app.route('/save_junction', methods=['Get', 'POST']) # The endpoint matches the figma button. This is when the user has finished designing their junction and wants to create a new one. 
-def save_junction(): 
-    # data = request.get_json() # get JSON from frontend 
-    # print("Recieved JSON:", data) # print statement  because idk what to do with the data for now. mb connect to the database?? 
-    # return jsonify({"message": "Data received!", "data" : data}) #send back a responce so that i know that backend and front end can talk to eachother.
-    
-    # Get the JSON from the frontend and create it's database Object representation
-    data = request.get_json()
-    
-    jid = session.get("jid")
-    data["junctionID"] = jid
-    print(json.dumps(obj=data, indent=4))
-    confObject = LayoutObject(json=data)
-
-    # If the confObject contains all necessary information, insert it into the database
-    if confObject.populateFields():
-        jlid = database.insertLayout(confObject)
-
-        # jlid will be the id of the newly inserted junction layout if the query executes successfully
-        if jlid is not None:
-            logging.info(f"Layout for junction: {jid} inserted with jlid: {jlid}")
-
-            # Store the currently desgined layouts in the session for later use
-            jlids = session.get("jlids", [])
-            
-            # If this is the first configuration made in the session, it is the first configuration
-            # made for that junction so it's JStateID should be set to "Not Started" instead of "New"
-            if jlids == []:
-                changed = database.updateState(id=jid, isJunction=True, stateID=2)  # JState 2 = NOT_STARTED
-                if not changed:
-                    logging.warning(f"Junction with jid: {jid} failed to update it's state to 'Not Started'")
-
-            jlids.append(jlid)
-            session["jlids"] = jlids
-            logging.info(f"The jlids in the session are now: {jlids}")
-            submissionCount = len(jlids)
-
-            # The user will be allowed to create up to 4 layouts for the same junction
-            # Once four have been created, start simulating them
-            if submissionCount == 4:
-                logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
-                
-            return jsonify({
-                "status": "success",
-                "message": "Layout saved with id: {jlid}",
-                "submissionCount": submissionCount
-            })
-        
-        else:
-            logging.info(f"jlid = {jlid}")
-            return jsonify({"error": f"Layout insertion for junction: {jid} failed"}), 500
-    else:
-        return jsonify({"error": "LayoutObject is missing some key details"}), 400
-
-
-# Route to handle the form submission (POST request)
+# Route to handle the junction form submission (POST request)
 @app.route("/junctionform", methods=["POST"])
 def junctionForm():
-    # # Get the form data
-    # junctionSetName = request.form.get("junctionSetName")
-    # northVehiclesIn = request.form.get("northVehiclesIn")
 
+    """ Handle the cases where the 'pedestrian crossing' checkbox is unchecked, as other
+        otherwise there would be null values in the JSON """
     # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
     northPedestrian = request.form.get("northPedestrian")
     southPedestrian = request.form.get("southPedestrian")
     eastPedestrian = request.form.get("eastPedestrian")
     westPedestrian = request.form.get("westPedestrian")
     # Gets the duration of the pedestrian crossings in seconds
-    # crossingDuration = request.form.get("crossingDuration")
 
     if northPedestrian is None:
         northPedestrian = 0
@@ -144,22 +86,8 @@ def junctionForm():
     if westPedestrian == 0:
         westRequestFrequency = -1
 
-    # print(northRequestFrequency)
-    # print(southRequestFrequency)
-    # print(eastRequestFrequency)
-    # print(westRequestFrequency)
-
-    # averageWaitPriority = request.form.get("AverageWait")
-    # maximumWaitPriority = request.form.get("MaxWait")
-    # maximumQueuePriority = request.form.get("MaxQueue")
-
-    # print(averageWaitPriority)
-    # print(maximumQueuePriority)
-    # print(maximumWaitPriority)
-
-    # Extract all of the form data into a dictionary representing a predefined JSON Structure
-    # Stored in the session for later reference
-    
+    # Extract the now cleansed form data into a dictionary representing
+    # a predefined JSON Structure 
     form_data = {
         "JName": request.form.get("junctionSetName"),
         "priorities": {
@@ -242,7 +170,7 @@ def junctionForm():
         }
     }
 
-    # Add the timeststamp field
+    # Add a timeststamp field for logging purposes
     form_data["timestamp"] = datetime.now(timezone.utc)
 
     # Add the uid field
@@ -252,7 +180,8 @@ def junctionForm():
     vphObject = VPHObject(json=form_data)
     success = vphObject.populateFields()
 
-    # If the VPHObject contains the necessary information, insert it into the database, and store it in the sess
+    # If the VPHObject contains all of the the necessary information, that means the junction is
+    # accepted and we insert it into the database, store it's resulting ID in the session for later use
     if success:
         session["junction"] = vphObject
         jid = database.insertJunction(vphObject)
@@ -262,20 +191,97 @@ def junctionForm():
             logging.info(f"Junction with json {json.dumps(vphObject.json, indent=4)} inserted with jid {jid}")
             return render_template("LayoutDesignPage.html")
 
+    # Error handling
         else:
             return jsonify({"error": "Junction insertion failed"}), 500
     else:
         return jsonify({"error": "VPHObject is missing some key details"}), 400
 
 
+# Endpoint for when the user has finished designing the layout for their junction
+# and wants to create a new one
+@app.route('/save_junction', methods=['Get', 'POST'])
+def save_junction():
+
+    # Get the JSON from the frontend
+    data = request.get_json()
+    jid = session.get("jid")
+
+    # We need to know which junction that this is a layout for
+    if jid is None:
+        return jsonify({"error": "No Junction Set was created in this session so it is unkown which junction set this is meant to be a layout for"})
+
+    # Create the layout's python Object representation for an easier insertion into the database
+    data["junctionID"] = jid
+    logging.info(f"JSON received from the layout configuration page: {json.dumps(obj=data, indent=4)}")
+    confObject = LayoutObject(json=data)
+
+    # Populate Fields is successful if the confObject contains all necessary information
+    success = confObject.populateFields()
+    if not success:
+        logging.error(f"The JSON representing the configured layout is missing some key information: {data}")
+        return jsonify({"error": "LayoutObject is missing some key details"}), 400
+
+    # The python Object representing the layout has the necessary information, so can be saved in the database
+    jlid = database.insertLayout(confObject)
+
+    # jlid will be the id of the newly inserted junction layout
+    if jlid is None:
+        logging.error(f"Layout insertion for junction: {jid} failed")
+        return jsonify({"error": f"Layout insertion for junction: {jid} failed"}), 500
+
+    # jlid exists, so the query executes successfully and the layout is successfully saved
+    logging.info(f"Layout for junction: {jid} inserted with jlid: {jlid}")
+
+    # Store the currently desgined layouts in the session for later use
+    jlids = session.get("jlids", [])
+
+    # If this is the first configuration made in the session, it is the first configuration
+    # made for that junction so it's JStateID should be set to "Not Started" instead of "New"
+    if jlids == []:
+        changed = database.updateState(id=jid, isJunction=True, stateID=2)  # JState 2 = NOT_STARTED
+        if not changed:
+            logging.warning(f"Junction with jid: {jid} failed to update it's state to 'Not Started'")
+
+    # Layouts have already been made in the session, so the
+    # list of layouts is initialised and we can append to it
+    jlids.append(jlid)
+
+    # Reassigning the session key means flask updates the cookie in the browser
+    session["jlids"] = jlids
+    logging.info(f"The layouts created in this session have the following jlids: {jlids}")
+
+    # The user will be allowed to create up to 4 layouts for the same junction
+    # Once four have been created, start simulating them
+    submissionCount = len(jlids)
+    if submissionCount == 4:
+        logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
+
+        """This should redirect them to the simulator, which then redirects to the poller,
+        # which then redirects to the comparison page. This is temporary"""
+        return jsonify({"redirect": "/comparison_page"})
+
+    # The layout has successfully been saved, and the user has created under 4 layouts so they
+    # can continue to make more layouts
+    return jsonify({
+        "status": "success",
+        "message": "Layout saved with id: {jlid}",
+        "submissionCount": submissionCount  # For if we want to handle SubmissionCount on the client side
+    })
+
+
+# This is where the calls to the simulation process will happen (may be Aadya's code?)
 def simulateJunction():
 
+    # Get the IDs of the created junction set and it's configured layouts
     jlids = session.get("jlids")
     jid = session.get("jid")
     if jid is None:
         return jsonify({"error": "Jid not found"}), 500
     if jlids is None:
         return jsonify({"error": "Jlids not found"})
+    
+    # While I don't have Aadya's code, I'll sort of cheat things a bit and makeup the results
 
     # If there are configured layouts for this sessoin, simulate them
     for jlid in jlids:
@@ -283,23 +289,25 @@ def simulateJunction():
         print("Hmm")
 
 
+# This is polls the database for if the simulation is finished
 @app.route('/poll')
 def poll_route(maxAttempts=20, attempt=0):
 
     """Recursive polling endpoint"""
     if attempt == maxAttempts:
         return None  # Could create some timeout/unsuccessful page
-    
+
     # Check if the junction has finished simulating
     jid = session.get("jid")
     if jid is None:
         return jsonify({"error": "A junction has not been created so there's nothing to simulate"})
-    if database.checkJState(jid) == 4:
+    if database.isSimulationFinished(jid):
         """UNFINSIHED"""
+        return jsonify({"redirect": "/comparison_page"})
         comparison_page()
         return "comparison page html"
-        
-        
+
+
     # The simulation has not finished. Wait for a bit, and then try again
     attempt += 1
     time.sleep(10)
@@ -308,6 +316,7 @@ def poll_route(maxAttempts=20, attempt=0):
 
 @app.route("/comparison_page")
 def comparison_page():
+    return render_template("weird.html")
     jid = session.get("jid")
     
     # In the case that jid is None, it means that the user has made a new junction set in

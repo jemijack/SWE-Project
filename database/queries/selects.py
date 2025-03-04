@@ -91,6 +91,12 @@ def checkJState(jid):
             connection.close()  # Still need to close the connection manually
 
 
+def isSimulationFinished(jid):
+    jState = checkJState(jid)
+    # A JState of 4 is hardcoded to mean that it is Finished
+    return jState == 4
+
+
 def getSimulationResult(jlid):
     getSimulationResultsQuery = """
         SELECT ResultsObject

@@ -442,12 +442,13 @@ function submitData() { // refactor after switchDirection is done
         })
         // debuging dont remove because at least I know that we are conncted to the backend!! 
         .then(data => {
-            console.log("Response from backend:", data);
-
-            // If this is after 4th submission, disable the submit button
-            if (data.submissionCount >= 4) {
-
+            if (data.redirect) {
+                window.location.href = data.redirect;
             }
+            return data
+        })
+        .then(data => {
+            console.log("Response from backend:", data);
         })
         .catch(error => console.error('Error:', error));
  }

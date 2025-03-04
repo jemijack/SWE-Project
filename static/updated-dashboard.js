@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch junction data and configurations
     function fetchJunctionData() {
         // Fetch junction performance data
-        const fetchPerformanceData = fetch('/static/data/junction-data.json')
+        const fetchPerformanceData = fetch('../static/data/junction-data.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response not ok for junction data');
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             
         // Fetch junction configuration data
-        const fetchConfigData = fetch('/static/data/configs.json')
+        const fetchConfigData = fetch('../static/data/configs.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response not ok for configuration data');
