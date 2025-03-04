@@ -85,6 +85,7 @@ def save_junction():
             # Once four have been created, start simulating them
             if submissionCount == 4:
                 logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
+                
             return jsonify({
                 "status": "success",
                 "message": "Layout saved with id: {jlid}",

@@ -62,7 +62,6 @@ EXECUTE FUNCTION update_lastUpdatedAt();
 CREATE OR REPLACE FUNCTION update_lastUpdatedAt() RETURNS TRIGGER
 AS $$
     BEGIN
-        RAISE NOTICE 'THE TRIGGER IS OCCURRING';
         NEW.LastUpdatedAt = CURRENT_TIMESTAMP;
         RETURN NEW;
     END;
