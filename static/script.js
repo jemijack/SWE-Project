@@ -479,6 +479,9 @@ if (currentDirection) {
  }
  
 }
+
+let submittedLayouts = 0;  
+
 function submitData() { // refactor after switchDirection is done
 
     // Check if junction name is empty
@@ -536,10 +539,41 @@ function submitData() { // refactor after switchDirection is done
             }
             return response.json();
         })
-        // debuging dont remove because at least I know that we are conncted to the backend!! 
-        .then(data => console.log("Response from backend:", data))
-        .catch(error => console.error('Error:', error));
- }
+        
+        .then(data => {
+            console.log("Response from backend:", data); // debugging to check whether the
+    
+            if (data.redirect) {
+                // If Flask says to redirect, go to the new page (this is the loading  page) 
+                window.location.href = data.redirect;
+                return;
+            }
+
+            // Update submission count
+            submittedLayouts = data.submissionCount;
+                    
+            // Display message to the user
+            alert(`Layout ${submittedLayouts}/4 submitted!`);
+
+            // Show "Compare My Layouts" button after 2 submissions
+            if (submittedLayouts >= 2) {
+                document.getElementById("compareButton").style.display = "block";
+            }
+
+            // Prevent submitting more than 4 layouts
+            if (submittedLayouts >= 4) {
+                alert("You've submitted the maximum of 4 layouts.");
+                window.location.href = data.redirect;
+                return;
+            }
+
+            // Reload the page to start a new layout
+            window.location.reload();
+
+            })
+            .catch(error => console.error('Error:', error));
+            }
+            
 
 
 //update slider value display 
