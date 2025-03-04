@@ -294,21 +294,18 @@ def simulateJunction():
         print("Hmm")
 
 
-# This is polls the database for if the simulation is finished
-@app.route('/poll')
-def poll_route(maxAttempts=20, attempt=0):
+# Polling endpoint
+@app.route('/simulation_status')
+def simulation_status():
 
-    """Recursive polling endpoint"""
-    if attempt == maxAttempts:
-        return None  # Could create some timeout/unsuccessful page
-
-    # Check if the junction has finished simulating
+    # They need to have created a junction set in order to simulate it
     jid = session.get("jid")
     if jid is None:
-        return jsonify({"error": "A junction has not been created so there's nothing to simulate"})
+        return jsonify({"status": "Error - a junction set has not been created so there's nothing to simulate"}), 400
+    
+    # Check if the junction has finished simulating
     if database.isSimulationFinished(jid):
-        """UNFINSIHED"""
-        return jsonify({"redirect": "/comparison_page"})
+        return jsonify({"status": "complete"}), 200
         comparison_page()
         return "comparison page html"
 

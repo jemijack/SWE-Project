@@ -5,6 +5,20 @@ CREATE TABLE users (
     Password VARCHAR(100) DEFAULT NULL
 );
 
+DROP TABLE IF EXISTS junction_states CASCADE;
+CREATE TABLE junction_states (
+    JStateID INTEGER PRIMARY KEY,
+    JStateName VARCHAR(50) UNIQUE NOT NULL,
+    JStateDescription VARCHAR(255) NOT NULL
+);
+
+DROP TABLE IF EXISTS junction_layout_states CASCADE;
+CREATE TABLE junction_layout_states (
+    JLStateID INTEGER PRIMARY KEY,
+    JLStateName VARCHAR(50) UNIQUE NOT NULL,
+    JLStateDescription VARCHAR(255) NOT NULL
+);
+
 DROP TABLE IF EXISTS junctions CASCADE;
 CREATE TABLE junctions (
     JID SERIAL PRIMARY KEY, 
@@ -34,21 +48,16 @@ CREATE TABLE simulation_results (
     ResultsObject JSONB NOT NULL
 );
 
-DROP TABLE IF EXISTS junction_states CASCADE;
-CREATE TABLE junction_states (
-    JStateID INTEGER PRIMARY KEY,
-    JStateName VARCHAR(50) UNIQUE NOT NULL,
-    JStateDescription VARCHAR(255) NOT NULL
-);
+-- Keeps the LastUpdatedAt columns updated
+CREATE OR REPLACE FUNCTION update_lastUpdatedAt() RETURNS TRIGGER
+AS $$
+    BEGIN
+        NEW.LastUpdatedAt = CURRENT_TIMESTAMP;
+        RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
 
-DROP TABLE IF EXISTS junction_layout_states CASCADE;
-CREATE TABLE junction_layout_states (
-    JLStateID INTEGER PRIMARY KEY,
-    JLStateName VARCHAR(50) UNIQUE NOT NULL,
-    JLStateDescription VARCHAR(255) NOT NULL
-);
-
---Triggers to automatically maintain the lastUpdatedAt columns
+-- Triggers to automatically maintain the lastUpdatedAt columns
 DROP TRIGGER IF EXISTS updated_junction ON junctions;
 CREATE TRIGGER updated_junction BEFORE UPDATE ON junctions -- For junctions
 FOR EACH ROW
@@ -59,21 +68,7 @@ CREATE TRIGGER updated_junction_layout BEFORE UPDATE ON junction_layouts -- For 
 FOR EACH ROW
 EXECUTE FUNCTION update_lastUpdatedAt();
 
-CREATE OR REPLACE FUNCTION update_lastUpdatedAt() RETURNS TRIGGER
-AS $$
-    BEGIN
-        NEW.LastUpdatedAt = CURRENT_TIMESTAMP;
-        RETURN NEW;
-    END;
-$$ LANGUAGE plpgsql;
-
-
--- If all layouts created for a certain junction have finished simulating, mark the junction's state as 'Finished'
-CREATE TRIGGER finished_simulation AFTER UPDATE ON junction_layouts
-FOR EACH ROW
-WHEN (NEW.JLStateID = 3)
-EXECUTE FUNCTION finished_simulation();
-
+-- Updates the state of a junction to finished if all of its layouts have finished simulating
 CREATE OR REPLACE FUNCTION finished_simulation() RETURNS TRIGGER
 AS $$
     DECLARE
@@ -99,6 +94,11 @@ AS $$
     END;
 $$ LANGUAGE plpgsql;
 
+-- If all layouts created for a certain junction have finished simulating, mark the junction's state as 'Finished'
+CREATE TRIGGER finished_simulation AFTER UPDATE ON junction_layouts
+FOR EACH ROW
+WHEN (NEW.JLStateID = 3)
+EXECUTE FUNCTION finished_simulation();
 
 -- Initialise the state tables since the states are predefined
 INSERT INTO junction_states (JStateID, JStateName, JStateDescription)
