@@ -320,7 +320,7 @@ def poll_route(maxAttempts=20, attempt=0):
 
 @app.route("/comparison_page")
 def comparison_page():
-    return render_template("weird.html")
+    return render_template("preview.html")
     jid = session.get("jid")
     
     # In the case that jid is None, it means that the user has made a new junction set in

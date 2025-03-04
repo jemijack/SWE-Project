@@ -14,6 +14,8 @@ function initializeJunction(config) {
     */
 
     /*** SVG Setup & Globals ***/
+    window.drawPedestrianCrossing = drawPedestrianCrossing;
+
     const svgSize = 1000;
     const svg = d3.select("#junctionCanvas")
         .attr("width", svgSize)
@@ -29,7 +31,8 @@ function initializeJunction(config) {
     const maxLanes = Math.max(
         (config["eastArm"] ? config["eastArm"].laneCount : 0),
         (config["southArm"] ? config["southArm"].laneCount : 0),
-        (config["westArm"] ? config["westArm"].laneCount : 0)
+        (config["westArm"] ? config["westArm"].laneCount : 0),
+        (config["northArm"] ? config["northArm"].laneCount : 0)
     );
 
     const intersectionSize = maxLanes * laneWidth * 2;
@@ -83,6 +86,7 @@ function initializeJunction(config) {
     }
 
     function drawPedestrianCrossing(direction, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight) {
+    
         // Check if pedestrian crossing is enabled for this direction
         const armKey = direction.toLowerCase() + "Arm";
         if (!config[armKey]?.pedestrianCrossing) {
@@ -90,13 +94,14 @@ function initializeJunction(config) {
         }
     
         // Define crossing dimensions and position
-        const crossingSize = 50; // Increased size for a larger crossing
-        const stripeWidth = 5;
+        const crossingSize = 100; // Increased size for a larger crossing
+        const stripeWidth = 15;
         const stripeGap = 10; // Increased gap to have fewer stripes
         const offsetFromIntersection = 100; // Moved further back from intersection
     
         let crossingX, crossingY, crossingWidth, crossingHeight;
-    
+
+
         // Position the crossing based on direction
         switch (direction) {
             case "North":
@@ -127,6 +132,7 @@ function initializeJunction(config) {
                 return;
         }
     
+
         // Draw the black base rectangle
         svg.append("rect")
             .attr("x", crossingX)
@@ -134,14 +140,19 @@ function initializeJunction(config) {
             .attr("width", crossingWidth)
             .attr("height", crossingHeight)
             .attr("fill", "black");
-    
-        // Determine stripe orientation: parallel to lanes
+           
+      
+     
+        
+            // Determine stripe orientation: parallel to lanes
         const isHorizontal = (direction === "North" || direction === "South");
         const stripeDimension = isHorizontal ? crossingWidth : crossingHeight;
         const stripeCount = Math.floor(stripeDimension / (stripeWidth + stripeGap));
     
+       
+
         // Draw stripes parallel to the lanes
-        for (let i = 0; i < stripeCount; i++) {
+        for (let i = 0.2; i < stripeCount; i++) {
             if (isHorizontal) {
                 // North/South: Vertical stripes
                 const stripeX = crossingX + i * (stripeWidth + stripeGap);
@@ -167,9 +178,12 @@ function initializeJunction(config) {
     function drawLaneDividers(x, y, width, height, totalLanes, vertical, laneDetail, approachDirection) {
         const enteringLanes = config[approachDirection.toLowerCase() + "Arm"].laneCount;
         // Draw boundary dividers (lines between adjacent lanes)
+        
+        
         for (let i = 1; i < totalLanes; i++) {
             let isDashed = true;
-            if (i===enteringLanes) isDashed = false;
+            if (i===totalLanes-enteringLanes && approachDirection!="South") isDashed = false;
+            else if (i===enteringLanes && approachDirection=="South") isDashed = false;
             if (vertical) {
                 let xpos = x + i * laneWidth;
                 let yStart = y, yEnd = y + height;
@@ -194,6 +208,7 @@ function initializeJunction(config) {
                     .attr("stroke-dasharray", isDashed ? "10,10" : "none");
             }
         }
+    
     }
 
     function drawIntersectionLines(cx, cy, length, horizontal, doubleLine) {
@@ -247,14 +262,13 @@ function initializeJunction(config) {
 
 
 
-        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
-        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#333333");
+        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#333333");
 
         const innerX = outerX + curbWidth;
         const innerY = outerY;
         const innerWidth = totalLanes * laneWidth;
         const innerHeight = outerHeight;
-
         
 
         svg.append("rect").attr("x", innerX).attr("y", innerY).attr("width", innerWidth).attr("height", innerHeight).attr("fill", "black");
@@ -278,7 +292,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(180, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/images/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -290,7 +304,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/images/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -311,9 +325,29 @@ function initializeJunction(config) {
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
 
-        drawPedestrianCrossing("North", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+        // Deficit calculation
+        const deficit = intersectionSize - innerWidth  - (2 * curbWidth); // -30
+        if (deficit !== 0) {
+            // Top rectangle (covers curb area y=340-350)
+            svg.append("rect")
+                .attr("x",centerX-intersectionHalf)
+                .attr("y", outerY)
+                .attr("width",(intersectionSize  - totalLanes*laneWidth)/2)
+                .attr("height",outerHeight ) // 10 units
+                .attr("fill", "#333333");
+   
+            // Bottom rectangle (covers curb area y=650-660)
+            svg.append("rect")
+                .attr("x", outerX + totalLanes * laneWidth + 2*curbWidth)
+                .attr("y", outerY)
+                .attr("width", (intersectionSize  - totalLanes*laneWidth)/2)
+                .attr("height", outerHeight)
+               .attr("fill", "#333333");
+        
+           }
 
-       
+        drawPedestrianCrossing("North", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+        
     }
 
     window.drawApproach_East = drawApproach_East;
@@ -325,8 +359,8 @@ function initializeJunction(config) {
         const outerX = centerX + intersectionHalf;
         const outerY = centerY - outerHeight / 2;
 
-        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
-        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#333333");
+        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#333333");
 
         const innerX = outerX;
         const innerY = outerY + curbWidth;
@@ -354,7 +388,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(270, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/images/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -366,7 +400,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/images/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -385,6 +419,32 @@ function initializeJunction(config) {
             const laneCenterY = innerY + (i + 0.5) * laneWidth;
             drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
+
+        // Deficit calculation
+        const deficit = intersectionSize - innerWidth  - (2 * curbWidth); // -30
+        if (deficit !== 0) {
+            // Top rectangle (covers curb area y=340-350)
+            svg.append("rect")
+                .attr("x", outerX)
+                .attr("y", centerY - intersectionHalf) // 340
+                .attr("width", outerWidth)
+                .attr("height", (intersectionSize  - totalLanes*laneWidth)/2 ) // 10 units
+                .attr("fill", "#333333");
+   
+            // Bottom rectangle (covers curb area y=650-660)
+            svg.append("rect")
+                .attr("x", outerX)
+                .attr("y",outerY + totalLanes * laneWidth + curbWidth)
+                .attr("width", outerWidth)
+                .attr("height", (intersectionSize  - totalLanes*laneWidth)/2)
+               .attr("fill", "#333333");
+        
+           }
+    
+    
+        drawPedestrianCrossing("East", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+    
+    
     }
     
     window.drawApproach_South = drawApproach_South;
@@ -396,8 +456,8 @@ function initializeJunction(config) {
         const outerX = centerX - outerWidth / 2;
         const outerY = centerY + intersectionHalf;
 
-        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
-        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#333333");
+        svg.append("rect").attr("x", outerX + totalLanes * laneWidth + curbWidth).attr("y", outerY).attr("width", curbWidth).attr("height", outerHeight).attr("fill", "#333333");
 
         const innerX = outerX + curbWidth;
         const innerY = outerY;
@@ -425,7 +485,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(0, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/images/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -437,7 +497,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/images/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -456,6 +516,33 @@ function initializeJunction(config) {
             const laneCenterX = innerX + (i + 0.5) * laneWidth;
             drawIntersectionLines(laneCenterX, markY, markLen, true, isDouble);
         }
+    
+        drawPedestrianCrossing("South", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+        
+            
+         // Deficit calculation
+         const deficit = intersectionSize - innerWidth  - (2 * curbWidth); // -30
+         if (deficit !== 0) {
+             // Top rectangle (covers curb area y=340-350)
+             svg.append("rect")
+                 .attr("x",centerX-intersectionHalf)
+                 .attr("y", outerY)
+                 .attr("width",(intersectionSize  - totalLanes*laneWidth)/2)
+                 .attr("height",outerHeight ) // 10 units
+                 .attr("fill", "#333333");
+    
+             // Bottom rectangle (covers curb area y=650-660)
+             svg.append("rect")
+                 .attr("x", outerX + totalLanes * laneWidth + 2*curbWidth)
+                 .attr("y", outerY)
+                 .attr("width", (intersectionSize  - totalLanes*laneWidth)/2)
+                 .attr("height", outerHeight)
+                .attr("fill", "#333333");
+         
+            }
+
+        
+    
     }
     
     window.drawApproach_West = drawApproach_West;
@@ -467,8 +554,8 @@ function initializeJunction(config) {
         const outerX = 0;
         const outerY = centerY - outerHeight / 2;
 
-        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
-        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#cccccc");
+        svg.append("rect").attr("x", outerX).attr("y", outerY).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#333333");
+        svg.append("rect").attr("x", outerX).attr("y", outerY + totalLanes * laneWidth + curbWidth).attr("width", outerWidth).attr("height", curbWidth).attr("fill", "#333333");
 
         const innerX = outerX;
         const innerY = outerY + curbWidth;
@@ -496,7 +583,7 @@ function initializeJunction(config) {
                 let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(90, ${imgX}, ${imgY})`;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${icon}`)
+                    .attr("xlink:href", `static/images/${icon}`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -508,7 +595,7 @@ function initializeJunction(config) {
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
                 svg.append("image")
-                    .attr("xlink:href", `utils/${laneType}.png`)
+                    .attr("xlink:href", `static/images/${laneType}.png`)
                     .attr("x", imgX - imgWidth / 2)
                     .attr("y", imgY - imgHeight / 2)
                     .attr("width", imgWidth)
@@ -527,6 +614,33 @@ function initializeJunction(config) {
             const laneCenterY = innerY + (i + 0.5) * laneWidth;
             drawIntersectionLines(markX, laneCenterY, markLen, false, isDouble);
         }
+
+         // Deficit calculation
+         const deficit = intersectionSize - innerWidth  - (2 * curbWidth); // -30
+         if (deficit !== 0) {
+             // Top rectangle (covers curb area y=340-350)
+             svg.append("rect")
+                 .attr("x", outerX)
+                 .attr("y", centerY - intersectionHalf) // 340
+                 .attr("width", outerWidth)
+                 .attr("height", (intersectionSize  - totalLanes*laneWidth)/2 ) // 10 units
+                 .attr("fill", "#333333");
+    
+             // Bottom rectangle (covers curb area y=650-660)
+             svg.append("rect")
+                 .attr("x", outerX)
+                 .attr("y",outerY + totalLanes * laneWidth + curbWidth)
+                 .attr("width", outerWidth)
+                 .attr("height", (intersectionSize  - totalLanes*laneWidth)/2)
+                .attr("fill", "#333333");
+         
+            }
+
+
+        
+        
+        drawPedestrianCrossing("West", totalLanes, laneWidth, innerX, innerY, innerWidth, innerHeight);
+    
     }
 
     /*** Render Approaches ***/

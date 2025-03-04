@@ -1,0 +1,164 @@
+[
+    {
+      "jLayoutName": "Main Street & Broadway Intersection",
+      "timestamp": "2025-03-01T12:34:56.789Z",
+      "JLID": "sim_234567",
+      "northArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "rightOnly"
+        }
+      },
+      "eastArm": {
+        "laneCount": 4,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "straightOnly",
+          "lane4": "rightOnly"
+        }
+      },
+      "southArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": false,
+        "laneDetail": {
+          "lane1": "leftStraight",
+          "lane2": "straightOnly",
+          "lane3": "rightStraight"
+        }
+      },
+      "westArm": {
+        "laneCount": 2,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftStraight",
+          "lane2": "rightStraight"
+        }
+      }
+    },
+    {
+      "jLayoutName": "Highway 101 & Central Avenue",
+      "timestamp": "2025-03-01T14:22:33.456Z",
+      "JLID": "sim_123456",
+      "northArm": {
+        "laneCount": 2,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "busLane",
+          "lane2": "straightOnly"
+        }
+      },
+      "eastArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "cycle",
+          "lane2": "straightOnly",
+          "lane3": "rightOnly"
+        }
+      },
+      "southArm": {
+        "laneCount": 2,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftStraight",
+          "lane2": "rightOnly"
+        }
+      },
+      "westArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftStraight",
+          "lane2": "straightOnly",
+          "lane3": "rightOnly"
+        }
+      }
+    },
+    {
+      "jLayoutName": "Oak Street & River Road",
+      "timestamp": "2025-03-02T09:15:22.123Z",
+      "JLID": "sim_345678",
+      "northArm": {
+        "laneCount": 2,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "rightStraight"
+        }
+      },
+      "eastArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "rightOnly"
+        }
+      },
+      "southArm": {
+        "laneCount": 2,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "rightStraight"
+        }
+      },
+      "westArm": {
+        "laneCount": 4,
+        "pedestrianCrossing": false,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "straightOnly",
+          "lane4": "rightOnly"
+        }
+      }
+    },
+    {
+      "jLayoutName": "University Avenue & Tech Boulevard",
+      "timestamp": "2025-03-03T08:30:45.987Z",
+      "JLID": "sim_456789",
+      "northArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "busLane",
+          "lane3": "rightStraight"
+        }
+      },
+      "eastArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "cycle",
+          "lane3": "rightStraight"
+        }
+      },
+      "southArm": {
+        "laneCount": 4,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "busLane",
+          "lane4": "rightOnly"
+        }
+      },
+      "westArm": {
+        "laneCount": 3,
+        "pedestrianCrossing": true,
+        "laneDetail": {
+          "lane1": "leftOnly",
+          "lane2": "straightOnly",
+          "lane3": "cycle"
+        }
+      }
+    }
+]
