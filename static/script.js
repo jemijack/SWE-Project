@@ -480,8 +480,19 @@ if (currentDirection) {
  
 }
 
+let submittedLayouts = 0;  
+
 function submitData() { 
     
+
+
+    // Check if junction name is empty
+    if (!layoutData["jLayoutName"] || layoutData["jLayoutName"].trim() === "") {
+        alert("Junction name cannot be empty. Please enter a valid name before submitting.");
+        return; 
+    }
+
+
     // save the current lanes's slection before submitting
     if (currentDirection && currentLane !== null) {
         let previousLaneKey = `lane${currentLane + 1}`;
@@ -494,8 +505,30 @@ function submitData() {
         layoutData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian")?.checked || false;
     }
 
-    // Debugging
-    console.log("Sent data:", layoutData);
+    
+// Validate all lanes in all directions
+const directions = ["northArm", "eastArm", "southArm", "westArm"];
+    
+for (const direction of directions) {
+    const laneDetail = layoutData[direction].laneDetail;
+    
+    for (const laneKey in laneDetail) {
+        if (laneDetail[laneKey] === "") {
+            alert(`Please select a lane type for ${laneKey} in ${direction.replace("Arm", "")}.`);
+            
+            // Switch to the problematic direction and lane
+            const directionName = direction.replace("Arm", "");
+            switchDirection(directionName.charAt(0).toUpperCase() + directionName.slice(1));
+            switchLane(parseInt(laneKey.replace("lane", "")) - 1);
+            
+            return; // Prevent submission
+        }
+    }
+}
+
+   // Debugging
+   console.log("Sent data:", layoutData);
+
 
 
         fetch('/save_junction', {
@@ -508,20 +541,52 @@ function submitData() {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response;
+            return response.json;
         })
         .then(data => {
             console.log("Response from backend:", data);
-        })
-        .catch(error => console.error('Error:', error));
+        
+            if (data.redirect) {
+                // If Flask says to redirect, go to the new page (this is the loading  page) 
+                window.location.href = data.redirect;
+                return;
+            }
+        
+            // update submission count
+            submittedLayouts = data.submissionCount;
 
-        // If the user has created all 4 junctions, redirect them
+            // display message to the user
+            alert(`Layout ${submittedLayouts}/4 submitted!`);
+
+    // Show "Compare My Layouts" button after 2 submissions
+    if (submittedLayouts >= 2) {
+    document.getElementById("compareButton").style.display = "block";
+    }
+
+
+    // Prevent submitting more than 4 layouts
+    if (submittedLayouts >= 4) {
+        alert("You've submitted the maximum of 4 layouts.");
+        window.location.href = '/comparison_page';
+    return;
+    }
+        
+    // Reload the page to start a new layout
+    window.location.reload();
+    
+        
+})
+.catch(error => console.error('Error:', error));
+}
+    
+
+        /*  If the user has created all 4 junctions, redirect them
         submissionCount++;
         console.log(submissionCount)
         if (submissionCount >= 4) {
             window.location.href = '/comparison_page';
-        }
- }
+        } */ 
+
 
 
 //update slider value display 
