@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timezone
 import json
 from os import urandom
+import time
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
@@ -279,6 +280,29 @@ def simulateJunction():
     for jlid in jlids:
         # simulate(jid, jlid)
         print("Hmm")
+
+
+@app.route('/poll')
+def poll_route(maxAttempts=20, attempt=0):
+
+    """Recursive polling endpoint"""
+    if attempt == maxAttempts:
+        return None  # Could create some timeout/unsuccessful page
+    
+    # Check if the junction has finished simulating
+    jid = session.get("jid")
+    if jid is None:
+        return jsonify({"error": "A junction has not been created so there's nothing to simulate"})
+    if database.checkJState(jid) == 4:
+        """UNFINSIHED"""
+        comparison_page()
+        return "comparison page html"
+        
+        
+    # The simulation has not finished. Wait for a bit, and then try again
+    attempt += 1
+    time.sleep(10)
+    return poll_route(maxAttempts, attempt)
 
 
 @app.route("/comparison_page")

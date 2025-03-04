@@ -49,10 +49,12 @@ CREATE TABLE junction_layout_states (
 );
 
 --Triggers to automatically maintain the lastUpdatedAt columns
+DROP TRIGGER IF EXISTS updated_junction ON junctions;
 CREATE TRIGGER updated_junction BEFORE UPDATE ON junctions -- For junctions
 FOR EACH ROW
 EXECUTE FUNCTION update_lastUpdatedAt();
 
+DROP TRIGGER IF EXISTS updated_junction_layout ON junction_layouts;
 CREATE TRIGGER updated_junction_layout BEFORE UPDATE ON junction_layouts -- For junction_layouts
 FOR EACH ROW
 EXECUTE FUNCTION update_lastUpdatedAt();
@@ -60,6 +62,7 @@ EXECUTE FUNCTION update_lastUpdatedAt();
 CREATE OR REPLACE FUNCTION update_lastUpdatedAt() RETURNS TRIGGER
 AS $$
     BEGIN
+        RAISE NOTICE 'THE TRIGGER IS OCCURRING';
         NEW.LastUpdatedAt = CURRENT_TIMESTAMP;
         RETURN NEW;
     END;
@@ -67,35 +70,30 @@ $$ LANGUAGE plpgsql;
 
 
 -- If all layouts created for a certain junction have finished simulating, mark the junction's state as 'Finished'
-CREATE TRIGGER finished_simulation AFTER UPDATE ON junction_layout_states
+CREATE TRIGGER finished_simulation AFTER UPDATE ON junction_layouts
 FOR EACH ROW
-WHEN (NEW.JLStateName = 'Finished')
+WHEN (NEW.JLStateID = 3)
 EXECUTE FUNCTION finished_simulation();
 
 CREATE OR REPLACE FUNCTION finished_simulation() RETURNS TRIGGER
 AS $$
     DECLARE
-        junction_id INT;
         all_finished BOOLEAN;
     BEGIN
-        -- Get the jid for the junction who's layout just finished simulating
-        SELECT JID INTO junction_id
-        FROM junction_layout
-        WHERE JLStateID = NEW.JLStateID;
 
         -- Check if all layouts for this junction are finished
         SELECT NOT EXISTS (
             SELECT 1
-            FROM junction_layout AS jl
-            WHERE jl.JID = junction_id
-            AND jl.JLStateID <> 3
+            FROM junction_layouts AS jl
+            WHERE JID = NEW.JID
+            AND JLStateID <> 3
         ) INTO all_finished; -- all_finished will be true if all junction layouts have state 'Finished'
 
         -- If all layouts are finished, update the junction's state to reflect that
         IF all_finished THEN
             UPDATE junctions
             SET JStateID = 4
-            WHERE JID = junctions_id;
+            WHERE JID = NEW.JID;
         END IF;
 
         RETURN NEW;
