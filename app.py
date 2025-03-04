@@ -228,7 +228,7 @@ def save_junction():
     # jlid will be the id of the newly inserted junction layout
     if jlid is None:
         logging.error(f"Layout insertion for junction: {jid} failed")
-        return jsonify({"error": f"Layout insertion for junction: {jid} failed"}), 500
+        return jsonify({"status": f"Error - Layout insertion for junction: {jid} failed"}), 500
 
     # jlid exists, so the query executes successfully and the layout is successfully saved
     logging.info(f"Layout for junction: {jid} inserted with jlid: {jlid}")
@@ -282,9 +282,9 @@ def simulateJunction():
     jlids = session.get("jlids")
     jid = session.get("jid")
     if jid is None:
-        return jsonify({"error": "Jid not found"}), 500
+        return jsonify({"error": "Jid not found"}), 400
     if jlids is None:
-        return jsonify({"error": "Jlids not found"})
+        return jsonify({"error": "Jlids not found"}), 400
     
     # While I don't have Aadya's code, I'll sort of cheat things a bit and makeup the results
 
