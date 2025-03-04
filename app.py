@@ -340,5 +340,5 @@ def compare_new_junction():
 
     
 if __name__ == "__main__":
-    app.run(debug=True)
     database.initialiseDatabase()
+    app.run(debug=True)

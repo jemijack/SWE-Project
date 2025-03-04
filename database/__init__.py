@@ -1,6 +1,6 @@
 import psycopg2
 import logging
-from .dbConfig import dbConfig
+from .dbConfig import dbConfig, createDB
 from .queries import *  # To expose the API to app.py
 from pathlib import Path
 
@@ -22,7 +22,6 @@ def connect():
         return connection
     except psycopg2.OperationalError as error:
         logging.error(f"Operational error during connection: {error}")
-        # raise  # Raising it means the caller can handle it also
     except psycopg2.DatabaseError as error:
         logging.error(f"General database error during connection: {error}")
 
@@ -71,6 +70,7 @@ def initialiseDatabase():
     # because it enables version history to be tracked better, doesn't
     # clutter the python code (making debugging easier) and promotes
     # modularity as this python file can remain focused on application logic
+    createDB()
     logging.info("Initialising the database...")
     executeSqlFile("schema.sql")
     logging.info("Database successfully initialised")

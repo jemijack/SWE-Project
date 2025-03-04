@@ -1,9 +1,39 @@
 from configparser import ConfigParser
 from pathlib import Path
+import psycopg2
+import logging
+
+
+def createDB():
+    try:
+        # Need to create to the default 'postgres' database in order
+        # to create cs261 and make it's schema
+        conn = psycopg2.connect(
+            database="postgres",
+            user="postgres",
+            password="password",
+            host="localhost",
+            port="5432"
+        )
+
+        conn.autocommit = True
+        cursor = conn.cursor()
+
+        logging.info("Creating Database cs261...")
+        cursor.execute("CREATE DATABASE cs261")
+        logging.info("Successfully Created Database cs261")
+        cursor.close()
+        conn.close()
+
+    except psycopg2.OperationalError as error:
+        logging.error(f"Operational error during connection: {error}")
+    except psycopg2.DatabaseError as error:
+        logging.error(f"General database error during connection: {error}")
 
 
 def dbConfig(filename="cs261database.ini", section="postgresql"):
 
+    # Connect to
     # Use pathlib to resolve filepaths, making the code more robust
     # Get the absolute path of the directory
     script_dir = Path(__file__).resolve().parent
