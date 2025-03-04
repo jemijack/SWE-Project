@@ -259,13 +259,17 @@ def save_junction():
 
         """This should redirect them to the simulator, which then redirects to the poller,
         # which then redirects to the comparison page. This is temporary"""
-        return jsonify({"redirect": "/comparison_page"})
+        return jsonify({
+            "status": "success",
+            "message": f"Layout saved with id: {jlid}, There are now 4 junctions, so simulation can commence",
+            "redirect": "/comparison_page"
+        })
 
     # The layout has successfully been saved, and the user has created under 4 layouts so they
     # can continue to make more layouts
     return jsonify({
         "status": "success",
-        "message": "Layout saved with id: {jlid}",
+        "message": f"Layout saved with id: {jlid}",
         "submissionCount": submissionCount  # For if we want to handle SubmissionCount on the client side
     })
 
