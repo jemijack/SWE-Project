@@ -1,4 +1,8 @@
 
+// Used to keep track of the number of times the user creates a layout for the jucntion set
+// They will be allowed to create up to a maximum of 4
+let submissionCount = 0;
+
 // list of all parmeters in each direction. 
 let layoutData = {
     "jLayoutName": "", // User enters this
@@ -427,30 +431,24 @@ function submitData() { // refactor after switchDirection is done
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(layoutData) 
         })
-        // .then(response => response.json()) // Now expects JSON
-        // .then(data => {
-        //     console.log("Response from backend:", data);
-        //     window.location.reload(); // Force a page reload here
-        // })
-        // .catch(error => console.error('Error:', error));
+        .then(response => response.json()) // Now expects JSON
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            //window.location.reload();
-            return response.json();
-        })
-        // debuging dont remove because at least I know that we are conncted to the backend!! 
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            }
-            return data
+            return response;
         })
         .then(data => {
             console.log("Response from backend:", data);
         })
         .catch(error => console.error('Error:', error));
+
+        // If the user has created all 4 junctions, redirect them
+        submissionCount++;
+        console.log(submissionCount)
+        if (submissionCount >= 4) {
+            window.location.href = '/comparison_page';
+        }
  }
 
 

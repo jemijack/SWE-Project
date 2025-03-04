@@ -220,7 +220,7 @@ def save_junction():
     success = confObject.populateFields()
     if not success:
         logging.error(f"The JSON representing the configured layout is missing some key information: {data}")
-        return jsonify({"error": "LayoutObject is missing some key details"}), 400
+        return jsonify({"status": "Error - Layout JSON is missing some necessary details"}), 400
 
     # The python Object representing the layout has the necessary information, so can be saved in the database
     jlid = database.insertLayout(confObject)
@@ -251,27 +251,28 @@ def save_junction():
     session["jlids"] = jlids
     logging.info(f"The layouts created in this session have the following jlids: {jlids}")
 
-    # The user will be allowed to create up to 4 layouts for the same junction
-    # Once four have been created, start simulating them
-    submissionCount = len(jlids)
-    if submissionCount == 4:
-        logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
+    """This stuff is for when the submissions <= 4 thing was on the server side. Now it's done in script.js"""
+    # # The user will be allowed to create up to 4 layouts for the same junction
+    # # Once four have been created, start simulating them
+    # submissionCount = len(jlids)
+    # if submissionCount == 4:
+    #     logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
 
-        """This should redirect them to the simulator, which then redirects to the poller,
-        # which then redirects to the comparison page. This is temporary"""
-        return jsonify({
-            "status": "success",
-            "message": f"Layout saved with id: {jlid}, There are now 4 junctions, so simulation can commence",
-            "redirect": "/comparison_page"
-        })
+    #     """This should redirect them to the simulator, which then redirects to the poller,
+    #     # which then redirects to the comparison page. This is temporary"""
+    #     return jsonify({
+    #         "status": "success",
+    #         "message": f"Layout saved with id: {jlid}, There are now 4 junctions, so simulation can commence",
+    #         "submissionCount": submissionCount,
+    #         "redirect": "/comparison_page"
+    #     }), 200
 
     # The layout has successfully been saved, and the user has created under 4 layouts so they
     # can continue to make more layouts
-    return jsonify({
-        "status": "success",
-        "message": f"Layout saved with id: {jlid}",
-        "submissionCount": submissionCount  # For if we want to handle SubmissionCount on the client side
-    })
+
+    # If flask simply returns success or failure messages, it better separates the
+    # business logic from the client logic
+    return jsonify({"status": "Success - Layout saved to the database"}), 200
 
 
 # This is where the calls to the simulation process will happen (may be Aadya's code?)
