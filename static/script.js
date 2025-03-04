@@ -68,8 +68,6 @@ function updateJunctionName() {
 
     // Save the junction name
     layoutData["jLayoutName"] = nameInput;
-
-
 }
 
 // make sure the name updated is stored when changed
