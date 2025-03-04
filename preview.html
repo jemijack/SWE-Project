@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Junction Analytics Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .selector-bar {
+            padding: 10px 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .selector-bar label {
+            margin-right: 10px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            min-width: 300px;
+        }
+        
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            margin: 0 0 5px 0;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        /* Comparison charts section */
+        .comparison-section {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .comparison-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-charts {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .comparison-chart-container {
+            flex: 1;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            color: #555;
+            margin: 0 0 15px 0;
+            text-align: center;
+        }
+        
+        /* Main dashboard section */
+        .dashboard {
+            display: flex;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .junction-section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .metrics-section {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .key-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            flex: 1;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 0 5px;
+            text-align: center;
+        }
+        
+        .metric-card h3 {
+            font-size: 14px;
+            color: #555;
+            margin: 0 0 10px 0;
+            font-weight: normal;
+        }
+        
+        .metric-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-card .unit {
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        .scoring-weights {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .chart-container {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        #junctionCanvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="selector-bar">
+            <label for="layoutSelector">Select Layout:</label>
+            <select id="layoutSelector">
+                <option value="">Loading layouts...</option>
+            </select>
+        </div>
+        
+        <!-- New comparison charts section -->
+        <div class="comparison-section">
+            <div class="comparison-title">Junction Comparison</div>
+            <div class="comparison-charts">
+                <div class="comparison-chart-container">
+                    <div class="chart-title">Performance Metrics Comparison</div>
+                    <canvas id="metricsComparisonChart"></canvas>
+                </div>
+                <div class="comparison-chart-container">
+                    <div class="chart-title">Overall Performance Score Comparison</div>
+                    <canvas id="scoresComparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div id="headerInfo" class="header">
+            <h1>Junction Layout Overview</h1>
+            <p>Select a layout to view details</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="junction-section">
+                <div class="section-title">Junction Layout</div>
+                <svg id="junctionCanvas" width="600" height="600" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+            
+            <div class="metrics-section">
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <h3>Overall Average Wait Time</h3>
+                        <div class="value" id="overallAvgWaitTime">-</div>
+                        <div class="unit">seconds</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Maximum Wait Time</h3>
+                        <div class="value" id="overallMaxWaitTime">-</div>
+                        <div class="unit">seconds</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Maximum Queue Length</h3>
+                        <div class="value" id="overallMaxQueueLength">-</div>
+                        <div class="unit">vehicles</div>
+                    </div>
+                </div>
+                
+                <div class="scoring-weights" id="scoringWeights">
+                    <strong>Scoring Weights:</strong> Select a layout to view weights
+                </div>
+                
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Average Wait Time by Direction</div>
+                        <canvas id="avgWaitTimeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Maximum Wait Time by Direction</div>
+                        <canvas id="maxWaitTimeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Maximum Queue Length by Direction</div>
+                        <canvas id="maxQueueLengthChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Performance Score by Direction</div>
+                        <canvas id="scoreComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load D3.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Load our junction script -->
+    <script src="image.js"></script>
+    
+    <script>
+        // Store all data
+        let allConfigs = []; // From configs.json
+        let junctionData = null; // From junction-data.json
+        
+        // Store chart objects
+        let charts = {
+            avgWaitTime: null,
+            maxWaitTime: null,
+            maxQueueLength: null,
+            scoreComparison: null,
+            metricsComparison: null,
+            scoresComparison: null
+        };
+        
+        // Color scheme for charts
+        const chartColors = {
+            avgWaitTime: 'rgba(86, 180, 255, 0.8)',
+            maxWaitTime: 'rgba(255, 118, 152, 0.8)',
+            maxQueueLength: 'rgba(79, 195, 190, 0.8)',
+            performanceScore: 'rgba(149, 117, 255, 0.8)'
+        };
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fetch both data files simultaneously
+            Promise.all([
+                fetch('four-config.json').then(response => response.json()),
+                fetch('four-results.json').then(response => response.json())
+            ])
+            .then(([configs, jData]) => {
+                allConfigs = configs;
+                junctionData = jData;
+                
+                // First, initialize all charts
+                initializeCharts();
+                initializeComparisonCharts(jData);
+                
+                // Then populate dropdown but WITHOUT auto-selecting (remove that part)
+                populateDropdown(configs, jData);
+                
+                // Finally, trigger layout selection with a small delay to ensure charts are ready
+                setTimeout(() => {
+                    const dropdown = document.getElementById('layoutSelector');
+                    if (dropdown.options.length > 0) {
+                        dropdown.selectedIndex = 0;
+                        const event = new Event('change');
+                        dropdown.dispatchEvent(event);
+                    }
+                }, 100); // 100ms delay should be sufficient
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                document.getElementById('layoutSelector').innerHTML = 
+                    '<option value="">Error loading data</option>';
+            });
+        });
+
+        
+        // Initialize the comparison charts
+        function initializeComparisonCharts(jData) {
+            // Calculate metrics for all layouts
+            const layoutMetrics = calculateAllLayoutMetrics(jData);
+            const layoutNames = layoutMetrics.map(layout => layout.name);
+            
+            // Metrics Comparison Chart
+            charts.metricsComparison = new Chart(
+                document.getElementById('metricsComparisonChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: layoutNames,
+                        datasets: [
+                            {
+                                label: 'Avg Wait Time (s)',
+                                data: layoutMetrics.map(layout => layout.avgWaitTime),
+                                backgroundColor: chartColors.avgWaitTime,
+                                barPercentage: 0.7
+                            },
+                            {
+                                label: 'Max Wait Time (s)',
+                                data: layoutMetrics.map(layout => layout.maxWaitTime),
+                                backgroundColor: chartColors.maxWaitTime,
+                                barPercentage: 0.7
+                            },
+                            {
+                                label: 'Max Queue Length',
+                                data: layoutMetrics.map(layout => layout.maxQueueLength),
+                                backgroundColor: chartColors.maxQueueLength,
+                                barPercentage: 0.7
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: false,
+                                ticks: {
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Value'
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+            
+            // Scores Comparison Chart
+            charts.scoresComparison = new Chart(
+                document.getElementById('scoresComparisonChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: layoutNames,
+                        datasets: [
+                            {
+                                label: 'Overall Performance Score',
+                                data: layoutMetrics.map(layout => layout.normalizedScore),
+                                backgroundColor: chartColors.performanceScore,
+                                barPercentage: 0.6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1,
+                                title: {
+                                    display: true,
+                                    text: 'Score (higher is better)'
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        }
+        
+        // Calculate metrics for all layouts
+        function calculateAllLayoutMetrics(jData) {
+            const layoutMetrics = [];
+            
+            jData.layouts.forEach(layout => {
+                const metrics = calculateOverallLayoutMetrics(layout);
+                const layoutConfig = allConfigs.find(config => config.JLID === layout.metadata.JLID);
+                
+                layoutMetrics.push({
+                    id: layout.metadata.JLID,
+                    name: layoutConfig ? layoutConfig.jLayoutName : `Layout ${layout.metadata.JLID}`,
+                    avgWaitTime: metrics.avgWaitTime,
+                    maxWaitTime: metrics.maxWaitTime,
+                    maxQueueLength: metrics.maxQueueLength,
+                    rawScore: metrics.rawScore
+                });
+            });
+            
+            // Calculate normalized scores
+            const worstScore = Math.max(...layoutMetrics.map(metric => metric.rawScore));
+            
+            layoutMetrics.forEach(metric => {
+                // Invert normalization since lower raw score is better
+                metric.normalizedScore = worstScore > 0 ? 1 - (metric.rawScore / worstScore) : 0;
+            });
+            
+            return layoutMetrics;
+        }
+        
+        // Calculate overall metrics for a single layout
+        function calculateOverallLayoutMetrics(layout) {
+            const directions = ['north', 'south', 'east', 'west'];
+            const weights = layout.scoringWeights;
+            
+            let totalAvgWaitTime = 0;
+            let totalMaxWaitTime = 0;
+            let totalMaxQueueLength = 0;
+            let totalLanes = 0;
+            let maxWaitTime = 0;
+            let maxQueueLength = 0;
+            let totalRawScore = 0;
+            
+            directions.forEach(direction => {
+                if (layout.results[direction]) {
+                    const lanes = layout.results[direction].lanes;
+                    const priority = layout.results[direction].priority;
+                    
+                    let dirAvgWaitTime = 0;
+                    let dirMaxWaitTime = 0;
+                    let dirMaxQueueLength = 0;
+                    
+                    lanes.forEach(lane => {
+                        dirAvgWaitTime += lane.averageWaitTime;
+                        dirMaxWaitTime = Math.max(dirMaxWaitTime, lane.maxWaitTime);
+                        dirMaxQueueLength = Math.max(dirMaxQueueLength, lane.maxQueueLength);
+                    });
+                    
+                    // Calculate average for this direction
+                    dirAvgWaitTime = dirAvgWaitTime / lanes.length;
+                    
+                    // Add to totals
+                    totalAvgWaitTime += dirAvgWaitTime;
+                    totalMaxWaitTime += dirMaxWaitTime;
+                    totalMaxQueueLength += dirMaxQueueLength;
+                    
+                    // Update max values
+                    maxWaitTime = Math.max(maxWaitTime, dirMaxWaitTime);
+                    maxQueueLength = Math.max(maxQueueLength, dirMaxQueueLength);
+                    
+                    // Calculate raw score for this direction
+                    const dirRawScore = (
+                        (weights.averageWaitTime * dirAvgWaitTime) +
+                        (weights.maxWaitTime * dirMaxWaitTime) +
+                        (weights.maxQueueLength * dirMaxQueueLength)
+                    ) * priority;
+                    
+                    totalRawScore += dirRawScore;
+                }
+            });
+            
+            // Calculate averages across all directions
+            const directionCount = directions.filter(dir => layout.results[dir]).length;
+            const avgWaitTime = directionCount > 0 ? totalAvgWaitTime / directionCount : 0;
+            const avgMaxWaitTime = directionCount > 0 ? totalMaxWaitTime / directionCount : 0;
+            const avgMaxQueueLength = directionCount > 0 ? totalMaxQueueLength / directionCount : 0;
+            
+            return {
+                avgWaitTime: avgWaitTime,
+                maxWaitTime: maxWaitTime,
+                maxQueueLength: maxQueueLength,
+                rawScore: totalRawScore
+            };
+        }
+        
+        // Initialize direction-specific charts
+        function initializeCharts() {
+            const directions = ['North', 'South', 'East', 'West'];
+            
+            // Common chart options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+            
+            // Average Wait Time Chart
+            charts.avgWaitTime = new Chart(
+                document.getElementById('avgWaitTimeChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: directions,
+                        datasets: [{
+                            label: 'Average Wait Time (seconds)',
+                            data: [0, 0, 0, 0],
+                            backgroundColor: chartColors.avgWaitTime,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: commonOptions
+                }
+            );
+            
+            // Max Wait Time Chart
+            charts.maxWaitTime = new Chart(
+                document.getElementById('maxWaitTimeChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: directions,
+                        datasets: [{
+                            label: 'Maximum Wait Time (seconds)',
+                            data: [0, 0, 0, 0],
+                            backgroundColor: chartColors.maxWaitTime,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: commonOptions
+                }
+            );
+            
+            // Max Queue Length Chart
+            charts.maxQueueLength = new Chart(
+                document.getElementById('maxQueueLengthChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: directions,
+                        datasets: [{
+                            label: 'Maximum Queue Length (vehicles)',
+                            data: [0, 0, 0, 0],
+                            backgroundColor: chartColors.maxQueueLength,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: commonOptions
+                }
+            );
+            
+            // Score Comparison Chart
+            charts.scoreComparison = new Chart(
+                document.getElementById('scoreComparisonChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: directions,
+                        datasets: [{
+                            label: 'Performance Score (lower is better)',
+                            data: [0, 0, 0, 0],
+                            backgroundColor: chartColors.performanceScore,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1.0
+                            }
+                        }
+                    }
+                }
+            );
+        }
+        
+        // Populate dropdown with layout options
+        function populateDropdown(configs, jData) {
+            const dropdown = document.getElementById('layoutSelector');
+            dropdown.innerHTML = ''; // Clear loading message
+            
+            // Add each config as an option
+            configs.forEach((config, index) => {
+                const jlid = config.JLID;
+                
+                // Only add layouts that have corresponding data
+                const matchingLayout = jData.layouts.find(layout => layout.metadata.JLID === jlid);
+                
+                if (matchingLayout) {
+                    const option = document.createElement('option');
+                    option.value = jlid;
+                    option.textContent = `${config.jLayoutName} (${jlid})`;
+                    dropdown.appendChild(option);
+                }
+            });
+            
+            // Add change event listener
+            dropdown.addEventListener('change', handleLayoutChange);
+        }
+        
+        // Handle layout selection change
+        function handleLayoutChange(event) {
+            const selectedJLID = event.target.value;
+            
+            // Clear the current visualization
+            clearVisualization();
+            
+            // If a valid layout is selected, display it
+            if (selectedJLID !== '') {
+                // Find matching config and layout data
+                const selectedConfig = allConfigs.find(config => config.JLID === selectedJLID);
+                const selectedLayoutData = junctionData.layouts.find(layout => layout.metadata.JLID === selectedJLID);
+                
+                if (selectedConfig && selectedLayoutData) {
+                    updateHeader(selectedConfig, selectedLayoutData);
+                    displayJunction(selectedConfig);
+                    updateMetrics(selectedLayoutData);
+                    updateCharts(selectedLayoutData);
+                    
+                    // Highlight the selected layout in comparison charts
+                    highlightSelectedLayout(selectedJLID);
+                }
+            } else {
+                // Reset to initial state if no layout selected
+                resetDashboard();
+            }
+        }
+        
+        // Highlight the selected layout in comparison charts
+        function highlightSelectedLayout(layoutId) {
+            // Check if comparison charts exist
+            if (!charts.metricsComparison || !charts.scoresComparison) {
+                console.error('Comparison charts not initialized yet');
+                return;
+            }
+
+            // Find the index of the selected layout
+            const layoutMetrics = calculateAllLayoutMetrics(junctionData);
+            const selectedIndex = layoutMetrics.findIndex(layout => layout.id === layoutId);
+            
+            if (selectedIndex >= 0) {
+                // Create highlight effect for metrics comparison chart
+                const metricsDatasets = charts.metricsComparison.data.datasets;
+                
+                metricsDatasets.forEach(dataset => {
+                    // Reset all bar opacities
+                    dataset.backgroundColor = Array(dataset.data.length).fill(dataset.backgroundColor[0]);
+                    
+                    // Highlight the selected layout
+                    if (dataset.backgroundColor[selectedIndex]) {
+                        const color = dataset.backgroundColor[selectedIndex];
+                        const rgb = color.match(/\d+/g);
+                        dataset.backgroundColor[selectedIndex] = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
+                    }
+                });
+                
+                charts.metricsComparison.update();
+                
+                // Highlight in scores comparison
+                const scoresDataset = charts.scoresComparison.data.datasets[0];
+                // Reset all bar opacities
+                scoresDataset.backgroundColor = Array(scoresDataset.data.length).fill(chartColors.performanceScore);
+                
+                // Highlight the selected layout
+                const color = scoresDataset.backgroundColor[selectedIndex];
+                const rgb = color.match(/\d+/g);
+                scoresDataset.backgroundColor[selectedIndex] = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
+                
+                charts.scoresComparison.update();
+            }
+        }
+        
+        // Update header information
+        function updateHeader(config, layoutData) {
+            const headerDiv = document.getElementById('headerInfo');
+            
+            const timestamp = new Date(layoutData.metadata.timestamp);
+            const formattedDate = timestamp.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'numeric', 
+                day: 'numeric' 
+            });
+            const formattedTime = timestamp.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: 'numeric', 
+                hour12: true 
+            });
+            
+            headerDiv.innerHTML = `
+                <h1>${config.jLayoutName} (ID: ${config.JLID})</h1>
+                <p>Simulation time: ${layoutData.metadata.totalSimulationTime} seconds | Timestamp: ${formattedDate}, ${formattedTime}</p>
+            `;
+        }
+        
+        // Update the key metrics at the top
+        function updateMetrics(layoutData) {
+            // Calculate overall metrics
+            const metrics = calculateOverallLayoutMetrics(layoutData);
+            
+            // Update the DOM
+            document.getElementById('overallAvgWaitTime').textContent = metrics.avgWaitTime.toFixed(1);
+            document.getElementById('overallMaxWaitTime').textContent = metrics.maxWaitTime.toFixed(1);
+            document.getElementById('overallMaxQueueLength').textContent = metrics.maxQueueLength;
+            
+            // Update scoring weights
+            const weights = layoutData.scoringWeights;
+            document.getElementById('scoringWeights').innerHTML = `
+                <strong>Scoring Weights:</strong> Average Wait Time: ${weights.averageWaitTime.toFixed(1)}, 
+                Max Wait Time: ${weights.maxWaitTime.toFixed(1)}, 
+                Max Queue Length: ${weights.maxQueueLength.toFixed(1)}
+            `;
+        }
+        
+        // Display the selected junction
+        function displayJunction(config) {
+            try {
+                // Increase timeout to give charts more time to initialize
+                setTimeout(() => {
+                    initializeJunction(config);
+                    
+                    // Force a redraw of charts after junction is initialized
+                    const currentJLID = document.getElementById('layoutSelector').value;
+                    const layoutData = junctionData.layouts.find(layout => layout.metadata.JLID === currentJLID);
+                    if (layoutData) {
+                        updateCharts(layoutData);
+                    }
+                }, 150);  // Increased from 50ms to 150ms
+            } catch (error) {
+                console.error('Error initializing junction:', error);
+            }
+        }
+        
+        // Update direction-specific charts with the selected layout data
+        function updateCharts(layoutData) {
+            // Make sure charts are initialized before updating
+            if (!charts.avgWaitTime || !charts.maxWaitTime || 
+                !charts.maxQueueLength || !charts.scoreComparison) {
+                console.error('Charts not initialized yet');
+                return;
+            }
+
+            // Calculate direction metrics
+            const directions = ['north', 'south', 'east', 'west'];
+            const directionMetrics = {};
+            
+            // Calculate averages across lanes for each direction
+            directions.forEach(direction => {
+                if (layoutData.results[direction]) {
+                    const lanes = layoutData.results[direction].lanes;
+                    const priority = layoutData.results[direction].priority;
+                    
+                    let totalAvgWaitTime = 0;
+                    
+                    lanes.forEach(lane => {
+                        totalAvgWaitTime += lane.averageWaitTime;
+                    });
+                    
+                    // Calculate average across all lanes for this direction
+                    directionMetrics[direction] = {
+                        avgWaitTime: totalAvgWaitTime / lanes.length,
+                        maxWaitTime: Math.max(...lanes.map(lane => lane.maxWaitTime)),
+                        maxQueueLength: Math.max(...lanes.map(lane => lane.maxQueueLength)),
+                        priority: priority
+                    };
+                }
+            });
+            
+            // Update the three metric charts - with safety checks
+            if (charts.avgWaitTime && charts.avgWaitTime.data && charts.avgWaitTime.data.datasets) {
+                charts.avgWaitTime.data.datasets[0].data = directions.map(dir => 
+                    directionMetrics[dir]?.avgWaitTime || 0);
+                charts.avgWaitTime.update();
+            }
+            
+            if (charts.maxWaitTime && charts.maxWaitTime.data && charts.maxWaitTime.data.datasets) {
+                charts.maxWaitTime.data.datasets[0].data = directions.map(dir => 
+                    directionMetrics[dir]?.maxWaitTime || 0);
+                charts.maxWaitTime.update();
+            }
+            
+            if (charts.maxQueueLength && charts.maxQueueLength.data && charts.maxQueueLength.data.datasets) {
+                charts.maxQueueLength.data.datasets[0].data = directions.map(dir => 
+                    directionMetrics[dir]?.maxQueueLength || 0);
+                charts.maxQueueLength.update();
+            }
+            
+            // Calculate scores
+            const weights = layoutData.scoringWeights;
+            const scores = {};
+            
+            // Calculate raw scores (weight * metric * priority)
+            directions.forEach(direction => {
+                if (directionMetrics[direction]) {
+                    const metrics = directionMetrics[direction];
+                    const priority = metrics.priority;
+                    
+                    scores[direction] = (
+                        (weights.averageWaitTime * metrics.avgWaitTime) +
+                        (weights.maxWaitTime * metrics.maxWaitTime) +
+                        (weights.maxQueueLength * metrics.maxQueueLength)
+                    ) * priority;
+                } else {
+                    scores[direction] = 0;
+                }
+            });
+            
+            // Find the worst score for normalization
+            const worstScore = Math.max(...Object.values(scores));
+            
+            // Normalize scores (0-1 scale, lower is better for wait times, so invert)
+            const normalizedScores = {};
+            directions.forEach(direction => {
+                // Invert so 1 is best performance, 0 is worst
+                normalizedScores[direction] = worstScore > 0 ? 1 - (scores[direction] / worstScore) : 0;
+            });
+            
+            // Update score comparison chart - with safety check
+            if (charts.scoreComparison && charts.scoreComparison.data && charts.scoreComparison.data.datasets) {
+                charts.scoreComparison.data.datasets[0].data = directions.map(dir => 
+                    normalizedScores[dir] || 0);
+                charts.scoreComparison.update();
+            }
+        }
+
+        
+        // Reset all charts to initial state
+        function resetCharts() {
+            const directionalCharts = ['avgWaitTime', 'maxWaitTime', 'maxQueueLength', 'scoreComparison'];
+            directionalCharts.forEach(chartName => {
+                if (charts[chartName]) {
+                    charts[chartName].data.datasets[0].data = [0, 0, 0, 0];
+                    charts[chartName].update();
+                }
+            });
+        }
+        
+        // Clear the current visualization
+        function clearVisualization() {
+            const svg = d3.select("#junctionCanvas");
+            svg.selectAll("*").remove(); // Remove all child elements
+        }
+    </script>
+</body>
+</html>
