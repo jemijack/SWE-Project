@@ -183,12 +183,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="selector-bar">
-            <label for="layoutSelector">Select Layout:</label>
-            <select id="layoutSelector">
-                <option value="">Loading layouts...</option>
-            </select>
-        </div>
+
         
         <!-- New comparison charts section -->
         <div class="comparison-section">
@@ -235,6 +230,13 @@
                     </div>
                 </div>
                 
+                <div class="selector-bar">
+                    <label for="layoutSelector">Select Layout:</label>
+                    <select id="layoutSelector">
+                        <option value="">Loading layouts...</option>
+                    </select>
+                </div>
+
                 <div class="scoring-weights" id="scoringWeights">
                     <strong>Scoring Weights:</strong> Select a layout to view weights
                 </div>
@@ -319,7 +321,7 @@
                         const event = new Event('change');
                         dropdown.dispatchEvent(event);
                     }
-                }, 100); // 100ms delay should be sufficient
+                }, 100); // 100ms delay should be sufficient (unless we decide to run on a very far away server)
             })
             .catch(error => {
                 console.error('Error loading data:', error);
