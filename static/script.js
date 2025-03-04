@@ -71,8 +71,6 @@ function updateJunctionName() {
 // make sure the name updated is stored when changed
 document.getElementById("junctionName").addEventListener("input", updateJunctionName)
 
-
-
 // Make sure that junction  loads the stored name when we swicth direction
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("junctionName").value = layoutData["jLayoutName"];
@@ -144,7 +142,7 @@ document.getElementById("lanes").addEventListener("input", function(){
 
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
     let dropdown = document.getElementById("directionOptions");
 
    updateLaneOptions(); 
@@ -165,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
         });
     }
-});
+}); */ 
 
 // Listen for changes on pedistrian crossing
 document.getElementById("pedestrian").addEventListener("change", function() {
@@ -295,7 +293,7 @@ function redrawJunction() {
 }
 
 // Call this function whenever you switch lanes
-document.getElementById("directionOptions").addEventListener("change", function () {
+ /* document.getElementById("directionOptions").addEventListener("change", function () {
     let selectedValue = this.value;
     
     // temporarliry check if the user is not creating a stupid junction w their  new selection
@@ -320,9 +318,42 @@ document.getElementById("directionOptions").addEventListener("change", function 
     //redraw juction to show the changes
     redrawJunction();
 
+}); */
+
+document.addEventListener("DOMContentLoaded", function() {
+    let dropdown = document.getElementById("directionOptions");
+    
+    // Make sure we update lane options when the page loads
+    updateLaneOptions();
+    
+    if (dropdown) {
+        dropdown.addEventListener("change", function() {
+            let selectedValue = this.value;
+            
+            // Validate the lane configuration with this new selection
+            const validationResult = validateLaneChange(currentLane, selectedValue);
+            
+            if (!validationResult.valid) {
+                // Alert the user and revert the selection
+                alert(validationResult.message);
+                
+                // Reset dropdown to the previously valid value
+                const laneKey = `lane${currentLane + 1}`;
+                this.value = layoutData[currentDirection].laneDetail[laneKey] || "";
+                return;
+            }
+            
+            // Save the selection only if validation passes
+            let laneKey = `lane${currentLane + 1}`;
+            layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
+            
+            console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+            
+            // Redraw junction to show the changes
+            redrawJunction();
+        });
+    }
 });
-
-
 
 // updates settinsg for each lane within a direction (look at the JSON  structure at the begining)
 function switchLane(laneIndex){
