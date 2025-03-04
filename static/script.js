@@ -484,8 +484,6 @@ let submittedLayouts = 0;
 
 function submitData() { 
     
-
-
     // Check if junction name is empty
     if (!layoutData["jLayoutName"] || layoutData["jLayoutName"].trim() === "") {
         alert("Junction name cannot be empty. Please enter a valid name before submitting.");
@@ -529,68 +527,60 @@ for (const direction of directions) {
    // Debugging
    console.log("Sent data:", layoutData);
 
+   fetch('/save_junction', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(layoutData) 
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log("Response from backend:", data);
 
-
-        fetch('/save_junction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(layoutData) 
-        })
-        .then(response => response.json()) // Now expects JSON
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json;
-        })
-        .then(data => {
-            console.log("Response from backend:", data);
-        
-            if (data.redirect) {
-                // If Flask says to redirect, go to the new page (this is the loading  page) 
-                window.location.href = data.redirect;
-                return;
-            }
-        
-            // update submission count
-            submittedLayouts = data.submissionCount;
-
-            // display message to the user
-            alert(`Layout ${submittedLayouts}/4 submitted!`);
+    // Check submission count 
+    let submittedLayouts = data.submissionCount || 0;
 
     // Show "Compare My Layouts" button after 2 submissions
     if (submittedLayouts >= 2) {
-    document.getElementById("compareButton").style.display = "block";
+        document.getElementById("compareButton").style.display = "block";
     }
 
-
-    // Prevent submitting more than 4 layouts
-    if (submittedLayouts >= 4) {
-        alert("You've submitted the maximum of 4 layouts.");
-        window.location.href = '/comparison_page';
-    return;
+    // Redirect to comparison page if 4 layouts submitted
+    if (data.redirect) {
+        window.location.href = data.redirect;
+        return;
     }
-        
+
+    // Display submission count message
+    alert(`Layout ${submittedLayouts}/4 submitted!`);
+    
     // Reload the page to start a new layout
     window.location.reload();
-    
-        
 })
-.catch(error => console.error('Error:', error));
+.catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while submitting the layout. Please try again.');
+});
 }
-    
-
-        /*  If the user has created all 4 junctions, redirect them
-        submissionCount++;
-        console.log(submissionCount)
-        if (submissionCount >= 4) {
-            window.location.href = '/comparison_page';
-        } */ 
-
-
 
 //update slider value display 
 document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
+
+// Add event listener for the "Compare My Layouts" button
+document.addEventListener("DOMContentLoaded", function() {
+    const compareButton = document.getElementById("compareButton");
+    if (compareButton) {
+        compareButton.addEventListener("click", function() {
+            window.location.href = "/comparison_page";
+        });
+
+    }
+
+});
