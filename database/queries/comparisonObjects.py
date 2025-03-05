@@ -104,8 +104,10 @@ def getDirectionPriorities(jid):
 def getScoreWeights(jid):
     vphObject = getVphObject(jid)
     priorities = vphObject["priorities"]
+
+    # Normalise the weightings
     for p in priorities:
-        priorities[p] = priorities[p] / 100.0  # Normalise the weightings
+        priorities[p] = priorities[p] / 100.0
     return vphObject["priorities"]
 
 

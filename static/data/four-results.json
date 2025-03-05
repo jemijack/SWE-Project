@@ -4,13 +4,13 @@
     "layouts": [
         {
             "scoringWeights": {
-                "averageWaitPriority": 0.0,
-                "maximumWaitPriority": 0.0,
-                "maximumQueuePriority": 1.0
+                "averageWaitTime": 0.0,
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
-                "JLID": 1,
-                "timestamp": "2025-03-05T12:00:14.831000",
+                "JLID": "1",
+                "timestamp": "2025-03-05T16:58:39.221000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"
@@ -106,13 +106,13 @@
         },
         {
             "scoringWeights": {
-                "averageWaitPriority": 0.0,
-                "maximumWaitPriority": 0.0,
-                "maximumQueuePriority": 1.0
+                "averageWaitTime": 0.0,
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
-                "JLID": 2,
-                "timestamp": "2025-03-05T12:00:14.831000",
+                "JLID": "2",
+                "timestamp": "2025-03-05T16:58:39.221000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"
@@ -208,13 +208,13 @@
         },
         {
             "scoringWeights": {
-                "averageWaitPriority": 0.0,
-                "maximumWaitPriority": 0.0,
-                "maximumQueuePriority": 1.0
+                "averageWaitTime": 0.0,
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
-                "JLID": 3,
-                "timestamp": "2025-03-05T12:00:14.831000",
+                "JLID": "3",
+                "timestamp": "2025-03-05T16:58:39.221000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"
@@ -310,13 +310,13 @@
         },
         {
             "scoringWeights": {
-                "averageWaitPriority": 0.0,
-                "maximumWaitPriority": 0.0,
-                "maximumQueuePriority": 1.0
+                "averageWaitTime": 0.0,
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
-                "JLID": 4,
-                "timestamp": "2025-03-05T12:00:14.831000",
+                "JLID": "4",
+                "timestamp": "2025-03-05T16:58:39.221000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"

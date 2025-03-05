@@ -37,10 +37,10 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:00:14.831Z",
+        "timestamp": "2025-03-05T16:58:39.221Z",
         "junctionID": 1,
         "jLayoutName": "",
-        "JLID": 1
+        "JLID": "1"
     },
     {
         "userId": "11",
@@ -80,10 +80,10 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:00:14.831Z",
+        "timestamp": "2025-03-05T16:58:39.221Z",
         "junctionID": 1,
         "jLayoutName": "",
-        "JLID": 2
+        "JLID": "2"
     },
     {
         "userId": "11",
@@ -123,10 +123,10 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:00:14.831Z",
+        "timestamp": "2025-03-05T16:58:39.221Z",
         "junctionID": 1,
         "jLayoutName": "",
-        "JLID": 3
+        "JLID": "3"
     },
     {
         "userId": "11",
@@ -166,9 +166,9 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:00:14.831Z",
+        "timestamp": "2025-03-05T16:58:39.221Z",
         "junctionID": 1,
         "jLayoutName": "",
-        "JLID": 4
+        "JLID": "4"
     }
 ]

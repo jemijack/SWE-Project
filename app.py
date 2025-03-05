@@ -91,9 +91,9 @@ def junctionForm():
     form_data = {
         "JName": request.form.get("junctionSetName"),
         "priorities": {
-            "averageWaitPriority": int(request.form.get("AverageWait")),
-            "maximumWaitPriority": int(request.form.get("MaxWait")),
-            "maximumQueuePriority": int(request.form.get("MaxQueue"))
+            "averageWaitTime": int(request.form.get("AverageWait")),
+            "maximumWaitTime": int(request.form.get("MaxWait")),
+            "maximumQueueLength": int(request.form.get("MaxQueue"))
         },
         "trafficFlows": {
             "north": {
@@ -337,7 +337,7 @@ def comparison_page():
 
     # The simulation has finished, so the data that we need is in the database
     # and we can create the objects that the comparison page needs - a custom resultsJSON,
-    # which combines attributes from all three database objects for a junction with its 
+    # which combines attributes from all three database objects for a junction with its
     # layouts and a list of normal configurationObjects for those layouts as a JSON
 
     # Create the resultsJSON
@@ -346,7 +346,7 @@ def comparison_page():
 
     # Write the json to the hardcoded filepath
     with open("./static/data/four-results.json", "w") as file:
-        json.dump(obj=resultsJSON, fp=file, indent=4) 
+        json.dump(obj=resultsJSON, fp=file, indent=4)
 
     # Create the configJSON
     layoutObjects = database.getLayoutObjects(jid)
@@ -354,15 +354,12 @@ def comparison_page():
 
     # Write the json to the hardcoded filepath
     with open("./static/data/four-config.json", "w") as file:
-        json.dump(obj=layoutObjects, fp=file, indent=4) 
-    # Create the objects that the comparison page needs
-    # resobj = database.getComparisonPageResultsObject(jid)
-    # confobj = database.getLayoutObjects(jid)
-    # json.dump(obj=confobj, fp='/static/data/four-config.json', indent=4)
-    # json.dump(obj=resobj, fp='/static/data/four-results.json', indent=4)
+        json.dump(obj=layoutObjects, fp=file, indent=4)
+
+    # Render the comparisons page
     return render_template("preview.html")
 
-  
+
 if __name__ == "__main__":
     database.initialiseDatabase()
     app.run(debug=True)

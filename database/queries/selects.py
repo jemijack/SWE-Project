@@ -169,7 +169,7 @@ def getSimulationResults(jid):
                         metadata = {}
 
                         # Insert layout-unique values
-                        metadata["JLID"] = jlid
+                        metadata["JLID"] = str(jlid)
                         metadata["timestamp"] = timestamp.isoformat()
 
                         # These values are hard-coded for now, but in future versions of
@@ -225,7 +225,7 @@ def getLayoutObjects(jid):
                     # Create a JSON containing all of the configuration objects in a list
                     json = []
                     for jlid, confObject in confObjects:
-                        confObject["JLID"] = jlid  # Add the extra jlid field so it's known which jlid each object represents
+                        confObject["JLID"] = str(jlid)  # Add the extra jlid field so it's known which jlid each object represents
                         json.append(confObject)
                     return json
 
