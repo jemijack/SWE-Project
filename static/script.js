@@ -642,8 +642,6 @@ document.getElementById("lanes").oninput = function() {
 
 }; 
 
-
-
 // Add event listener for the "Compare My Layouts" button and handle its visibility
 document.addEventListener("DOMContentLoaded", function () {
     const compareButton = document.getElementById("compareButton");
