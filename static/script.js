@@ -142,6 +142,8 @@ document.getElementById("lanes").addEventListener("input", function(){
 
 });
 
+
+
 /* document.addEventListener("DOMContentLoaded", function () {
     let dropdown = document.getElementById("directionOptions");
 
@@ -599,9 +601,6 @@ function submitData() {
             return;
         }
 
-        // Display submission count message
-        alert(`Layout ${submittedLayouts}/4 submitted!`);
-
         // Reset the form and UI for the next layout
         resetLayoutForm();
     })
@@ -638,8 +637,6 @@ document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
-
-// Add event listener for the "Compare My Layouts" button and handle its visibility
 
 
 
