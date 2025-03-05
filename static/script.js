@@ -601,6 +601,10 @@ function submitData() {
             return;
         }
 
+        
+        // Display submission count message
+        alert(`Layout ${submittedLayouts}/4 submitted!`);
+
         // Reset the form and UI for the next layout
         resetLayoutForm();
     })
