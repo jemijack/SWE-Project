@@ -4,14 +4,14 @@
         "eastArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "cycleLane"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "leftStraight"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
@@ -25,11 +25,11 @@
         "southArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "leftOnly"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T11:41:07.577Z",
+        "timestamp": "2025-03-05T11:49:29.189Z",
         "junctionID": 1,
         "jLayoutName": "hi",
         "JLID": 1
@@ -39,34 +39,34 @@
         "eastArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "leftStraight"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "cycleLane"
+                "lane1": "rightStraight"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "leftStraight"
+                "lane1": "straightOnly"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "cycleLane"
+                "lane1": "straightOnly"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T11:41:07.577Z",
+        "timestamp": "2025-03-05T11:49:29.189Z",
         "junctionID": 1,
-        "jLayoutName": "hi",
+        "jLayoutName": "Exam",
         "JLID": 2
     }
 ]
