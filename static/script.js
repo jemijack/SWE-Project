@@ -634,11 +634,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+
 //update slider value display 
 document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
+
+
 
 // Add event listener for the "Compare My Layouts" button and handle its visibility
 document.addEventListener("DOMContentLoaded", function () {

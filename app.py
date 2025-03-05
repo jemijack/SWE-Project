@@ -197,8 +197,7 @@ def junctionForm():
     else:
         return jsonify({"error": "VPHObject is missing some key details"}), 400
 
-
-# This is from Ansha's integration attempt
+# This is from Layout  Designs. 
 # Endpoint for when the user has finished designing the layout for their junction
 # and wants to create a new one
 @app.route('/save_junction', methods=['Get', 'POST'])
@@ -286,6 +285,10 @@ def save_junction():
 
     # If flask simply returns success or failure messages, it better separates the
     # business logic from the client logic
+
+
+# This is where the calls to the simulation process will happen (may be Aadya's code?)
+
 
 
 # This is where the calls to the simulation process will happen (may be Aadya's code?)
