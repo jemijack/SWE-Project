@@ -299,8 +299,8 @@
         document.addEventListener("DOMContentLoaded", function() {
             // Fetch both data files simultaneously
             Promise.all([
-                fetch('four-config.json').then(response => response.json()),
-                fetch('four-results.json').then(response => response.json())
+                fetch('four-config-james.json').then(response => response.json()),
+                fetch('four-results-james.json').then(response => response.json())
             ])
             .then(([configs, jData]) => {
                 allConfigs = configs;
@@ -460,9 +460,17 @@
             // Calculate normalized scores
             const worstScore = Math.max(...layoutMetrics.map(metric => metric.rawScore));
             
+            // Invert normalization since lower raw score is better
             layoutMetrics.forEach(metric => {
-                // Invert normalization since lower raw score is better
                 metric.normalizedScore = worstScore > 0 ? 1 - (metric.rawScore / worstScore) : 0;
+            });
+
+
+            const bestScore = Math.max(...layoutMetrics.map(metric => metric.normalizedScore));
+            
+            // Best score is always 1
+            layoutMetrics.forEach(metric => {
+                metric.normalizedScore = bestScore > 0 ? 1 - (metric.normalizedScore / bestScore) : 1;
             });
             
             return layoutMetrics;
@@ -513,7 +521,7 @@
                         (weights.averageWaitTime * dirAvgWaitTime) +
                         (weights.maxWaitTime * dirMaxWaitTime) +
                         (weights.maxQueueLength * dirMaxQueueLength)
-                    ) * priority;
+                    ) * (priority+1);
                     
                     totalRawScore += dirRawScore;
                 }
@@ -854,11 +862,12 @@
                     const metrics = directionMetrics[direction];
                     const priority = metrics.priority;
                     
+                    // Add 1 to priority to account for priority 0
                     scores[direction] = (
                         (weights.averageWaitTime * metrics.avgWaitTime) +
                         (weights.maxWaitTime * metrics.maxWaitTime) +
                         (weights.maxQueueLength * metrics.maxQueueLength)
-                    ) * priority;
+                    ) * (priority+1);
                 } else {
                     scores[direction] = 0;
                 }
@@ -871,9 +880,17 @@
             const normalizedScores = {};
             directions.forEach(direction => {
                 // Invert so 1 is best performance, 0 is worst
-                normalizedScores[direction] = worstScore > 0 ? 1 - (scores[direction] / worstScore) : 0;
+                normalizedScores[direction] = worstScore > 0 ? 1- (scores[direction] / worstScore) : 0;
+            });
+
+            const bestScore = Math.max(...directions.map(direction => {return normalizedScores[direction]}));
+
+            // Best score is always 1
+            directions.forEach(direction => {
+               normalizedScores[direction] = bestScore > 0 ? (normalizedScores[direction]/ bestScore) : 1; 
             });
             
+
             // Update score comparison chart - with safety check
             if (charts.scoreComparison && charts.scoreComparison.data && charts.scoreComparison.data.datasets) {
                 charts.scoreComparison.data.datasets[0].data = directions.map(dir => 
