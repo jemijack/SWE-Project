@@ -1,8 +1,3 @@
-
-// Used to keep track of the number of times the user creates a layout for the jucntion set
-// They will be allowed to create up to a maximum of 4
-let submissionCount = 0;
-
 // list of all parmeters in each direction. 
 let layoutData = {
     "jLayoutName": "", // User enters this
@@ -51,7 +46,6 @@ let layoutData = {
 
 
 //Set up the defaults
-
 let  currentDirection = "northArm"; 
 let currentLane = 0;
 
@@ -59,13 +53,15 @@ let currentLane = 0;
 function updateJunctionName() {
     let nameInput = document.getElementById("junctionName").value.trim(); 
 
+    // Check for empty input
+    if (nameInput !== "") {
      // validation just allow numbers, letters and spaces
      if (!/^[a-zA-Z0-9\s]+$/.test(nameInput)) {
-        alert("Junction name can only contain letters, numbers, and spaces.");
+        alert(" Junction name can only contain letters, numbers, and spaces.");
         document.getElementById("junctionName").value = layoutData["jLayoutName"]; // Revert to previous valid name
         return;
     }
-
+} 
     // Save the junction name
     layoutData["jLayoutName"] = nameInput;
 
@@ -74,8 +70,6 @@ function updateJunctionName() {
 
 // make sure the name updated is stored when changed
 document.getElementById("junctionName").addEventListener("input", updateJunctionName)
-
-
 
 // Make sure that junction  loads the stored name when we swicth direction
 document.addEventListener("DOMContentLoaded", function () {
@@ -95,10 +89,10 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
    
-
     document.getElementById("lanes").value = 3; 
     generateLaneButtons(3);
-   
+    redrawJunction();
+ 
 
 }) 
 
@@ -136,13 +130,8 @@ document.getElementById("lanes").addEventListener("input", function(){
 
  layoutData[currentDirection].laneCount = Object.keys(layoutData[currentDirection].laneDetail).length;
  
- // just checking that lane count actually updates. 
- console.log("LaneCount", laneCount); 
-
 // LaneCount of Bassils code gets updated to match mine :) 
  layoutData[currentDirection].laneCount = laneCount;
-
- console.log("test", layoutData[currentDirection].laneCount); 
 
     // Re-render the SVG
     redrawJunction();
@@ -153,19 +142,9 @@ document.getElementById("lanes").addEventListener("input", function(){
 
 });
 
-// Listen for changes on pedistrian crossing
-document.getElementById("pedestrian").addEventListener("change", function() {
-    
-    // update if changed
-    layoutData[currentDirection].pedestrianCrossing = this.checked;
-
-    // redraw to show new visuialisation
-    redrawJunction();
-
-});
 
 
-document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
     let dropdown = document.getElementById("directionOptions");
 
    updateLaneOptions(); 
@@ -177,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Validate lane selection
             if (!validateLaneSettings(selectedValue)) {
                 this.value = ""; // Reset dropdown if validation fails
-            }
+            } 
 
             // Save selection into layoutData
             let laneKey = `lane${currentLane + 1}`;
@@ -186,9 +165,18 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
         });
     }
+}); */ 
+
+// Listen for changes on pedistrian crossing
+document.getElementById("pedestrian").addEventListener("change", function() {
+    
+    // update if changed
+    layoutData[currentDirection].pedestrianCrossing = this.checked;
+
+    // redraw to show new visuialisation
+    redrawJunction();
+
 });
-
-
 
 // Creates the corrent numbe of buttons every time the numbe of lanes changes. 
 function generateLaneButtons(laneCount) {
@@ -209,27 +197,71 @@ function resetDropdown() {
 }
 
 
-// lane validation
-function validateLaneSettings(laneData) {
-    if (!laneData) {
-        alert("Each lane must have a selected direction.");
-        return false;
-    }
-    return true;
+/*  lane validation . Here we're also gonna make sure that we cant create any stupid configuations.
+  Right/rightStraight lanes cannot be to the left of left/leftStraight lanes. 
+  Left/leftStraight lanes cannot be to the right of right/rightStraight lanes.
+
+*/ 
+
+function validateLaneSettings() {
+    
+     // get the current direction's lane details and sort the lanes by there number 
+     const laneDetail = layoutData[currentDirection].laneDetail;
+     const laneKeys = Object.keys(laneDetail).sort((a, b) => {
+         return parseInt(a.replace('lane', '')) - parseInt(b.replace('lane', ''));
+     });
+
+    let rightmostLeftTurn = -1;
+    let leftmostRightTurn = Number.MAX_SAFE_INTEGER;
+
+    // scan all lanes to find the rightmost left turn and leftmost right turn
+    laneKeys.forEach((key, index) => {
+        const laneType = laneDetail[key];
+        
+        if (!laneType) return;
+        
+        if (laneType === 'leftOnly' || laneType === 'leftStraight') {
+            rightmostLeftTurn = Math.max(rightmostLeftTurn, index);
+        }
+        
+        if (laneType === 'rightOnly' || laneType === 'rightStraight') {
+            leftmostRightTurn = Math.min(leftmostRightTurn, index);
+        }
+    });
+
+ // validate: Right turns should always be to the right of left turns
+ if (rightmostLeftTurn >= leftmostRightTurn && leftmostRightTurn < Number.MAX_SAFE_INTEGER) {
+    return {
+        valid: false,
+        message: "Invalid lane configuration: Left turning lanes must be to the left of right turning lanes to prevent traffic crossing."
+    };
 }
 
+return { valid: true };
+
+}
+
+// function to validate a specific lane
+function validateLaneChange(laneIndex, newLaneType) {
+
+    const tempLayoutData = JSON.parse(JSON.stringify(layoutData));
+    const laneKey = `lane${laneIndex + 1}`;
+    
+    tempLayoutData[currentDirection].laneDetail[laneKey] = newLaneType;
+    const originalValue = layoutData[currentDirection].laneDetail[laneKey];
+    layoutData[currentDirection].laneDetail[laneKey] = newLaneType;
+    const result = validateLaneSettings();
+    layoutData[currentDirection].laneDetail[laneKey] = originalValue;
+    
+    return result;
+}
 
 function validateDirectionSettings(direction){
 
     let laneDetail = layoutData[direction].laneDetail;
     let laneKeys = Object.keys(laneDetail); 
     
-    // Ensure that if there's only one lane, it must be "anyDirs"
-    if (laneKeys.length === 1 && laneDetail["lane1"] !== "anyDirs") {
-        alert("If there is only one lane, it must allow any direction.");
-        return false;
-    }
-
+   
     return true;
 }
 
@@ -240,53 +272,131 @@ function updateLaneOptions() {
     let specialOptions = dropdown.querySelectorAll(".special"); // Bus & Cycle options
 
     if (currentLane === 0) {
-        // Lane 1 (Leftmost): Show Bus & Cycle options
+        // lane 1- Show Bus & Cycle options
         specialOptions.forEach(option => option.hidden = false);
     } else {
-        // Other lanes: Hide Bus & Cycle options
+        // other lanes: Hide Bus & Cycle options
         specialOptions.forEach(option => option.hidden = true);
 
-        // If a hidden option was previously selected, reset the dropdown
-        if (["bus", "cycle"].includes(dropdown.value)) {
+        // if a hidden option was previously selected, reset the dropdown
+        if (["busLane", "cycleLane"].includes(dropdown.value)) {
             dropdown.value = "";
         }
     }
 }
 
 
+
 function redrawJunction() {
     d3.select("#junctionCanvas").selectAll("*").remove(); // Clear SVG
-    /** 
-    window.drawApproach_North(layoutData["northArm"].laneCount, "North");
-    window.drawApproach_East(layoutData["eastArm"].laneCount, "East");
-    window.drawApproach_South(layoutData["southArm"].laneCount, "South");
-    window.drawApproach_West(layoutData["westArm"].laneCount, "West");
-    */
+   
    window.initializeJunction(layoutData);
 
-   if (layoutData[currentDirection]?.pedestrianCrossing) {
-    let totalLaneCount = layoutData[currentDirection]?.laneCount || 3; // Default to 3 lanes
-    let laneWidth = 100; // Adjust based on your layout
-    let innerX = 0, innerY = 0, innerWidth = 500, innerHeight = 500; //
+}
 
-// Call the function to draw pedestrian crossing
-drawPedestrianCrossing(currentDirection, totalLaneCount, laneWidth, innerX, innerY, innerWidth, innerHeight);
+// reset everything to its defult state
+function resetLayoutForm() {
+    // Reset junction name
+    document.getElementById("junctionName").value = "";
+    layoutData["jLayoutName"] = "";
 
-   }
-} 
+    // Reset lane count to default
+    document.getElementById("lanes").value = 3;
+    document.getElementById("lanesValue").innerText = 3;
+
+    // Reset pedestrian crossing
+    document.getElementById("pedestrian").checked = false;
+
+    // Reset all directions to default state
+    const directions = ["northArm", "eastArm", "southArm", "westArm"];
+    directions.forEach(direction => {
+        layoutData[direction] = {
+            laneCount: 3,
+            pedestrianCrossing: false,
+            laneDetail: {
+                "lane1": "",
+                "lane2": "",
+                "lane3": ""
+            }
+        };
+    });
+
+    // Reset current direction and lane
+    currentDirection = "northArm";
+    currentLane = 0;
+
+    // Reset dropdown and generate lane buttons for north arm
+    document.getElementById("directionOptions").value = "";
+    generateLaneButtons(3);
+    updateLaneOptions();
+
+    // Redraw junction
+    redrawJunction();
+}
+
 
 // Call this function whenever you switch lanes
-document.getElementById("directionOptions").addEventListener("change", function () {
+ /* document.getElementById("directionOptions").addEventListener("change", function () {
     let selectedValue = this.value;
     
-    // Save new selection
+    // temporarliry check if the user is not creating a stupid junction w their  new selection
+    const validationResult = validateLaneChange(currentLane, selectedValue);
+    
+    // warn them if they are
+    if (!validationResult.valid) {
+        alert(validationResult.message);
+
+        // reset to the prev value if they are
+        const laneKey = `lane${currentLane + 1}`;
+        this.value = layoutData[currentDirection].laneDetail[laneKey] || "";
+        return;
+    }
+
+    // Save new selection only if validation passes
     let laneKey = `lane${currentLane + 1}`;
     layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
 
     console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+
+    //redraw juction to show the changes
+    redrawJunction();
+
+}); */
+
+document.addEventListener("DOMContentLoaded", function() {
+    let dropdown = document.getElementById("directionOptions");
+    
+    // Make sure we update lane options when the page loads
+    updateLaneOptions();
+    
+    if (dropdown) {
+        dropdown.addEventListener("change", function() {
+            let selectedValue = this.value;
+            
+            // Validate the lane configuration with this new selection
+            const validationResult = validateLaneChange(currentLane, selectedValue);
+            
+            if (!validationResult.valid) {
+                // Alert the user and revert the selection
+                alert(validationResult.message);
+                
+                // Reset dropdown to the previously valid value
+                const laneKey = `lane${currentLane + 1}`;
+                this.value = layoutData[currentDirection].laneDetail[laneKey] || "";
+                return;
+            }
+            
+            // Save the selection only if validation passes
+            let laneKey = `lane${currentLane + 1}`;
+            layoutData[currentDirection].laneDetail[laneKey] = selectedValue;
+            
+            console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
+            
+            // Redraw junction to show the changes
+            redrawJunction();
+        });
+    }
 });
-
-
 
 // updates settinsg for each lane within a direction (look at the JSON  structure at the begining)
 function switchLane(laneIndex){
@@ -312,7 +422,7 @@ function switchLane(laneIndex){
   
   //  switch to the new lane
   currentLane = laneIndex;
- 
+  
   // ensure the new lane exists in data structure
   if (!layoutData[currentDirection].laneDetail[laneKey]) {
       layoutData[currentDirection].laneDetail[laneKey] = "";
@@ -323,13 +433,14 @@ function switchLane(laneIndex){
 
   //  Reset UI before loading new data
   resetDropdown();
+
   
   // Load the new lane's data
   let newLaneData = layoutData[currentDirection].laneDetail[laneKey];
   
-  //  Update the dropdown with the lane's stored value (or empty if none)
-  document.getElementById("directionOptions").value = newLaneData || "";
-  
+  //  Update the dropdown with the lane's stored value 
+  document.getElementById("directionOptions").value = newLaneData 
+
   console.log(`Switched to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);   
 
 }
@@ -386,6 +497,8 @@ if (currentDirection) {
   // generate buttons for each lane
   generateLaneButtons(laneCount);
 
+
+  
   // switch to the first lane and reset UI
   currentLane = 0;
   resetDropdown();
@@ -402,56 +515,125 @@ if (currentDirection) {
         document.getElementById("directionOptions").value = "";
 
 
+    redrawJunction();
+
  console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
 
  }
  
 }
 
-function submitData() { // refactor after switchDirection is done
-    
-    // save the current lanes's slection before submitting
+let submittedLayouts = 0;  
+function submitData() {
+    // Check if junction name is empty
+    if (!layoutData["jLayoutName"] || layoutData["jLayoutName"].trim() === "") {
+        alert("Junction name cannot be empty. Please enter a valid name before submitting.");
+        return;
+    }
+
+    // Save the current lane's selection before submitting
     if (currentDirection && currentLane !== null) {
         let previousLaneKey = `lane${currentLane + 1}`;
         let selectDirection = document.getElementById("directionOptions").value;
         layoutData[currentDirection].laneDetail[previousLaneKey] = selectDirection;
     }
 
-// make sure pedistian Crossing is saved without overwriting it. 
+    // Make sure pedestrian crossing is saved without overwriting it
     if (currentDirection !== null) {
         layoutData[currentDirection].pedestrianCrossing = document.getElementById("pedestrian")?.checked || false;
     }
 
-    // Debugging
+    // Validate all lanes in all directions
+    const directions = ["northArm", "eastArm", "southArm", "westArm"];
+    for (const direction of directions) {
+        const laneDetail = layoutData[direction].laneDetail;
+        for (const laneKey in laneDetail) {
+            if (laneDetail[laneKey] === "") {
+                alert(`Please select a lane type for ${laneKey} in ${direction.replace("Arm", "")}.`);
+
+                // Switch to the problematic direction and lane
+                const directionName = direction.replace("Arm", "");
+                switchDirection(directionName.charAt(0).toUpperCase() + directionName.slice(1));
+                switchLane(parseInt(laneKey.replace("lane", "")) - 1);
+
+                return; // Prevent submission
+            }
+        }
+    }
+
+    // Debugging: Log the data being sent
     console.log("Sent data:", layoutData);
 
+   
+    fetch('/save_junction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(layoutData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Response from backend:", data);
 
-        fetch('/save_junction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(layoutData) 
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Response from backend:", data);
+        // Update the global submittedLayouts variable
+        submittedLayouts = data.submissionCount || 0;
+        console.log("Submission count:", submittedLayouts); // Debugging
 
-            // Increment the submission count
-            submissionCount++;
-            console.log(submissionCount)
+        // Update button visibility and state
+        const compareButton = document.getElementById("compareButton");
+        if (submittedLayouts >= 2) {
+            compareButton.style.display = "block"; // Show the button
+            compareButton.disabled = false; // Enable the button
+        } else if (submittedLayouts === 1) {
+            compareButton.style.display = "block"; // Show the button
+            compareButton.disabled = true; // Disable the button
+        } else {
+            compareButton.style.display = "none"; // Hide the button
+        }
 
-            // If the user has created all 4 allotted junctions, redirect them if they have
-            if (submissionCount >= 4) {
-                window.location.href = '/loading_page'
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        // Redirect to comparison page if 4 layouts submitted
+        if (data.redirect) {
+            window.location.href = data.redirect;
+            return;
+        }
 
- }
+        
+        // Display submission count message
+        alert(`Layout ${submittedLayouts}/4 submitted!`);
+
+        // Reset the form and UI for the next layout
+        resetLayoutForm();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the layout. Please try again.');
+    });
+}
+
+
+
+// Update slider value display
+document.getElementById("lanes").oninput = function() {
+    document.getElementById("lanesValue").innerText = this.value;
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    const compareButton = document.getElementById("compareButton");
+    if (submittedLayouts >= 2) {
+        compareButton.style.display = "block"; // Show the button
+        compareButton.disabled = false; // Enable the button
+    } else if (submittedLayouts === 1) {
+        compareButton.style.display = "block"; // Show the button
+        compareButton.disabled = true; // Disable the button
+    } else {
+        compareButton.style.display = "none"; // Hide the button
+    }
+});
+
 
 
 //update slider value display 
@@ -459,3 +641,18 @@ document.getElementById("lanes").oninput = function() {
     document.getElementById("lanesValue").innerText = this.value;
 
 }; 
+
+
+
+// Add event listener for the "Compare My Layouts" button and handle its visibility
+document.addEventListener("DOMContentLoaded", function () {
+    const compareButton = document.getElementById("compareButton");
+    let storedLayouts = localStorage.getItem("submittedLayouts");
+    
+    // Only show compare button if between 2 and 3 layouts
+    if (storedLayouts && parseInt(storedLayouts) >= 2 && parseInt(storedLayouts) < 4) {
+        compareButton.style.display = "block";
+    } else {
+        compareButton.style.display = "none";
+    }
+});
