@@ -262,7 +262,7 @@ def save_junction():
 
     # If 4 layouts have been submitted, prepare for simulation/comparison
     if len(jlids) >= 4:
-        response_data["redirect"] = "/comparison_page"
+        response_data["redirect"] = "/loading_page"
 
     return jsonify(response_data), 200
 

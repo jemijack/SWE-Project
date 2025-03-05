@@ -2,173 +2,71 @@
     {
         "userId": "11",
         "eastArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "cycleLane"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "leftStraight"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "leftOnly"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T01:23:19.439Z",
+        "timestamp": "2025-03-05T11:41:07.577Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "hi",
         "JLID": 1
     },
     {
         "userId": "11",
         "eastArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "leftStraight"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "cycleLane"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "leftStraight"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "cycleLane"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T01:23:19.439Z",
+        "timestamp": "2025-03-05T11:41:07.577Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "hi",
         "JLID": 2
-    },
-    {
-        "userId": "11",
-        "eastArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "westArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "northArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "southArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "timestamp": "2025-03-05T01:23:19.439Z",
-        "junctionID": 1,
-        "jLayoutName": "",
-        "JLID": 3
-    },
-    {
-        "userId": "11",
-        "eastArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "westArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "northArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "southArm": {
-            "laneCount": 3,
-            "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
-            },
-            "pedestrianCrossing": false
-        },
-        "timestamp": "2025-03-05T01:23:19.439Z",
-        "junctionID": 1,
-        "jLayoutName": "",
-        "JLID": 4
     }
 ]
