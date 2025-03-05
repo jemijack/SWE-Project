@@ -296,8 +296,16 @@ def simulateJunction():
 @app.route("/loading_page", methods=["GET"])
 def loading_page():
 
+    # Get the number of layouts that have been created for this current session
+    jlids = session.get("jlids")
+    if jlids is None:
+        return jsonify({"status": "Error - no layouts were created in this session so there is nothing to simulate"})
+    numLayouts = len(jlids)
     # Cheat and insert premade results into the database
-    logging.info(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage()}")
+    logging.info(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage(numLayouts)}")
+
+    """Aadya I think your calls to the simulation could be done here. The jid and list
+    of jlids are all stored in session e.g. jid = session["jid"], jlids = session["jlids"]"""
 
     # Start the polling process if they're complete
     return render_template("loading.html")

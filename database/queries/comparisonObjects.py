@@ -112,7 +112,9 @@ def getScoreWeights(jid):
 
 
 # Insert hard-coded results while we don't have the simulation working
-def cheatComparisonPage():
+def cheatComparisonPage(numLayouts):
+    # numLayouts is the number of layouts created in that session
+    # don't want to be inserting fake for layouts that don't exist
 
     res = {
         "status": "failure message description",
@@ -181,11 +183,45 @@ def cheatComparisonPage():
             if connection:
                 connection.close()
 
-    if insertRes():
+    # For use if there is ever under 4 junctions being simulated
+    def insertResNew(numLayouts):
+        query = """
+            INSERT INTO simulation_results (JLID, ResultsObject)
+            VALUES (%s, %s)
+        """
+
+        resobj = ResultsObject(json=res)
+        # Need to stringify the objects in order to insert them into the db as they contain a field of type TIMESTAMP which psycopg2 can't convert into JSONB
+        dresobj = json.dumps(resobj.json)
+
+        connection = None
+
+        try:  # Cheeky bit of context manager action
+            connection = connect()
+            with connection:
+                with createCursor(connection) as cursor:
+                    for i in range(1, numLayouts + 1):
+                        data = (i, dresobj)
+                        cursor.execute(query, data)
+                        if cursor.rowcount != 1:  # Check that all 4 rows have properly inserted
+                            return False
+                print(cursor.rowcount)
+                return True
+        except psycopg2.DatabaseError as e:
+            print(f"Error {e}")
+            return False
+        finally:
+            if connection:
+                connection.close()
+
+    # if insertRes():
+    #     print("The fake results have successfully been inserted")
+
+    if insertResNew(numLayouts):
         print("The fake results have successfully been inserted")
 
         # Now change the stateIDs of the JLIDs in the DB to say that they have been completed
-        for i in range(1, 5):
+        for i in range(1, (numLayouts + 1)):
             updateJLState(jlid=i, stid=3)
         return True
     else:
