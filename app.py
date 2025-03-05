@@ -251,6 +251,21 @@ def save_junction():
     session["jlids"] = jlids
     logging.info(f"The layouts created in this session have the following jlids: {jlids}")
 
+
+
+    # reponce from the backend
+    response_data = {
+        "status": "Success - Layout saved to the database",
+        "submissionCount": len(jlids)
+    }
+
+
+    # If 4 layouts have been submitted, prepare for simulation/comparison
+    if len(jlids) >= 4:
+        response_data["redirect"] = "/comparison_page"
+
+    return jsonify(response_data), 200
+
     """This stuff is for when the submissions <= 4 thing was on the server side. Now it's done in script.js"""
     # # The user will be allowed to create up to 4 layouts for the same junction
     # # Once four have been created, start simulating them
@@ -272,7 +287,7 @@ def save_junction():
 
     # If flask simply returns success or failure messages, it better separates the
     # business logic from the client logic
-    return jsonify({"status": "Success - Layout saved to the database"}), 200
+    
 
 
 # This is where the calls to the simulation process will happen (may be Aadya's code?)
