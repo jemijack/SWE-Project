@@ -165,7 +165,7 @@ def cheatComparisonPage():
 
         connection = None
 
-        try:
+        try:  # Cheeky bit of context manager action
             connection = connect()
             with connection:
                 with createCursor(connection) as cursor:
@@ -187,7 +187,7 @@ def cheatComparisonPage():
         # Now change the stateIDs of the JLIDs in the DB to say that they have been completed
         for i in range(1, 5):
             updateJLState(jlid=i, stid=3)
-            return True
+        return True
     else:
         print("NAY")
         return False

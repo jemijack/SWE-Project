@@ -275,7 +275,7 @@ def save_junction():
     return jsonify({"status": "Success - Layout saved to the database"}), 200
 
 
-# This is where the calls to the simulation process will happen (may be Aadya's code?)
+"""This is where the calls to the simulation process will happen (may be Aadya's code?)"""
 def simulateJunction():
 
     # Get the IDs of the created junction set and it's configured layouts
@@ -285,8 +285,6 @@ def simulateJunction():
         return jsonify({"error": "Jid not found"}), 400
     if jlids is None:
         return jsonify({"error": "Jlids not found"}), 400
-    
-    # While I don't have Aadya's code, I'll sort of cheat things a bit and makeup the results
 
     # If there are configured layouts for this sessoin, simulate them
     for jlid in jlids:
@@ -297,7 +295,11 @@ def simulateJunction():
 # Loading page endpoint
 @app.route("/loading_page", methods=["GET"])
 def loading_page():
-    print(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage()}")
+
+    # Cheat and insert premade results into the database
+    logging.info(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage()}")
+
+    # Start the polling process if they're complete
     return render_template("loading.html")
 
 

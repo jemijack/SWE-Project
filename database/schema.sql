@@ -74,7 +74,6 @@ AS $$
     DECLARE
         all_finished BOOLEAN;
     BEGIN
-
         -- Check if all layouts for this junction are finished
         SELECT NOT EXISTS (
             SELECT 1

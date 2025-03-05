@@ -27,7 +27,7 @@ def getName(jid):
                 if JName_tuple is not None:
 
                     JName = JName_tuple[0]
-                    logging.info(f"The name forthe junction with jid {jid} has been successfully retrieved: {JName}") 
+                    logging.info(f"The name for the junction with jid: {jid} has been successfully retrieved: {JName}") 
                     return JName
                 
                 # The name of the junction could not be found
@@ -93,11 +93,11 @@ def checkJState(jid):
 
 
 def isSimulationFinished(jid):
-    time.sleep(2)
-    # jState = checkJState(jid)
-    # # A JState of 4 is hardcoded to mean that it is Finished
-    # return jState == 4
-    return True
+    jState = checkJState(jid)
+    logging.info(f"The status of junction with jid: {jid} is: {jState}")
+
+    # A JState of 4 is hardcoded to mean that it is Finished
+    return jState == 4
 
 
 def getSimulationResult(jlid):
