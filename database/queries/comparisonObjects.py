@@ -1,4 +1,8 @@
-from .selects import getVphObject, getName, getSimulationResults
+from .selects import getVphObject, getName, getSimulationResults, getLayoutObjects
+from ..__init__ import connect, createCursor
+from ..Objects import ResultsObject
+import psycopg2
+import json
 
 
 def getComparisonPageResultsObject(jid):
@@ -90,7 +94,7 @@ def getDirectionPriorities(jid):
     trafficFlows = vphObject["trafficFlows"]
     directionPriorities = {}
     for direction in trafficFlows:
-        directionPriorities[direction] = trafficFlows[direction]["priority"]
+        directionPriorities[direction] = int(trafficFlows[direction]["priority"])
 
     return directionPriorities
 
@@ -98,4 +102,94 @@ def getDirectionPriorities(jid):
 # Get the score metric wiehgtings for a particular junction, for use in the junction comparison page
 def getScoreWeights(jid):
     vphObject = getVphObject(jid)
+    priorities = vphObject["priorities"]
+    for p in priorities:
+        priorities[p] = int(priorities[p]) / 100.0  # Normalise the weightings
     return vphObject["priorities"]
+
+
+# BE VERY CHEEKY AND INSERT THE HARD CODED STUFF INTO THE DB
+def cheatComparisonPage():
+
+    res = {
+        "status" : "failure message description",
+
+
+        "northArm": {
+            "laneStats": {
+                "lane1": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane2": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane3": { "average wait time":104, "max wait time" :104, "max queue length": 6}
+            },
+        },
+        "eastArm": {
+            "laneStats": {
+                "lane1": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane2": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane3": { "average wait time":104, "max wait time" :104, "max queue length": 6}
+            },
+        },
+        "southArm": {
+            "laneStats": {
+                "lane1": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane2": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+            },
+        },
+        "westArm": {
+            "laneStats": {
+                "lane1": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane2": { "average wait time":104, "max wait time" :104, "max queue length": 6},
+                "lane3": { "average wait time":104, "max wait time" :104, "max queue length": 6}
+            },
+        },
+    }
+
+    def insertRes():
+        query = """
+            INSERT INTO simulation_results (JLID, ResultsObject)
+            VALUES
+                (1, (%s)),
+                (2, (%s)),
+                (3, (%s)),
+                (4, (%s))
+        """
+        resobj = ResultsObject(json=res)
+        data = (json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json))
+
+        connection = None
+
+        try:
+            connection = connect()
+            with connection:
+                with createCursor(connection) as cursor:
+                    cursor.execute(query, data)
+                    if cursor.rowcount != 4:
+                        return False
+                print(cursor.rowcount)
+                return True
+        except psycopg2.DatabaseError as e:
+            print(f"Error {e}")
+            return False
+        finally:
+            if connection:
+                connection.close()
+        
+    if insertRes():
+        print("YAY")
+    else:
+        print("NAY")
+    # getRes = getSimulationResults(1)
+    # print(json.dumps(obj=getRes, indent=4))
+    # print("The above is what it got")
+    res = getComparisonPageResultsObject(1)
+    dres = json.dumps(obj=res)
+    with open("./static/data/four-results.json", "w") as file:
+        json.dump(obj=res, fp=file, indent=4)
+    print(dres)
+    print("=======================================================================")
+    lay = getLayoutObjects(1)
+    dlay = json.dumps(obj=lay)
+    print(dlay)
+    with open("./static/data/four-config.json", "w") as file:
+        json.dump(obj=lay, fp=file, indent=4)
+    return True

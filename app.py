@@ -200,7 +200,7 @@ def junctionForm():
 
 # Endpoint for when the user has finished designing the layout for their junction
 # and wants to create a new one
-@app.route('/save_junction', methods=['Get', 'POST'])
+@app.route("/save_junction", methods=["Get", "POST"])
 def save_junction():
 
     # Get the JSON from the frontend
@@ -294,51 +294,59 @@ def simulateJunction():
         print("Hmm")
 
 
+# Loading page endpoint
+@app.route("/loading_page", methods=["GET"])
+def loading_page():
+    return render_template("loading.html")
+
+
 # Polling endpoint
-@app.route('/simulation_status')
+@app.route("/simulation_status", methods=["GET"])
 def simulation_status():
 
     # They need to have created a junction set in order to simulate it
     jid = session.get("jid")
     if jid is None:
-        return jsonify({"status": "Error - a junction set has not been created so there's nothing to simulate"}), 400
-    
+        return jsonify({
+            "status": "Error: a junction set has not been created - there's no layouts to simulate"
+            }), 400
+
     # Check if the junction has finished simulating
-    if database.isSimulationFinished(jid):
+    print("Should be waiting for 20 seconds")
+    #if database.isSimulationFinished(jid):
+    if database.cheatComparisonPage():
+        logging.info("It should have ran")
+        database.cheatComparisonPage
+        logging.info("It should have finsihed running")
         return jsonify({"status": "complete"}), 200
-        comparison_page()
-        return "comparison page html"
+
+    # The simulation is still occurring
+    return jsonify({"status": "in progress"}), 200
 
 
-    # The simulation has not finished. Wait for a bit, and then try again
-    attempt += 1
-    time.sleep(10)
-    return poll_route(maxAttempts, attempt)
-
-
-@app.route("/comparison_page")
+@app.route("/comparison_page", methods=["GET"])
 def comparison_page():
+
+    # Get the jid of the created junction set
+    jid = session.get("jid")
+
+    # If there is no jid in the session, a junction set must not have been created
+    # In a more complete version, this would be where the separate logic is for when
+    # they go straight to the comparison page from the homepage. But that will not be
+    # a feature in this prototype
+    if jid is None:
+        return jsonify({
+            "status": "Error: a junction set has not been created - there are no results to display"
+            }), 400
+
+    # Create the objects that the comparison page needs
+    # resobj = database.getComparisonPageResultsObject(jid)
+    # confobj = database.getLayoutObjects(jid)
+    # json.dump(obj=confobj, fp='/static/data/four-config.json', indent=4)
+    # json.dump(obj=resobj, fp='/static/data/four-results.json', indent=4)
     return render_template("preview.html")
-    jid = session.get("jid")
-    
-    # In the case that jid is None, it means that the user has made a new junction set in
-    # this session, meaning that they have pressed the "View Previous Designs" button from
-    # the home page, which we have not added functionality for in this prototype
-    if jid is None:
-        return jsonify({"error": "Not implemented yet"}), 404
 
-    # The comparison page takes two newly formatted JSONs
-    resultsObj = database.getComparisonPageResultsObject(jid)
-    configsObj = database.getLayoutObjects(jid)
-
-
-@app.route("/compare_new_kunctoin")
-def compare_new_junction():
-    jid = session.get("jid")
-    if jid is None:
-        return jsonify("")
-
-    
+  
 if __name__ == "__main__":
     database.initialiseDatabase()
     app.run(debug=True)

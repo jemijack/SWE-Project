@@ -55,7 +55,7 @@ class LayoutObject:
         self.uid = self.json["userId"]
         self.timestamp = self.json["timestamp"]
         self.jid = self.json["junctionID"]
-        self.jlname = self.json["jLayoutName"]
+        self.jlname = self.json["jLayoutName"] # Temporary - it gets changed to it's real value when pulled from the database
         errOccur = False
         errString = ""
         if self.name is None:
@@ -120,7 +120,6 @@ class LayoutObject:
 
 @dataclass
 class ResultsObject:
-    sid: Optional[int] = None
     jlid: Optional[int] = None
     timestamp: Optional[str] = None
     json: Optional[Any] = None

@@ -431,24 +431,26 @@ function submitData() { // refactor after switchDirection is done
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(layoutData) 
         })
-        .then(response => response.json()) // Now expects JSON
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response;
+            return response.json();
         })
         .then(data => {
             console.log("Response from backend:", data);
+
+            // Increment the submission count
+            submissionCount++;
+            console.log(submissionCount)
+
+            // If the user has created all 4 allotted junctions, redirect them if they have
+            if (submissionCount >= 4) {
+                window.location.href = '/loading_page'
+            }
         })
         .catch(error => console.error('Error:', error));
 
-        // If the user has created all 4 junctions, redirect them
-        submissionCount++;
-        console.log(submissionCount)
-        if (submissionCount >= 4) {
-            window.location.href = '/comparison_page';
-        }
  }
 
 

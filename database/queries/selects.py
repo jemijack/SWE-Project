@@ -1,6 +1,7 @@
 from ..__init__ import connect, createCursor
 import psycopg2
 import logging  # More flexible than print statements
+import time
 
 
 def getName(jid):
@@ -92,9 +93,11 @@ def checkJState(jid):
 
 
 def isSimulationFinished(jid):
-    jState = checkJState(jid)
-    # A JState of 4 is hardcoded to mean that it is Finished
-    return jState == 4
+    time.sleep(2)
+    # jState = checkJState(jid)
+    # # A JState of 4 is hardcoded to mean that it is Finished
+    # return jState == 4
+    return True
 
 
 def getSimulationResult(jlid):
@@ -167,7 +170,7 @@ def getSimulationResults(jid):
 
                         # Insert layout-unique values
                         metadata["JLID"] = jlid
-                        metadata["timestamp"] = timestamp
+                        metadata["timestamp"] = timestamp.isoformat()
 
                         # These values are hard-coded for now, but in future versions of
                         # the product, these measurements may be varied
@@ -178,7 +181,7 @@ def getSimulationResults(jid):
                         # Add the metadata to the results object
                         detailedResults["metadata"] = metadata
                         detailedResults["results"] = resultsObject
-                        json.append(resultsObject)
+                        json.append(detailedResults)
 
                     return json
 
@@ -203,6 +206,7 @@ def getLayoutObjects(jid):
         SELECT JLID, ConfigurationObject
         FROM junction_layouts
         WHERE JID = (%s)
+        ORDER BY JLID
     """
     connection = None
 
