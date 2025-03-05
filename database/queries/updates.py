@@ -16,12 +16,12 @@ L_SIMULATION_ERROR = 4
 L_SCORE_CALCULATION_ERROR = 5
 
 
-def updateJState(jid, st):
-    return updateState(id=jid, isJunction=True, state=st)
+def updateJState(jid, stid):
+    return updateState(id=jid, isJunction=True, stateID=stid)
 
 
-def updateJLState(jlid, st):
-    return updateState(id=jlid, isJunction=False, state=st)
+def updateJLState(jlid, stid):
+    return updateState(id=jlid, isJunction=False, stateID=stid)
 
 
 def updateState(id, isJunction, stateID):

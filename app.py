@@ -297,6 +297,7 @@ def simulateJunction():
 # Loading page endpoint
 @app.route("/loading_page", methods=["GET"])
 def loading_page():
+    print(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage()}")
     return render_template("loading.html")
 
 
@@ -311,13 +312,8 @@ def simulation_status():
             "status": "Error: a junction set has not been created - there's no layouts to simulate"
             }), 400
 
-    # Check if the junction has finished simulating
-    print("Should be waiting for 20 seconds")
-    #if database.isSimulationFinished(jid):
-    if database.cheatComparisonPage():
-        logging.info("It should have ran")
-        database.cheatComparisonPage
-        logging.info("It should have finsihed running")
+    if database.isSimulationFinished(jid):
+        # Return a message saying that its complete
         return jsonify({"status": "complete"}), 200
 
     # The simulation is still occurring
@@ -339,6 +335,26 @@ def comparison_page():
             "status": "Error: a junction set has not been created - there are no results to display"
             }), 400
 
+    # The simulation has finished, so the data that we need is in the database
+    # and we can create the objects that the comparison page needs - a custom resultsJSON,
+    # which combines attributes from all three database objects for a junction with its 
+    # layouts and a list of normal configurationObjects for those layouts as a JSON
+
+    # Create the resultsJSON
+    resultsJSON = database.getComparisonPageResultsObject(jid)
+    logging.info(f"ResultsJSON obtained: {json.dumps(obj=resultsJSON, indent=4)}")  # For logging reasons
+
+    # Write the json to the hardcoded filepath
+    with open("./static/data/four-results.json", "w") as file:
+        json.dump(obj=resultsJSON, fp=file, indent=4) 
+
+    # Create the configJSON
+    layoutObjects = database.getLayoutObjects(jid)
+    logging.info(f"configJSON obtained: {json.dumps(obj=layoutObjects, indent=4)}")  # For logging reasons
+
+    # Write the json to the hardcoded filepath
+    with open("./static/data/four-config.json", "w") as file:
+        json.dump(obj=layoutObjects, fp=file, indent=4) 
     # Create the objects that the comparison page needs
     # resobj = database.getComparisonPageResultsObject(jid)
     # confobj = database.getLayoutObjects(jid)

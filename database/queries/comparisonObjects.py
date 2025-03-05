@@ -1,4 +1,5 @@
 from .selects import getVphObject, getName, getSimulationResults, getLayoutObjects
+from .updates import updateJLState
 from ..__init__ import connect, createCursor
 from ..Objects import ResultsObject
 import psycopg2
@@ -21,7 +22,7 @@ def getComparisonPageResultsObject(jid):
     dp = getDirectionPriorities(jid)
 
     # Add the direction priorities to the arms of each resultsObject
-    # This only works for when ONE junction set is being compared - otherwise instead of using 
+    # This only works for when ONE junction set is being compared - otherwise instead of using
     # dp |arms| many times, dp will have to be a list of direction prioritisations
     for rdsr in rDetailedsrs:
         rsr = rdsr["results"]  # Don't access the metadata as we don't edit it
@@ -94,7 +95,7 @@ def getDirectionPriorities(jid):
     trafficFlows = vphObject["trafficFlows"]
     directionPriorities = {}
     for direction in trafficFlows:
-        directionPriorities[direction] = int(trafficFlows[direction]["priority"])
+        directionPriorities[direction] = trafficFlows[direction]["priority"]
 
     return directionPriorities
 
@@ -104,15 +105,15 @@ def getScoreWeights(jid):
     vphObject = getVphObject(jid)
     priorities = vphObject["priorities"]
     for p in priorities:
-        priorities[p] = int(priorities[p]) / 100.0  # Normalise the weightings
+        priorities[p] = priorities[p] / 100.0  # Normalise the weightings
     return vphObject["priorities"]
 
 
-# BE VERY CHEEKY AND INSERT THE HARD CODED STUFF INTO THE DB
+# Insert hard-coded results while we don't have the simulation working
 def cheatComparisonPage():
 
     res = {
-        "status" : "failure message description",
+        "status": "failure message description",
 
 
         "northArm": {
@@ -144,7 +145,10 @@ def cheatComparisonPage():
         },
     }
 
+    # Insert the above example ResultsObjects into the database
     def insertRes():
+
+        # Hardcoded JLIDs are used - I believe Aadya's simulation would normally have them
         query = """
             INSERT INTO simulation_results (JLID, ResultsObject)
             VALUES
@@ -154,6 +158,7 @@ def cheatComparisonPage():
                 (4, (%s))
         """
         resobj = ResultsObject(json=res)
+        # Need to stringify the objects in order to insert them into the db as they contain a field of type TIMESTAMP which psycopg2 can't convert into JSONB
         data = (json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json))
 
         connection = None
@@ -163,7 +168,7 @@ def cheatComparisonPage():
             with connection:
                 with createCursor(connection) as cursor:
                     cursor.execute(query, data)
-                    if cursor.rowcount != 4:
+                    if cursor.rowcount != 4:  # Check that all 4 rows have properly inserted
                         return False
                 print(cursor.rowcount)
                 return True
@@ -173,23 +178,14 @@ def cheatComparisonPage():
         finally:
             if connection:
                 connection.close()
-        
+
     if insertRes():
-        print("YAY")
+        print("The fake results have successfully been inserted")
+
+        # Now change the stateIDs of the JLIDs in the DB to say that they have been completed
+        for i in range(1, 5):
+            updateJLState(jlid=i, stid=3)
+            return True
     else:
         print("NAY")
-    # getRes = getSimulationResults(1)
-    # print(json.dumps(obj=getRes, indent=4))
-    # print("The above is what it got")
-    res = getComparisonPageResultsObject(1)
-    dres = json.dumps(obj=res)
-    with open("./static/data/four-results.json", "w") as file:
-        json.dump(obj=res, fp=file, indent=4)
-    print(dres)
-    print("=======================================================================")
-    lay = getLayoutObjects(1)
-    dlay = json.dumps(obj=lay)
-    print(dlay)
-    with open("./static/data/four-config.json", "w") as file:
-        json.dump(obj=lay, fp=file, indent=4)
-    return True
+        return False
