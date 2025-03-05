@@ -46,29 +46,7 @@
         <div class="loading-text">Running simulation, please wait...</div>
     </div>
 
-    <script>
-        // Function to check simulation status
-        async function checkSimulationStatus() {
-            try {
-                const response = await fetch('/simulation_status');
-                const result = await response.json();
-
-                if (result.status === 'complete') {
-                    // Redirect to the comparison page
-                    window.location.href = '/comparison_page';
-                } else {
-                    // Poll again after a delay
-                    setTimeout(checkSimulationStatus, 2000); // Poll every 2 seconds
-                }
-            } catch (error) {
-                console.error('Error checking simulation status:', error);
-                // Retry polling in case of an error
-                setTimeout(checkSimulationStatus, 2000);
-            }
-        }
-
-        // Start polling when the page loads
-        window.onload = checkSimulationStatus;
+    <script src="{{ url_for('static', filename='loadingPage.js')}}" defer></script>
     </script>
 </body>
 </html>

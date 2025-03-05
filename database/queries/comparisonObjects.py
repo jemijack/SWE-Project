@@ -4,7 +4,7 @@ from ..Objects import ResultsObject
 import psycopg2
 import json
 
-
+""" THIS ENTIRE FILE EXISTS TO TRY AND CHEESE THE TESTING OF THE CREATION OF THE COMPARISON PAGE'S OBJECTS"""
 def getComparisonPageResultsObject(jid):
 
     results = {}  # Initialise the dictionary to be returned

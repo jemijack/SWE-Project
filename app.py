@@ -91,70 +91,70 @@ def junctionForm():
     form_data = {
         "JName": request.form.get("junctionSetName"),
         "priorities": {
-            "averageWaitPriority": request.form.get("AverageWait"),
-            "maximumWaitPriority": request.form.get("MaxWait"),
-            "maximumQueuePriority": request.form.get("MaxQueue")
+            "averageWaitPriority": int(request.form.get("AverageWait")),
+            "maximumWaitPriority": int(request.form.get("MaxWait")),
+            "maximumQueuePriority": int(request.form.get("MaxQueue"))
         },
         "trafficFlows": {
             "north": {
-                "totalVph": request.form.get("northVehiclesIn"),
+                "totalVph": int(request.form.get("northVehiclesIn")),
                 "exitingVPH": {
-                    "east": request.form.get("northLeftOut"),
-                    "south": request.form.get("northStraightOut"),
-                    "west": request.form.get("northRightOut")
+                    "east": int(request.form.get("northLeftOut")),
+                    "south": int(request.form.get("northStraightOut")),
+                    "west": int(request.form.get("northRightOut"))
                 },
                 "vehicleSplit": {
-                    "bus": request.form.get("northBusPercentage"),
-                    "cycle": request.form.get("northCyclePercentage"),
-                    "car": request.form.get("northCarPercentage")
+                    "bus": int(request.form.get("northBusPercentage")),
+                    "cycle": int(request.form.get("northCyclePercentage")),
+                    "car": int(request.form.get("northCarPercentage"))
                 },
-                "priority": request.form.get("northPriority")
+                "priority": int(request.form.get("northPriority"))
             },
             "east": {
-                "totalVPH": request.form.get("eastVehiclesIn"),
+                "totalVPH": int(request.form.get("eastVehiclesIn")),
                 "exitingVPH": {
-                    "north": request.form.get("eastRightOut"),
-                    "south": request.form.get("eastLeftOut"),
-                    "west": request.form.get("eastStraightOut"),
+                    "north": int(request.form.get("eastRightOut")),
+                    "south": int(request.form.get("eastLeftOut")),
+                    "west": int(request.form.get("eastStraightOut")),
                 },
                 "vehicleSplit": {
-                    "carPercentage": request.form.get("eastCarPercentage"),
-                    "busPercentage": request.form.get("eastBusPercentage"),
-                    "cyclePercentage": request.form.get("eastCyclePercentage")
+                    "carPercentage": int(request.form.get("eastCarPercentage")),
+                    "busPercentage": int(request.form.get("eastBusPercentage")),
+                    "cyclePercentage": int(request.form.get("eastCyclePercentage"))
                 },
-                "priority": request.form.get("eastPriority")
+                "priority": int(request.form.get("eastPriority"))
             },
             "south": {
-                "totalVPH": request.form.get("southVehiclesIn"),
+                "totalVPH": int(request.form.get("southVehiclesIn")),
                 "exitingVPH": {
-                    "north": request.form.get("southStraightOut"),
-                    "east": request.form.get("southRightOut"),
-                    "west": request.form.get("southLeftOut")
+                    "north": int(request.form.get("southStraightOut")),
+                    "east": int(request.form.get("southRightOut")),
+                    "west": int(request.form.get("southLeftOut"))
                 },
                 "vehicleSplit": {
-                    "carPercentage": request.form.get("southCarPercentage"),
-                    "busPercentage": request.form.get("southBusPercentage"),
-                    "cyclePercentage": request.form.get("southCyclePercentage")
+                    "carPercentage": int(request.form.get("southCarPercentage")),
+                    "busPercentage": int(request.form.get("southBusPercentage")),
+                    "cyclePercentage": int(request.form.get("southCyclePercentage"))
                 },
-                "priority": request.form.get("southPriority")
+                "priority": int(request.form.get("southPriority"))
             },
             "west": {
-                "totalVPH": request.form.get("westVehiclesIn"),
+                "totalVPH": int(request.form.get("westVehiclesIn")),
                 "exitingVPH": {
-                    "leftOut": request.form.get("westLeftOut"),
-                    "straightOut": request.form.get("westStraightOut"),
-                    "rightOut": request.form.get("westRightOut")
+                    "leftOut": int(request.form.get("westLeftOut")),
+                    "straightOut": int(request.form.get("westStraightOut")),
+                    "rightOut": int(request.form.get("westRightOut"))
                 },
                 "vehicleSplit": {
-                    "carPercentage": request.form.get("westCarPercentage"),
-                    "busPercentage": request.form.get("westBusPercentage"),
-                    "cyclePercentage": request.form.get("westCyclePercentage")
+                    "carPercentage": int(request.form.get("westCarPercentage")),
+                    "busPercentage": int(request.form.get("westBusPercentage")),
+                    "cyclePercentage": int(request.form.get("westCyclePercentage"))
                 },
-                "priority": request.form.get("westPriority")
+                "priority": int(request.form.get("westPriority"))
             }
         },
         "pedestrianData": {
-            "crossingDuration": request.form.get("crossingDuration"),
+            "crossingDuration": int(request.form.get("crossingDuration")),
             "hasCrossing": {
                 "north": northPedestrian,
                 "east": eastPedestrian,
@@ -174,7 +174,7 @@ def junctionForm():
     form_data["timestamp"] = datetime.now(timezone.utc)
 
     # Add the uid field
-    form_data["userId"] = session.get("uid")
+    form_data["userId"] = str(session.get("uid"))
 
     # Make a VPHObject
     vphObject = VPHObject(json=form_data)

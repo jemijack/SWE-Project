@@ -1,4 +1,4 @@
-async function checkSimulationStatys() {
+async function checkSimulationStatus() {
     const response = await fetch('/simulation_status'); // await means the script will pause until /siumulation_status responds since it is an asynchronous function
     const result = await response.json(); // again, await is necessary as otherwise, response.json will be a Promise object, and not a json
     
