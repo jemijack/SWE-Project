@@ -27,7 +27,7 @@ def getComparisonPageResultsObject(jid):
     for rdsr in rDetailedsrs:
         rsr = rdsr["results"]  # Don't access the metadata as we don't edit it
         for arm in rsr:
-            rsr[arm]["priority"] = dp[arm]
+            rsr[arm]["priority"] = dp[arm + "Arm"]
 
     # Add the scoring weights to each of the resultsObjects
     # For the same reasons, this only works when all layouts are from the same junction set

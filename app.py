@@ -96,7 +96,7 @@ def layoutForm():
         },
         "pedestrianCrossingDuration": int(request.form.get("crossingDuration")),
         "trafficFlows": {
-            "north": {
+            "northArm": {
                 "totalVph": int(request.form.get("northVehiclesIn")),
                 "exitingVPH": {
                     "east": int(request.form.get("northLeftOut")),
@@ -111,7 +111,7 @@ def layoutForm():
                 "pedestrianCrossingRPH": northRequestFrequency,
                 "priority": int(request.form.get("northPriority"))
             },
-            "east": {
+            "eastArm": {
                 "totalVPH": int(request.form.get("eastVehiclesIn")),
                 "exitingVPH": {
                     "north": int(request.form.get("eastRightOut")),
@@ -119,14 +119,14 @@ def layoutForm():
                     "west": int(request.form.get("eastStraightOut")),
                 },
                 "vehicleSplit": {
-                    "carPercentage": int(request.form.get("eastCarPercentage")),
-                    "busPercentage": int(request.form.get("eastBusPercentage")),
-                    "cyclePercentage": int(request.form.get("eastCyclePercentage"))
+                    "car": int(request.form.get("eastCarPercentage")),
+                    "bus": int(request.form.get("eastBusPercentage")),
+                    "cycle": int(request.form.get("eastCyclePercentage"))
                 },
                 "pedestrianCrossingRPH": eastRequestFrequency,
                 "priority": int(request.form.get("eastPriority"))
             },
-            "south": {
+            "southArm": {
                 "totalVPH": int(request.form.get("southVehiclesIn")),
                 "exitingVPH": {
                     "north": int(request.form.get("southStraightOut")),
@@ -134,14 +134,14 @@ def layoutForm():
                     "west": int(request.form.get("southLeftOut"))
                 },
                 "vehicleSplit": {
-                    "carPercentage": int(request.form.get("southCarPercentage")),
-                    "busPercentage": int(request.form.get("southBusPercentage")),
-                    "cyclePercentage": int(request.form.get("southCyclePercentage"))
+                    "car": int(request.form.get("southCarPercentage")),
+                    "bus": int(request.form.get("southBusPercentage")),
+                    "cycle": int(request.form.get("southCyclePercentage"))
                 },
                 "pedestrianCrossingRPH": southRequestFrequency,
                 "priority": int(request.form.get("southPriority"))
             },
-            "west": {
+            "westArm": {
                 "totalVPH": int(request.form.get("westVehiclesIn")),
                 "exitingVPH": {
                     "north": int(request.form.get("westLeftOut")),
@@ -149,9 +149,9 @@ def layoutForm():
                     "south": int(request.form.get("westRightOut"))
                 },
                 "vehicleSplit": {
-                    "carPercentage": int(request.form.get("westCarPercentage")),
-                    "busPercentage": int(request.form.get("westBusPercentage")),
-                    "cyclePercentage": int(request.form.get("westCyclePercentage"))
+                    "car": int(request.form.get("westCarPercentage")),
+                    "bus": int(request.form.get("westBusPercentage")),
+                    "cycle": int(request.form.get("westCyclePercentage"))
                 },
                 "pedestrianCrossingRPH": westRequestFrequency,
                 "priority": int(request.form.get("westPriority"))
