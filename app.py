@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session
 import database
 from database.Objects import VPHObject, LayoutObject
 import logging
@@ -16,14 +16,14 @@ def login():
     return render_template("LoginPage.html")   
 
 # Route to the junction set design page from the home page
-@app.route("/setform")
-def setForm():
-    # Displays the junction set design page at the specified url, i.e setform
+@app.route("/junctionform")
+def junctionForm():
+    # Displays the junction set design page at the specified url, i.e /junctionform
     return render_template("CreateNewSet.html")
 
 # Route to get back to the home page from the junction set creation page
 @app.route("/home")
-def setFormToHome():
+def junctionFormToHome():
     # Displays the home page at the url /home
     return render_template("HomePage.html")
 
