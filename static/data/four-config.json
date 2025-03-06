@@ -4,42 +4,42 @@
         "eastArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T19:58:43.542Z",
+        "timestamp": "2025-03-06T01:41:42.868Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "0",
         "JLID": "1"
     },
     {
@@ -47,42 +47,42 @@
         "eastArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T19:58:43.542Z",
+        "timestamp": "2025-03-06T01:41:42.868Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "0",
         "JLID": "2"
     },
     {
@@ -90,42 +90,42 @@
         "eastArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T19:58:43.542Z",
+        "timestamp": "2025-03-06T01:41:42.868Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "0",
         "JLID": "3"
     },
     {
@@ -133,42 +133,42 @@
         "eastArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
             "laneCount": 3,
             "laneDetail": {
-                "lane1": "",
-                "lane2": "",
-                "lane3": ""
+                "lane1": "allDirs",
+                "lane2": "allDirs",
+                "lane3": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T19:58:43.542Z",
+        "timestamp": "2025-03-06T01:41:42.868Z",
         "junctionID": 1,
-        "jLayoutName": "",
+        "jLayoutName": "0",
         "JLID": "4"
     }
 ]

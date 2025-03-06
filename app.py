@@ -5,7 +5,6 @@ import logging
 from datetime import datetime, timezone
 import json
 from os import urandom
-import time
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
