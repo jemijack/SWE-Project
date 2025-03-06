@@ -37,9 +37,9 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-06T09:09:49.137Z",
+        "timestamp": "2025-03-06T09:16:29.848Z",
         "junctionID": 1,
-        "jLayoutName": "09",
+        "jLayoutName": "buddy",
         "JLID": "1"
     },
     {
@@ -80,9 +80,9 @@
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-06T09:09:49.137Z",
+        "timestamp": "2025-03-06T09:16:29.848Z",
         "junctionID": 1,
-        "jLayoutName": "2",
+        "jLayoutName": "budddy",
         "JLID": "2"
     }
 ]

@@ -294,7 +294,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Load our junction script -->
-    <script src="../static/image.js"></script>
+    <script src="image.js"></script>
     
     <script>
         // Store all data
@@ -325,8 +325,8 @@
         document.addEventListener("DOMContentLoaded", function() {
             // Fetch both data files simultaneously
             Promise.all([
-                fetch('../static/data/four-config.json').then(response => response.json()),
-                fetch('../static/data/four-results.json').then(response => response.json())
+                fetch('four-config.json').then(response => response.json()),
+                fetch('four-results.json').then(response => response.json())
             ])
             .then(([configs, jData]) => {
                 allConfigs = configs;

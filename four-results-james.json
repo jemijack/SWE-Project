@@ -1,0 +1,370 @@
+{
+    "JID": "1",
+    "junctionName": "JunctionName",
+    "layouts": [
+        {
+            "scoringWeights": {
+                "averageWaitTime": 0.34,
+                "maxWaitTime": 0.33,
+                "maxQueueLength": 0.33
+            },
+            "metadata": {
+                "JLID": "1",
+                "timestamp": "2025-03-05T01:08:30.924000",
+                "totalSimulationTime": 3600,
+                "timeUnit": "seconds",
+                "queueLengthUnit": "vehicles"
+            },
+            "results": {
+                "north": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "south": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "east": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "west": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                }
+            }
+        },
+        {
+            "scoringWeights": {
+                "averageWaitTime": 0.34,
+                "maxWaitTime": 0.33,
+                "maxQueueLength": 0.33
+            },
+            "metadata": {
+                "JLID": "2",
+                "timestamp": "2025-03-05T01:08:30.924000",
+                "totalSimulationTime": 3600,
+                "timeUnit": "seconds",
+                "queueLengthUnit": "vehicles"
+            },
+            "results": {
+                "north": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "south": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "east": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "west": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                }
+            }
+        },
+        {
+            "scoringWeights": {
+                "averageWaitTime": 0.34,
+                "maxWaitTime": 0.33,
+                "maxQueueLength": 0.33
+            },
+            "metadata": {
+                "JLID": "3",
+                "timestamp": "2025-03-05T01:08:30.924000",
+                "totalSimulationTime": 3600,
+                "timeUnit": "seconds",
+                "queueLengthUnit": "vehicles"
+            },
+            "results": {
+                "north": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "south": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "east": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "west": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                }
+            }
+        },
+        {
+            "scoringWeights": {
+                "averageWaitTime": 0.34,
+                "maxWaitTime": 0.33,
+                "maxQueueLength": 0.33
+            },
+            "metadata": {
+                "JLID": "4",
+                "timestamp": "2025-03-05T01:08:30.924000",
+                "totalSimulationTime": 3600,
+                "timeUnit": "seconds",
+                "queueLengthUnit": "vehicles"
+            },
+            "results": {
+                "north": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "south": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "east": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                },
+                "west": {
+                    "lanes": [
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        },
+                        {
+                            "averageWaitTime": 104,
+                            "maxWaitTime": 104,
+                            "maxQueueLength": 6
+                        }
+                    ],
+                    "priority": 1
+                }
+            }
+        }
+    ]
+}
