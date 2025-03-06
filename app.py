@@ -382,7 +382,7 @@ def comparison_page():
         json.dump(obj=layoutObjects, fp=file, indent=4)
 
     # Render the comparisons page
-    return render_template("preview.html")
+    return render_template("comparisonPage.html")
 
 
 if __name__ == "__main__":

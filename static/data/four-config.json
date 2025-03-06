@@ -2,87 +2,71 @@
     {
         "userId": "11",
         "eastArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-06T09:16:29.848Z",
+        "timestamp": "2025-03-06T09:42:21.028Z",
         "junctionID": 1,
-        "jLayoutName": "buddy",
+        "jLayoutName": "o",
         "JLID": "1"
     },
     {
         "userId": "11",
         "eastArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
-            "laneCount": 3,
+            "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs",
-                "lane2": "allDirs",
-                "lane3": "allDirs"
+                "lane1": "allDirs"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-06T09:16:29.848Z",
+        "timestamp": "2025-03-06T09:42:21.028Z",
         "junctionID": 1,
-        "jLayoutName": "budddy",
+        "jLayoutName": "o",
         "JLID": "2"
     }
 ]
