@@ -369,20 +369,20 @@ def comparison_page():
     resultsJSON = database.getComparisonPageResultsObject(jid)
     logging.info(f"ResultsJSON obtained: {json.dumps(obj=resultsJSON, indent=4)}")  # For logging reasons
 
-    # Write the json to the hardcoded filepath
-    with open("./static/data/four-results.json", "w") as file:
-        json.dump(obj=resultsJSON, fp=file, indent=4)
+    # # Write the json to the hardcoded filepath
+    # with open("./static/data/four-results.json", "w") as file:
+    #     json.dump(obj=resultsJSON, fp=file, indent=4)
 
     # Create the configJSON
     layoutObjects = database.getLayoutObjects(jid)
     logging.info(f"configJSON obtained: {json.dumps(obj=layoutObjects, indent=4)}")  # For logging reasons
 
-    # Write the json to the hardcoded filepath
-    with open("./static/data/four-config.json", "w") as file:
-        json.dump(obj=layoutObjects, fp=file, indent=4)
+    # # Write the json to the hardcoded filepath
+    # with open("./static/data/four-config.json", "w") as file:
+    #     json.dump(obj=layoutObjects, fp=file, indent=4)
 
     # Render the comparisons page
-    return render_template("comparisonPage.html")
+    return render_template("comparisonPage.html", configData=layoutObjects, resultsData=resultsJSON)
 
 
 if __name__ == "__main__":

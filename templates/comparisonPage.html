@@ -297,6 +297,10 @@
     <script src="{{ url_for('static', filename='image.js') }}"></script>
     
     <script>
+        // JSON data can be embedded directly into the template
+        const configs = {{ configData | tojson | safe }};
+        const jData = {{ resultsData | tojson | safe }};
+        
         // Store all data
         let allConfigs = []; // From configs.json
         let junctionData = null; // From junction-data.json
@@ -323,12 +327,7 @@
         
         // Wait for DOM to be fully loaded
         document.addEventListener("DOMContentLoaded", function() {
-            // Fetch both data files simultaneously
-            Promise.all([
-                fetch("{{ url_for('static', filename='data/four-config.json') }}").then(response => response.json()),
-                fetch("{{ url_for('static', filename='data/four-results.json') }}").then(response => response.json())
-            ])
-            .then(([configs, jData]) => {
+
                 allConfigs = configs;
                 junctionData = jData;
                 
@@ -349,12 +348,6 @@
                     }
                 }, 100); // 100ms delay should be sufficient (unless we decide to run on a very far away server)
             })
-            .catch(error => {
-                console.error('Error loading data:', error);
-                document.getElementById('layoutSelector').innerHTML = 
-                    '<option value="">Error loading data</option>';
-            });
-        });
 
         // Calculate climate score for a junction layout
         function calculateClimateScore(layout, config) {
