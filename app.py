@@ -94,6 +94,7 @@ def layoutForm():
             "maximumWaitTime": int(request.form.get("MaxWait")),
             "maximumQueueLength": int(request.form.get("MaxQueue"))
         },
+        "pedestrianCrossingDuration": int(request.form.get("crossingDuration")),
         "trafficFlows": {
             "north": {
                 "totalVph": int(request.form.get("northVehiclesIn")),
@@ -107,6 +108,7 @@ def layoutForm():
                     "cycle": int(request.form.get("northCyclePercentage")),
                     "car": int(request.form.get("northCarPercentage"))
                 },
+                "pedestrianCrossingRPH": northRequestFrequency,
                 "priority": int(request.form.get("northPriority"))
             },
             "east": {
@@ -121,6 +123,7 @@ def layoutForm():
                     "busPercentage": int(request.form.get("eastBusPercentage")),
                     "cyclePercentage": int(request.form.get("eastCyclePercentage"))
                 },
+                "pedestrianCrossingRPH": eastRequestFrequency,
                 "priority": int(request.form.get("eastPriority"))
             },
             "south": {
@@ -135,38 +138,40 @@ def layoutForm():
                     "busPercentage": int(request.form.get("southBusPercentage")),
                     "cyclePercentage": int(request.form.get("southCyclePercentage"))
                 },
+                "pedestrianCrossingRPH": southRequestFrequency,
                 "priority": int(request.form.get("southPriority"))
             },
             "west": {
                 "totalVPH": int(request.form.get("westVehiclesIn")),
                 "exitingVPH": {
-                    "leftOut": int(request.form.get("westLeftOut")),
-                    "straightOut": int(request.form.get("westStraightOut")),
-                    "rightOut": int(request.form.get("westRightOut"))
+                    "north": int(request.form.get("westLeftOut")),
+                    "east": int(request.form.get("westStraightOut")),
+                    "south": int(request.form.get("westRightOut"))
                 },
                 "vehicleSplit": {
                     "carPercentage": int(request.form.get("westCarPercentage")),
                     "busPercentage": int(request.form.get("westBusPercentage")),
                     "cyclePercentage": int(request.form.get("westCyclePercentage"))
                 },
+                "pedestrianCrossingRPH": westRequestFrequency,
                 "priority": int(request.form.get("westPriority"))
             }
         },
-        "pedestrianData": {
-            "crossingDuration": int(request.form.get("crossingDuration")),
-            "hasCrossing": {
-                "north": northPedestrian,
-                "east": eastPedestrian,
-                "south": southPedestrian,
-                "west": westPedestrian,
-            },
-            "rph": {
-                "north": northRequestFrequency,
-                "east": eastRequestFrequency,
-                "south": southRequestFrequency,
-                "west": westRequestFrequency
-            }
-        }
+        # "pedestrianData": {
+        #     "crossingDuration": int(request.form.get("crossingDuration")),
+        #     "hasCrossing": {
+        #         "north": northPedestrian,
+        #         "east": eastPedestrian,
+        #         "south": southPedestrian,
+        #         "west": westPedestrian,
+        #     },
+        #     "rph": {
+        #         "north": northRequestFrequency,
+        #         "east": eastRequestFrequency,
+        #         "south": southRequestFrequency,
+        #         "west": westRequestFrequency
+        #     }
+        # }
     }
 
     # Add a timeststamp field for logging purposes

@@ -5,12 +5,12 @@
         {
             "scoringWeights": {
                 "averageWaitTime": 0.0,
-                "maximumWaitTime": 1.0,
-                "maximumQueueLength": 0.0
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
                 "JLID": "1",
-                "timestamp": "2025-03-06T20:24:33.876000",
+                "timestamp": "2025-03-06T21:15:27.711000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"
@@ -107,12 +107,12 @@
         {
             "scoringWeights": {
                 "averageWaitTime": 0.0,
-                "maximumWaitTime": 1.0,
-                "maximumQueueLength": 0.0
+                "maximumWaitTime": 0.0,
+                "maximumQueueLength": 1.0
             },
             "metadata": {
                 "JLID": "2",
-                "timestamp": "2025-03-06T20:24:33.876000",
+                "timestamp": "2025-03-06T21:15:27.711000",
                 "totalSimulationTime": 3600,
                 "timeUnit": "seconds",
                 "queueLengthUnit": "vehicles"
