@@ -12,6 +12,7 @@
     flex-direction: column;
     gap: 10px;
     border-right: 1px solid #ddd;
+    height: 100%;
 }
 
 /*  button styles */
@@ -90,3 +91,9 @@
     background-color: #ffffff; /* White background */
 }
 
+
+button {
+    outline: none; /* Remove outline */
+    border: none; /* Remove border */
+    cursor: pointer; /* Show pointer on hover */
+}
