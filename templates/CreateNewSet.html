@@ -53,21 +53,26 @@
     <!-- Junction Set Name -->
     <label for="junctionSetName">Junction Set Name:</label>
     <input type="text" id="junctionSetName" name="junctionSetName">
+    <input type="text" id="junctionSetName" name="junctionSetName">
     <!-- Crossing duration for pedestrians -->
     <br>
     <label for="crossingDuration">Pedestrian Crossing Duration (in seconds):</label>
+    <input type="text" id="crossingDuration" name="crossingDuration" oninput="validateDecimal(this)">
     <input type="text" id="crossingDuration" name="crossingDuration" oninput="validateDecimal(this)">
     <div id="crossingDurationError" class="error-message"></div>
     <!-- User priorities of key junction attributes-->
     <label for="AverageWait">Average Wait Time Priority (%):</label>
     <input type="text" id="AverageWait" name="AverageWait" oninput="validateInteger(this)">
+    <input type="text" id="AverageWait" name="AverageWait" oninput="validateInteger(this)">
     <div id="AverageWaitError" class="error-message"></div>
 
     <label for="MaxWait">Maximum Wait Time Priority (%):</label>
     <input type="text" id="MaxWait" name="MaxWait" oninput="validateInteger(this)">
+    <input type="text" id="MaxWait" name="MaxWait" oninput="validateInteger(this)">
     <div id="MaxWaitError" class="error-message"></div>
 
     <label for="MaxQueue">Maximum Wait Time Priority (%):</label>
+    <input type="text" id="MaxQueue" name="MaxQueue" oninput="validateInteger(this)">
     <input type="text" id="MaxQueue" name="MaxQueue" oninput="validateInteger(this)">
     <div id="MaxQueueError" class="error-message"></div>
 
@@ -84,29 +89,36 @@
       <h3>Northbound</h3>
       <label for="northVehiclesIn">Total Vehicles Incoming (per hour):</label>
       <input type="text" id="northVehiclesIn" name="northVehiclesIn" oninput="validateInteger(this)">
+      <input type="text" id="northVehiclesIn" name="northVehiclesIn" oninput="validateInteger(this)">
       <div id="northVehiclesInError" class="error-message"></div>
 
       <label for="northLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="northLeftOut" name="northLeftOut" oninput="validateInteger(this)">
       <input type="text" id="northLeftOut" name="northLeftOut" oninput="validateInteger(this)">
       <div id="northLeftOutError" class="error-message"></div>
 
       <label for="northStraightOut">Total Vehicles Exiting North (per hour):</label>
       <input type="text" id="northStraightOut" name="northStraightOut" oninput="validateInteger(this)">
+      <input type="text" id="northStraightOut" name="northStraightOut" oninput="validateInteger(this)">
       <div id="northStraightOutError" class="error-message"></div>
 
       <label for="northRightOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="northRightOut" name="northRightOut" oninput="validateInteger(this)">
       <input type="text" id="northRightOut" name="northRightOut" oninput="validateInteger(this)">
       <div id="northRightOutError" class="error-message"></div>
 
       <label for="northCarPercentage">Percentage of Cars:</label>
       <input type="text" id="northCarPercentage" name="northCarPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="northCarPercentage" name="northCarPercentage"  oninput="validateDecimal(this)">
       <div id="northCarPercentageError" class="error-message"></div>
 
       <label for="northBusPercentage">Percentage of Buses:</label>
       <input type="text" id="northBusPercentage" name="northBusPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="northBusPercentage" name="northBusPercentage"  oninput="validateDecimal(this)">
       <div id="northBusPercentageError" class="error-message"></div>
 
       <label for="northCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="northCyclePercentage" name="northCyclePercentage"  oninput="validateDecimal(this)">
       <input type="text" id="northCyclePercentage" name="northCyclePercentage"  oninput="validateDecimal(this)">
       <div id="northCyclePercentageError" class="error-message"></div>
 
@@ -117,7 +129,12 @@
       <br>
       <label for="northPedestrianCheckbox"> Pedestrian Crossing: </label>
       <input type="checkbox" id="northPedestrianCheckbox" name="northPedestrian" value="1" onclick="northPedestrianToggle()">
+      <label for="northPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="northPedestrianCheckbox" name="northPedestrian" value="1" onclick="northPedestrianToggle()">
       <br>
+      <label id="northPedestrianLabel" for="northPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="northPedestrian" name="northRequestFrequency" style="display:none;">
+      <div id="northPedestrianError" class="error-message"></div>
       <label id="northPedestrianLabel" for="northPedestrian" style="display:none;">Crossing Requests (per hour):</label>
       <input type="text" id="northPedestrian" name="northRequestFrequency" style="display:none;">
       <div id="northPedestrianError" class="error-message"></div>
@@ -128,29 +145,36 @@
       <h3>Southbound</h3>
       <label for="southVehiclesIn">Total Vehicles Incoming (per hour):</label>
       <input type="text" id="southVehiclesIn" name="southVehiclesIn"  oninput="validateInteger(this)">
+      <input type="text" id="southVehiclesIn" name="southVehiclesIn"  oninput="validateInteger(this)">
       <div id="southVehiclesInError" class="error-message"></div>
 
       <label for="southLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="southLeftOut" name="southLeftOut"  oninput="validateInteger(this)">
       <input type="text" id="southLeftOut" name="southLeftOut"  oninput="validateInteger(this)">
       <div id="southLeftOutError" class="error-message"></div>
 
       <label for="southStraightOut">Total Vehicles Exiting South (per hour):</label>
       <input type="text" id="southStraightOut" name="southStraightOut"  oninput="validateInteger(this)">
+      <input type="text" id="southStraightOut" name="southStraightOut"  oninput="validateInteger(this)">
       <div id="southStraightOutError" class="error-message"></div>
 
       <label for="southRightOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="southRightOut" name="southRightOut"  oninput="validateInteger(this)">
       <input type="text" id="southRightOut" name="southRightOut"  oninput="validateInteger(this)">
       <div id="southRightOutError" class="error-message"></div>
 
       <label for="southCarPercentage">Percentage of Cars:</label>
       <input type="text" id="southCarPercentage" name="southCarPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="southCarPercentage" name="southCarPercentage"  oninput="validateDecimal(this)">
       <div id="southCarPercentageError" class="error-message"></div>
 
       <label for="southBusPercentage">Percentage of Buses:</label>
       <input type="text" id="southBusPercentage" name="southBusPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="southBusPercentage" name="southBusPercentage"  oninput="validateDecimal(this)">
       <div id="southBusPercentageError" class="error-message"></div>
 
       <label for="southCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="southCyclePercentage" name="southCyclePercentage"  oninput="validateDecimal(this)">
       <input type="text" id="southCyclePercentage" name="southCyclePercentage"  oninput="validateDecimal(this)">
       <div id="southCyclePercentageError" class="error-message"></div>
 
@@ -161,7 +185,12 @@
       <br>
       <label for="southPedestrianCheckbox"> Pedestrian Crossing: </label>
       <input type="checkbox" id="southPedestrianCheckbox" name="southPedestrian" value="1" onclick="southPedestrianToggle()">
+      <label for="southPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="southPedestrianCheckbox" name="southPedestrian" value="1" onclick="southPedestrianToggle()">
       <br>
+      <label id="southPedestrianLabel" for="southPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="southPedestrian" name="southRequestFrequency" style="display:none;">
+      <div id="southPedestrianError" class="error-message"></div>
       <label id="southPedestrianLabel" for="southPedestrian" style="display:none;">Crossing Requests (per hour):</label>
       <input type="text" id="southPedestrian" name="southRequestFrequency" style="display:none;">
       <div id="southPedestrianError" class="error-message"></div>
@@ -172,29 +201,36 @@
       <h3>Eastbound</h3>
       <label for="eastVehiclesIn">Total Vehicles Incoming (per hour):</label>
       <input type="text" id="eastVehiclesIn" name="eastVehiclesIn"  oninput="validateInteger(this)">
+      <input type="text" id="eastVehiclesIn" name="eastVehiclesIn"  oninput="validateInteger(this)">
       <div id="eastVehiclesInError" class="error-message"></div>
 
       <label for="eastLeftOut">Total Vehicles Exiting East (per hour):</label>
+      <input type="text" id="eastLeftOut" name="eastLeftOut"  oninput="validateInteger(this)">
       <input type="text" id="eastLeftOut" name="eastLeftOut"  oninput="validateInteger(this)">
       <div id="eastLeftOutError" class="error-message"></div>
 
       <label for="eastStraightOut">Total Vehicles Exiting North (per hour):</label>
       <input type="text" id="eastStraightOut" name="eastStraightOut"  oninput="validateInteger(this)">
+      <input type="text" id="eastStraightOut" name="eastStraightOut"  oninput="validateInteger(this)">
       <div id="eastStraightOutError" class="error-message"></div>
 
       <label for="eastRightOut">Total Vehicles Exiting South (per hour):</label>
+      <input type="text" id="eastRightOut" name="eastRightOut"  oninput="validateInteger(this)">
       <input type="text" id="eastRightOut" name="eastRightOut"  oninput="validateInteger(this)">
       <div id="eastRightOutError" class="error-message"></div>
 
       <label for="eastCarPercentage">Percentage of Cars:</label>
       <input type="text" id="eastCarPercentage" name="eastCarPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="eastCarPercentage" name="eastCarPercentage"  oninput="validateDecimal(this)">
       <div id="eastCarPercentageError" class="error-message"></div>
 
       <label for="eastBusPercentage">Percentage of Buses:</label>
       <input type="text" id="eastBusPercentage" name="eastBusPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="eastBusPercentage" name="eastBusPercentage"  oninput="validateDecimal(this)">
       <div id="eastBusPercentageError" class="error-message"></div>
 
       <label for="eastCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="eastCyclePercentage" name="eastCyclePercentage"  oninput="validateDecimal(this)">
       <input type="text" id="eastCyclePercentage" name="eastCyclePercentage"  oninput="validateDecimal(this)">
       <div id="eastCyclePercentageError" class="error-message"></div>
 
@@ -205,7 +241,12 @@
       <br>
       <label for="eastPedestrianCheckbox"> Pedestrian Crossing: </label>
       <input type="checkbox" id="eastPedestrianCheckbox" name="eastPedestrian" value="1" onclick="eastPedestrianToggle()">
+      <label for="eastPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="eastPedestrianCheckbox" name="eastPedestrian" value="1" onclick="eastPedestrianToggle()">
       <br>
+      <label id="eastPedestrianLabel" for="eastPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="eastPedestrian" name="eastRequestFrequency" style="display:none;">
+      <div id="eastPedestrianError" class="error-message"></div>
       <label id="eastPedestrianLabel" for="eastPedestrian" style="display:none;">Crossing Requests (per hour):</label>
       <input type="text" id="eastPedestrian" name="eastRequestFrequency" style="display:none;">
       <div id="eastPedestrianError" class="error-message"></div>
@@ -216,29 +257,36 @@
       <h3>Westbound</h3>
       <label for="westVehiclesIn">Total Vehicles Incoming (per hour):</label>
       <input type="text" id="westVehiclesIn" name="westVehiclesIn"  oninput="validateInteger(this)">
+      <input type="text" id="westVehiclesIn" name="westVehiclesIn"  oninput="validateInteger(this)">
       <div id="westVehiclesInError" class="error-message"></div>
 
       <label for="westLeftOut">Total Vehicles Exiting West (per hour):</label>
+      <input type="text" id="westLeftOut" name="westLeftOut"  oninput="validateInteger(this)">
       <input type="text" id="westLeftOut" name="westLeftOut"  oninput="validateInteger(this)">
       <div id="westLeftOutError" class="error-message"></div>
 
       <label for="westStraightOut">Total Vehicles Exiting North (per hour):</label>
       <input type="text" id="westStraightOut" name="westStraightOut"  oninput="validateInteger(this)">
+      <input type="text" id="westStraightOut" name="westStraightOut"  oninput="validateInteger(this)">
       <div id="westStraightOutError" class="error-message"></div>
 
       <label for="westRightOut">Total Vehicles Exiting South (per hour):</label>
+      <input type="text" id="westRightOut" name="westRightOut"  oninput="validateInteger(this)">
       <input type="text" id="westRightOut" name="westRightOut"  oninput="validateInteger(this)">
       <div id="westRightOutError" class="error-message"></div>
 
       <label for="westCarPercentage">Percentage of Cars:</label>
       <input type="text" id="westCarPercentage" name="westCarPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="westCarPercentage" name="westCarPercentage"  oninput="validateDecimal(this)">
       <div id="westCarPercentageError" class="error-message"></div>
 
       <label for="westBusPercentage">Percentage of Buses:</label>
       <input type="text" id="westBusPercentage" name="westBusPercentage"  oninput="validateDecimal(this)">
+      <input type="text" id="westBusPercentage" name="westBusPercentage"  oninput="validateDecimal(this)">
       <div id="westBusPercentageError" class="error-message"></div>
 
       <label for="westCyclePercentage">Percentage of Cycles:</label>
+      <input type="text" id="westCyclePercentage" name="westCyclePercentage"  oninput="validateDecimal(this)">
       <input type="text" id="westCyclePercentage" name="westCyclePercentage"  oninput="validateDecimal(this)">
       <div id="westCyclePercentageError" class="error-message"></div>
 
@@ -249,7 +297,12 @@
       <br>
       <label for="westPedestrianCheckbox"> Pedestrian Crossing: </label>
       <input type="checkbox" id="westPedestrianCheckbox" name="westPedestrian" value="1" onclick="westPedestrianToggle()">
+      <label for="westPedestrianCheckbox"> Pedestrian Crossing: </label>
+      <input type="checkbox" id="westPedestrianCheckbox" name="westPedestrian" value="1" onclick="westPedestrianToggle()">
       <br>
+      <label id="westPedestrianLabel" for="westPedestrian" style="display:none;">Crossing Requests (per hour):</label>
+      <input type="text" id="westPedestrian" name="westRequestFrequency" style="display:none;">
+      <div id="westPedestrianError" class="error-message"></div>
       <label id="westPedestrianLabel" for="westPedestrian" style="display:none;">Crossing Requests (per hour):</label>
       <input type="text" id="westPedestrian" name="westRequestFrequency" style="display:none;">
       <div id="westPedestrianError" class="error-message"></div>
@@ -264,6 +317,7 @@
 
 
 
+  <script src="{{ url_for('static', filename='CreateNewSetScript.js')}}" defer></script>
   <script src="{{ url_for('static', filename='CreateNewSetScript.js')}}" defer></script>
 
 </body>
