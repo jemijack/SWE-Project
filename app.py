@@ -43,8 +43,8 @@ def loginToHome():
     return render_template("HomePage.html") 
 
 # Route to handle the junction form submission (POST request)
-@app.route("/junctionform", methods=["POST"])
-def junctionForm():
+@app.route("/layoutform", methods=["POST"])
+def layoutForm():
 
     """ Handle the cases where the 'pedestrian crossing' checkbox is unchecked, as other
         otherwise there would be null values in the JSON """
@@ -187,6 +187,7 @@ def junctionForm():
         if jid is not None:
 
             session["jid"] = jid  # Store jid into the session for easy access
+            session["jlids"] = []  # Initialise the array to store the layout IDs for this junction set
             logging.info(f"Junction with json {json.dumps(vphObject.json, indent=4)} inserted with jid {jid}")
             return render_template("LayoutDesignPage.html")
 
