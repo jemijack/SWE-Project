@@ -188,8 +188,10 @@ function northPedestrianToggle() {
     document.getElementById(direction + 'Form').style.display = 'block';
 
     // Remove active class from all buttons
-    const buttons = document.querySelectorAll('.direction-buttons button');
-    buttons.forEach(button => button.classList.remove('active'));
+    const buttons = ['northButton', 'southButton', 'eastButton', 'westButton'];
+    buttons.forEach(btn => {
+      document.getElementById(btn).classList.remove('active');
+    });
 
     // Add active class to the clicked button
     document.getElementById(direction + 'Button').classList.add('active');
@@ -357,6 +359,18 @@ function northPedestrianToggle() {
   // Return false to prevent form submission if any invalid input is found across all directions
   if (!isValid) {
     alert("Please correct the invalid fields before submitting.");
+    if (!document.getElementById("northPedestrianCheckbox").checked) {
+      document.getElementById("northPedestrian").value = "";
+    }
+    if (!document.getElementById("southPedestrianCheckbox").checked) {
+        document.getElementById("southPedestrian").value = "";
+    }
+    if (!document.getElementById("eastPedestrianCheckbox").checked) {
+        document.getElementById("eastPedestrian").value = "";
+    }
+    if (!document.getElementById("westPedestrianCheckbox").checked) {
+        document.getElementById("westPedestrian").value = "";
+    }
     return false;
   }
 

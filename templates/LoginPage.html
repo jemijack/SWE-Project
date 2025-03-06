@@ -4,15 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+
+        /* Centering the form */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+        }
+
+        /* Enlarged Form */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4; /* Light background */
+            padding: 50px; /* Increased padding for larger form */
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 550px; /* Increased width of the form */
+        }
+
+
+        /* Input and Label Styling */
+        label {
+            font-size: 36px; /* Make label text larger */
+            margin-bottom: 35px;
+        }
+
+        input {
+            width: 280px; /* Larger width for input field */
+            padding: 12px; /* Bigger padding for a larger appearance */
+            font-size: 18px; /* Larger text inside input */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center; /* Centers typed text */
+            margin-bottom: 15px; /* More space between input and button */
+        }
+
+        /* Enlarged Submit Button */
+        .submit-button {
+            background-color: #6a0dad; /* Purple background */
+            color: white; /* White text */
+            font-size: 28px; /* Bigger button text */
+            padding: 16px 35px; /* Increased padding for a larger button */
+            border: none;
+            border-radius: 35px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: bold; 
+        }
+
+        /* Hover effect */
+        .submit-button:hover {
+            background-color: #5a0099;
+            transform: scale(1.05);
+        }
+
+        .dm-sans-bold {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: bold; 
+        }
+
+        /* Poppins in regular for text and inputs. Maintaing consistency across login and new Junction page */
+        .poppins-regular {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form id="loginForm" action="/home" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="form-container">
+        <form id="loginForm" action="/home" method="POST">
+            <label class="dm-sans-bold" for="username">Username:</label>
+            <input class="poppins-regular" type="text" id="username" name="username" required>
+            <br>
+            <button class="submit-button" type="submit">Login</button>
+        </form>
+    </div>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='LoginPageScript.js')}}" defer></script>
 </body>
 </html>
