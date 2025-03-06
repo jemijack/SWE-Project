@@ -1,0 +1,92 @@
+.container {
+    display: flex; /* Use Flexbox */
+    height: 100vh; /* Full viewport height */
+}
+
+/* Sidebar styling */
+#direction-sidebar {
+    width: 230px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/*  button styles */
+.direction-sidebar button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    outline: none; /* Removes the button outline */
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+/* Font styling for side bar */
+.dm-sans-bold-sidebar {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+
+.direction-sidebar button span {
+    transition: color 0.3s ease;
+}
+
+/* direction button  text colour*/
+.direction-sidebar .direction-button span {
+    color: #333; /* Default text color */
+}
+
+/* Default home button text color */
+.direction-sidebar .back-to-home span {
+    color: #4a90e2; /* Default home button text color */
+}
+
+/* Green on hover */
+.direction-sidebar .direction-button span:hover {
+    color: darkgreen;
+}
+
+/* Blue on hover */
+.direction-sidebar .back-to-home span:hover {
+    color: darkblue; 
+}
+
+.direction-sidebar .direction-button.active span {
+    color: #1FA31F;
+    font-weight: bold;
+}
+
+
+/* icon colour*/ 
+.direction-sidebar button svg {
+    color: black;
+    margin-right: 10px;
+}
+
+/* font  things*/
+.poppins-medium {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.poppins-regular {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+
+/* Main content styling */
+#junctionConfigPerDirection {
+    flex-grow: 1; /* Take up remaining space */
+    padding: 20px; /* Add some padding */
+    background-color: #ffffff; /* White background */
+}
+

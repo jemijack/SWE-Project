@@ -393,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
             
             // Redraw junction to show the changes
-            redrawJunction();
+            //redrawJunction();
         });
     }
 });
@@ -514,8 +514,7 @@ if (currentDirection) {
         // This ensures dropdown shows default text
         document.getElementById("directionOptions").value = "";
 
-
-    redrawJunction();
+    //redrawJunction();
 
  console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
 
