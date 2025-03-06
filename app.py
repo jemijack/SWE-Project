@@ -314,7 +314,7 @@ def loading_page():
     # Get the number of layouts that have been created for this current session
     jlids = session.get("jlids")
     if jlids is None:
-        return jsonify({"status": "Error - no layouts were created in this session so there is nothing to simulate"})
+        return jsonify({"status": "error - no layouts were created in this session so there is nothing to simulate"})
     numLayouts = len(jlids)
     # Cheat and insert premade results into the database
     logging.info(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage(numLayouts)}")
@@ -334,7 +334,7 @@ def simulation_status():
     jid = session.get("jid")
     if jid is None:
         return jsonify({
-            "status": "Error: a junction set has not been created - there's no layouts to simulate"
+            "status": "error: a junction set has not been created - there's no layouts to simulate"
             }), 400
 
     if database.isSimulationFinished(jid):
@@ -369,19 +369,11 @@ def comparison_page():
     resultsJSON = database.getComparisonPageResultsObject(jid)
     logging.info(f"ResultsJSON obtained: {json.dumps(obj=resultsJSON, indent=4)}")  # For logging reasons
 
-    # # Write the json to the hardcoded filepath
-    # with open("./static/data/four-results.json", "w") as file:
-    #     json.dump(obj=resultsJSON, fp=file, indent=4)
-
     # Create the configJSON
     layoutObjects = database.getLayoutObjects(jid)
     logging.info(f"configJSON obtained: {json.dumps(obj=layoutObjects, indent=4)}")  # For logging reasons
 
-    # # Write the json to the hardcoded filepath
-    # with open("./static/data/four-config.json", "w") as file:
-    #     json.dump(obj=layoutObjects, fp=file, indent=4)
-
-    # Render the comparisons page
+    # Render the comparisons page, passing it the JSONs it needs with Jinja templating
     return render_template("comparisonPage.html", configData=layoutObjects, resultsData=resultsJSON)
 
 
