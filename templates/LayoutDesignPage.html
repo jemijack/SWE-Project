@@ -14,8 +14,6 @@
 </head>
 
 <body>
-<h1> Design a Junction</h1>
-
 
 <!--<script src="https://d3js.org/d3.v6.min.js"></script>
 <script src="{{ url_for('static', filename='image.js') }}" defer></script> <-->
@@ -96,18 +94,45 @@
 
     <div id = junctionConfigPerDirection>
 
+        <h1 class="dm-sans-bold-header"> Design a Junction</h1>
+
+
+
     <!--JUNCTION NAME TO DO. UHHH IM LAZY AND USED REGEX FOR VALIDATION DON'T REALLY THINK THATS APROPRIATE--> 
 
+
+    <div id = junctionName-PedestrianContainer> 
+    
     <label for="junctionName">Junction Name:</label>
     <input type="text" id="junctionName" name="name" required minlength="1" required pattern="[a-zA-Z0-9\s]+" size="10">
 
+        <!-- Pedistrian Crossing Slider-->
+    <div class="pedestrian-container">
+        <label for="pedestrian">Pedestrian Crossing:</label>
+        <div class="toggle-switch">
+            <input type="checkbox" id="pedestrian">
+            <span class="slider"></span>
+        </div>
+    </div> 
+    </div>      
+
+    <div id = laneSettings>
+        <h1 class="dm-sans-bold-h2"> Lane Settings</h1>
+
     <!--SLIDER FOR Number of Lanes-->
             <!--Slider for the number of lanes-->
-            <label for="lanes">Number of lanes:</label>
-            <input type="range" id="lanes" min="1" max="5" value="3">
-            <span id="lanesValue">3</span>
+            <div class="lanes-container">
+                <label for="lanes">Number of lanes:</label>
+                
+                
+            <div class="slider-container">
+                <input type="range" id="lanes" min="1" max="5" value="3">
+                <span id="lanesValue">3</span>
+            </div>
+            
+            </div>
 
-
+           
 
     <!-- lane Menu-->
     <div id="laneMenu">
@@ -120,7 +145,7 @@
 
 
     <!--Changed to a drop down -->
-        <div id="laneSettings">
+        <div id="laneOptions">
             <select id="directionOptions">
                 <option value="">Select Lane Type</option>
                 <option value="busLane" class="special">Bus Lane</option>
@@ -135,17 +160,15 @@
             <span id="direction"></span>
         </div>
 
-    
-        <!-- Pedistrian Crossing Slider-->
-        <label for="pedestrian">Pedestrian Crossing:</label>
-        <input type="checkbox" id="pedestrian">
-        <span class="Crossing toggle"></span>
+    </div>
 
+
+ 
         <br><br> 
         <button id = "submitLayout" onclick="submitData()"> Save Layout</button>
 
         <button id="compareButton" style="display: none;" disabled onclick="window.location.href = '/loading_page'">Compare My Layouts</button>
-        <button id="homeButton" onclick="window.location.href = '/home'">Home</button>
+       
         
 
 

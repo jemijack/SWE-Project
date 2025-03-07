@@ -96,6 +96,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 }) 
 
+
+
 // Event listener for the slider so it dynaically adjusts laneDetail
 document.getElementById("lanes").addEventListener("input", function(){
 
@@ -144,7 +146,7 @@ document.getElementById("lanes").addEventListener("input", function(){
 
 
 
-/* document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
     let dropdown = document.getElementById("directionOptions");
 
    updateLaneOptions(); 
@@ -165,7 +167,7 @@ document.getElementById("lanes").addEventListener("input", function(){
             console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
         });
     }
-}); */ 
+}); 
 
 // Listen for changes on pedistrian crossing
 document.getElementById("pedestrian").addEventListener("change", function() {
