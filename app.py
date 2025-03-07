@@ -3,6 +3,7 @@ import database
 from database.Objects import VPHObject, LayoutObject
 import logging
 from datetime import datetime, timezone
+from utils import utils
 import json
 from os import urandom
 
@@ -46,142 +47,16 @@ def loginToHome():
 @app.route("/layoutform", methods=["POST"])
 def layoutForm():
 
-    """ Handle the cases where the 'pedestrian crossing' checkbox is unchecked, as other
-        otherwise there would be null values in the JSON """
-    # Checks to see whether there is a pedestrian crossing for each direction, and stores the yes/no value in the variable for each direction. yes = 1, no = 0.
-    northPedestrian = request.form.get("northPedestrian")
-    southPedestrian = request.form.get("southPedestrian")
-    eastPedestrian = request.form.get("eastPedestrian")
-    westPedestrian = request.form.get("westPedestrian")
-    # Gets the duration of the pedestrian crossings in seconds
-
-    if northPedestrian is None:
-        northPedestrian = 0
-
-    if southPedestrian is None:
-        southPedestrian = 0
-
-    if eastPedestrian is None:
-        eastPedestrian = 0
-
-    if westPedestrian is None:
-        westPedestrian = 0
-
-    # Finds how many pedestrians are coming from each direction, and if there is no crossing, then we will set the number to -1 to differentiate between cases where we have 0 pedestrians. If a checkbox is unchecked, then the corresponding request frequency textbox will have a None value in Flask 
-    northRequestFrequency = request.form.get("northRequestFrequency")
-    southRequestFrequency = request.form.get("southRequestFrequency")
-    eastRequestFrequency = request.form.get("eastRequestFrequency")
-    westRequestFrequency = request.form.get("westRequestFrequency")
-
-    if northPedestrian == 0:
-        northRequestFrequency = -1
+    # Get the uid for the user that's created the junction
+    uid = session.get("uid")
+    if uid is None:
+        return jsonify({"status": "error - the user has to login in order to be able to create a junction"})
     
-    if southPedestrian == 0:
-        southRequestFrequency = -1
-
-    if eastPedestrian == 0:
-        eastRequestFrequency = -1
-
-    if westPedestrian == 0:
-        westRequestFrequency = -1
-
-    # Extract the now cleansed form data into a dictionary representing
-    # a predefined JSON Structure 
-    form_data = {
-        "JName": request.form.get("junctionSetName"),
-        "priorities": {
-            "averageWaitTime": int(request.form.get("AverageWait")),
-            "maximumWaitTime": int(request.form.get("MaxWait")),
-            "maximumQueueLength": int(request.form.get("MaxQueue"))
-        },
-        "pedestrianCrossingDuration": int(request.form.get("crossingDuration")),
-        "trafficFlows": {
-            "northArm": {
-                "totalVph": int(request.form.get("northVehiclesIn")),
-                "exitingVPH": {
-                    "east": int(request.form.get("northLeftOut")),
-                    "south": int(request.form.get("northStraightOut")),
-                    "west": int(request.form.get("northRightOut"))
-                },
-                "vehicleSplit": {
-                    "bus": int(request.form.get("northBusPercentage")),
-                    "cycle": int(request.form.get("northCyclePercentage")),
-                    "car": int(request.form.get("northCarPercentage"))
-                },
-                "pedestrianCrossingRPH": northRequestFrequency,
-                "priority": int(request.form.get("northPriority"))
-            },
-            "eastArm": {
-                "totalVPH": int(request.form.get("eastVehiclesIn")),
-                "exitingVPH": {
-                    "north": int(request.form.get("eastRightOut")),
-                    "south": int(request.form.get("eastLeftOut")),
-                    "west": int(request.form.get("eastStraightOut")),
-                },
-                "vehicleSplit": {
-                    "car": int(request.form.get("eastCarPercentage")),
-                    "bus": int(request.form.get("eastBusPercentage")),
-                    "cycle": int(request.form.get("eastCyclePercentage"))
-                },
-                "pedestrianCrossingRPH": eastRequestFrequency,
-                "priority": int(request.form.get("eastPriority"))
-            },
-            "southArm": {
-                "totalVPH": int(request.form.get("southVehiclesIn")),
-                "exitingVPH": {
-                    "north": int(request.form.get("southStraightOut")),
-                    "east": int(request.form.get("southRightOut")),
-                    "west": int(request.form.get("southLeftOut"))
-                },
-                "vehicleSplit": {
-                    "car": int(request.form.get("southCarPercentage")),
-                    "bus": int(request.form.get("southBusPercentage")),
-                    "cycle": int(request.form.get("southCyclePercentage"))
-                },
-                "pedestrianCrossingRPH": southRequestFrequency,
-                "priority": int(request.form.get("southPriority"))
-            },
-            "westArm": {
-                "totalVPH": int(request.form.get("westVehiclesIn")),
-                "exitingVPH": {
-                    "north": int(request.form.get("westLeftOut")),
-                    "east": int(request.form.get("westStraightOut")),
-                    "south": int(request.form.get("westRightOut"))
-                },
-                "vehicleSplit": {
-                    "car": int(request.form.get("westCarPercentage")),
-                    "bus": int(request.form.get("westBusPercentage")),
-                    "cycle": int(request.form.get("westCyclePercentage"))
-                },
-                "pedestrianCrossingRPH": westRequestFrequency,
-                "priority": int(request.form.get("westPriority"))
-            }
-        },
-        # "pedestrianData": {
-        #     "crossingDuration": int(request.form.get("crossingDuration")),
-        #     "hasCrossing": {
-        #         "north": northPedestrian,
-        #         "east": eastPedestrian,
-        #         "south": southPedestrian,
-        #         "west": westPedestrian,
-        #     },
-        #     "rph": {
-        #         "north": northRequestFrequency,
-        #         "east": eastRequestFrequency,
-        #         "south": southRequestFrequency,
-        #         "west": westRequestFrequency
-        #     }
-        # }
-    }
-
-    # Add a timeststamp field for logging purposes
-    form_data["timestamp"] = datetime.now(timezone.utc)
-
-    # Add the uid field
-    form_data["userId"] = str(session.get("uid"))
+    # Form a predefined JSON object representing a junction set from the data
+    formData = utils.formatFormData(request.form, uid)
 
     # Make a VPHObject
-    vphObject = VPHObject(json=form_data)
+    vphObject = VPHObject(json=formData)
     success = vphObject.populateFields()
 
     # If the VPHObject contains all of the the necessary information, that means the junction is
@@ -202,7 +77,7 @@ def layoutForm():
     else:
         return jsonify({"error": "VPHObject is missing some key details"}), 400
 
-# This is from Layout  Designs. 
+
 # Endpoint for when the user has finished designing the layout for their junction
 # and wants to create a new one
 @app.route('/save_junction', methods=['Get', 'POST'])

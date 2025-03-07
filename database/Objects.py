@@ -13,7 +13,7 @@ class VPHObject:
     json: Optional[dict] = None
 
     def populateFields(self):
-        self.name = self.json["JName"]
+        self.name = self.json["jName"]
         self.uid = self.json["userId"]
         self.timestamp = self.json["timestamp"]
         errOccur = False
