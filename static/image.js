@@ -16,7 +16,7 @@ function initializeJunction(config) {
     /*** SVG Setup & Globals ***/
     window.drawPedestrianCrossing = drawPedestrianCrossing;
 
-    const svgSize = 1000;
+    const svgSize = 600;
     const svg = d3.select("#junctionCanvas")
         .attr("width", svgSize)
         .attr("height", svgSize)

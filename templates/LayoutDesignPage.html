@@ -15,13 +15,23 @@
 
 <body>
 
-<!--<script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="{{ url_for('static', filename='image.js') }}" defer></script> <-->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="{{ url_for('static', filename='image.js') }}" defer></script> 
 <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-<svg id="junctionCanvas"></svg>
+
 
 
 <div class="container">
+
+    <!--SVG IMAGE: THIS NEEDS TO BE ON TOP  LEFT-->
+ <div id="image-container">
+    <svg id="junctionCanvas"></svg>
+</div>
+
+
+
+
+
 
 <!-- Fixed Side Bar Menu -->
 <div id="direction-sidebar">
@@ -162,17 +172,24 @@
 
     </div>
 
-
  
         <br><br> 
-        <button id = "submitLayout" onclick="submitData()"> Save Layout</button>
 
-        <button id="compareButton" style="display: none;" disabled onclick="window.location.href = '/loading_page'">Compare My Layouts</button>
-       
-        
+    <div id = submissionContainer>
+        <h2 class="dm-sans-bold-h2"> Finished Designing?</h2>
 
-
+    
+        <p class = "poppins-regular">
+            Hit "save junction" to save your junction to your set and you will automatically be able to design a new one to add to you set. 
+            Or click on "Compare My Layouts " to see how your junctions stack up - Note that you must have at least 2 layouts saved to hit this button. 
+        </p>
+    
+            <button id = "submitLayout" onclick="submitData()"> Save Layout</button>
+    
+            <button id="compareButton" style="display: none;" disabled onclick="window.location.href = '/loading_page'">Compare My Layouts</button>
+    
     </div>
+       
 
 </div>
 

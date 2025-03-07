@@ -96,8 +96,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
 }) 
 
-
-
 // Event listener for the slider so it dynaically adjusts laneDetail
 document.getElementById("lanes").addEventListener("input", function(){
 

@@ -3,7 +3,7 @@
     height: 100vh; /* Full viewport height */
 }
 
-/* Sidebar styling */
+/* Sidebar styling AND positional Stuff */
 #direction-sidebar {
     width: 230px;
     background-color: #f0f0f0;
@@ -15,6 +15,7 @@
     min-height: 100vh; /* Full viewport height */
     height: auto; /* Allow it to grow with content */
 }
+
 
 /*  button styles */
 .direction-sidebar button {
@@ -54,15 +55,6 @@
     color: darkgreen;
 }
 
-/* Blue on hover */
-.direction-sidebar .back-to-home span:hover {
-    color: darkblue; 
-}
-
-.direction-sidebar .direction-button.active span {
-    color: #1FA31F;
-    font-weight: bold;
-}
 
 
 /* icon colour*/ 
@@ -86,11 +78,12 @@
 }
 
 
-/* Main content styling */
+/* Main content styling - thisis gonna be RHS  FOR NOW WITH ALL THE CONNTENTAND STUFF */
 #junctionConfigPerDirection {
-    flex-grow: 1; /* Take up remaining space */
-    padding: 20px; /* Add some padding */
-    background-color: #ffffff; /* White background */
+    flex: 2; /* Take up more space than the sidebar */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between containers */
 }
 
 
@@ -142,6 +135,7 @@ button {
     background-color: none; /* Light background */
     border: 1px solid #ddd; /* Border for definition */
     background-color: white;
+    border-radius: 8px; /* Rounded corners */
     cursor: pointer;
 }
 
@@ -186,7 +180,8 @@ button {
 
 #laneMenu button.active {
     color: #4318FF; /* button text colour changes */
-    border-bottom: 3px solid black
+    border-bottom: 3px solid black;
+    outline: none;
 
 }
 
@@ -243,10 +238,11 @@ input[type="range"] {
     border: 1px solid #ccc; /* Default border */
     border-radius: 4px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    margin-bottom: 20px;
 }
 
 #junctionName:focus {
-   
+    outline:none;
     border-color: #4318FF;  /* Purple border on focus */
     box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.2); /* Purple glow */
 }
@@ -300,4 +296,49 @@ input[type="range"] {
 /* Move the circle to the right when checked */
 .toggle-switch input:checked + .slider:before {
     transform: translateX(25px); /* Move the circle */
+}
+
+
+/* Submission Container */
+#submissionContainer {
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Border for definition */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Button Styling */
+#submissionContainer button {
+    margin-top: 20px; /* Space above the buttons */
+    background-color: #11047A;
+    color: white; /* Text color */
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border-radius: 8px; /* Rounded corners */
+    font-weight: 600; /* Semi-bold weight */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth color transition */
+    padding: 5px 0px; /* Increase padding for better appearance */
+
+}
+
+/* Hover Effect for Buttons */
+#submissionContainer button:hover {
+    background-color: #0a025c; /* Darker shade on hover */
+}
+
+
+/* Left Section: SVG Image */
+#image-container {
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0; /* Light background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Add some padding */
 }
