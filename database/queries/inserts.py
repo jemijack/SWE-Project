@@ -67,6 +67,7 @@ def insertUser(username):
                     logging.warning("No uid returned.")
                     return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in insertUser: {error}")
         return None
@@ -117,6 +118,7 @@ def insertJunction(vphObject):
                     logging.warning("No junction id returned.")
                     return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in insertJunction: {error}")
         return None
@@ -209,93 +211,12 @@ def insertSimulationResults(resultsObject):
                     logging.warning("No simulation id returned.")
                     return None
 
+    # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in insertSimulationResults: {error}")
         return None
     except psycopg2.DatabaseError as error:
         logging.error(f"General database error in insertSimulationResults: {error}")
-        return None
-    finally:
-        if connection is not None:
-            connection.close()  # Still need to close the connection manually
-
-
-def insertJunctionState(jState):
-    insertJStateQuery = """
-        INSERT INTO junction_states (JStateName, JStateDescription)
-        VALUES (%s, %s)
-        RETURNING JStateID
-    """
-    data = (jState.name, jState.description)
-    connection = None
-
-    try:
-        connection = connect()
-
-        with connection:
-
-            # A cursor lets us perform queries
-            with createCursor(connection) as cursor:
-
-                cursor.execute(insertJStateQuery, data)
-
-                jStateID_tuple = cursor.fetchone()  # Query returns one tuple
-
-                # If the query executes successfully return what's in the tuple
-                if jStateID_tuple is not None:
-                    jStateID = jStateID_tuple[0]
-                    logging.info(f"New junction state inserted with JStateID: {jStateID}")
-                    return jStateID
-                else:
-                    logging.warning("No Junction State ID returned.")
-                    return None
-
-    except psycopg2.OperationalError as error:
-        logging.error(f"Database operational error in insertJunctionState: {error}")
-        return None
-    except psycopg2.DatabaseError as error:
-        logging.error(f"General database error in insertJunctionState: {error}")
-        return None
-    finally:
-        if connection is not None:
-            connection.close()  # Still need to close the connection manually
-
-
-def insertJunctionLayoutState(jlState):
-    insertJLStateQuery = """
-        INSERT INTO junction_layout_states (JLStateName, JLStateDescription)
-        VALUES (%s, %s)
-        RETURNING JLStateID
-    """
-    data = (jlState.name, jlState.description)
-    connection = None
-
-    try:
-        connection = connect()
-
-        with connection:
-
-            # A cursor lets us perform queries
-            with createCursor(connection) as cursor:
-
-                cursor.execute(insertJLStateQuery, data)
-
-                jlStateID_tuple = cursor.fetchone()  # Query returns one tuple
-
-                # If the query executes successfully return what's in the tuple
-                if jlStateID_tuple is not None:
-                    jlStateID = jlStateID_tuple[0]
-                    logging.info(f"New junction state inserted with JLStateID: {jlStateID}")
-                    return jlStateID
-                else:
-                    logging.warning("No Junction Layout State ID returned.")
-                    return None
-
-    except psycopg2.OperationalError as error:
-        logging.error(f"Database operational error in insertJunctionLayoutState: {error}")
-        return None
-    except psycopg2.DatabaseError as error:
-        logging.error(f"General database error in insertJunctionLayoutState: {error}")
         return None
     finally:
         if connection is not None:

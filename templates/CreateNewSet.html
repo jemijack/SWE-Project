@@ -300,30 +300,30 @@
       <!-- Junction Set Name -->
       <div class="junction-set-group">
         <label class="poppins-medium" for="junctionSetName">Junction Set Name:</label>
-        <input class="poppins-regular" type="text" id="junctionSetName" name="junctionSetName">
+        <input class="poppins-regular" type="text" id="junctionSetName" name="junctionSetName" value="Test">
       </div>
       <!-- Crossing duration for pedestrians -->
       <br>
       <div class="form-group">
         <label class="poppins-medium" for="crossingDuration">Pedestrian Crossing Duration (in seconds):</label>
-        <input type="text" id="crossingDuration" name="crossingDuration" oninput="validateDecimal(this)">
+        <input type="text" id="crossingDuration" name="crossingDuration" value="15" oninput="validateDecimal(this)">
         <div class="text-danger poppins-regular" id="crossingDurationError"></div>
       </div>
       <div class="body-text">The below fields represent how you prioritise the key attributes of the junction, as a percentage, with the sum of all percentages provided being 100.</div>
       <!-- User priorities of key junction attributes-->
       <div class="form-group">
         <label class="poppins-medium" for="AverageWait">Average Wait Time Priority (%):</label>
-        <input class="poppins-regular" type="text" id="AverageWait" name="AverageWait" oninput="validateInteger(this)">
+        <input class="poppins-regular" type="text" id="AverageWait" name="AverageWait" value="30" oninput="validateInteger(this)">
         <div id="AverageWaitError" class="text-danger poppins-regular"></div>
       </div>
       <div class="form-group">
         <label class="poppins-medium" for="MaxWait">Maximum Wait Time Priority (%):</label>
-        <input class="poppins-regular" type="text" id="MaxWait" name="MaxWait" oninput="validateInteger(this)">
+        <input class="poppins-regular" type="text" id="MaxWait" name="MaxWait" value="30" oninput="validateInteger(this)">
         <div id="MaxWaitError" class="text-danger poppins-regular"></div>
       </div>
       <div class="form-group">
         <label class="poppins-medium" for="MaxQueue">Maximum Queue Length Priority (%):</label>
-        <input class="poppins-regular" type="text" id="MaxQueue" name="MaxQueue" oninput="validateInteger(this)">
+        <input class="poppins-regular" type="text" id="MaxQueue" name="MaxQueue" value="40" oninput="validateInteger(this)">
         <div id="MaxQueueError" class="text-danger poppins-regular"></div>
       </div>
       <div class="body-text">The below fields apply to the direction that is currently selected.</div>
@@ -332,37 +332,37 @@
       <div id="northForm" class="form-container">
         <div class="form-group">
           <label class="poppins-medium" for="northVehiclesIn">Total Vehicles Incoming (per hour):</label>
-          <input class="poppins-regular" type="text" id="northVehiclesIn" name="northVehiclesIn" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="northVehiclesIn" name="northVehiclesIn" value="510" oninput="validateInteger(this)">
           <div id="northVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northLeftOut">Total Vehicles Exiting West (per hour):</label>
-          <input class="poppins-regular" type="text" id="northLeftOut" name="northLeftOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="northLeftOut" name="northLeftOut" value="90" oninput="validateInteger(this)">
           <div id="northLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northStraightOut">Total Vehicles Exiting North (per hour):</label>
-          <input class="poppins-regular" type="text" id="northStraightOut" name="northStraightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="northStraightOut" name="northStraightOut" value="240" oninput="validateInteger(this)">
           <div id="northStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northRightOut">Total Vehicles Exiting East (per hour):</label>
-          <input class="poppins-regular" type="text" id="northRightOut" name="northRightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="northRightOut" name="northRightOut" value="180" oninput="validateInteger(this)">
           <div id="northRightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northCarPercentage">Percentage of Cars:</label>
-          <input class="poppins-regular" type="text" id="northCarPercentage" name="northCarPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="northCarPercentage" name="northCarPercentage" value="50" oninput="validateDecimal(this)">
           <div id="northCarPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northBusPercentage">Percentage of Buses:</label>
-          <input class="poppins-regular" type="text" id="northBusPercentage" name="northBusPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="northBusPercentage" name="northBusPercentage" value="10" oninput="validateDecimal(this)">
           <div id="northBusPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="northCyclePercentage">Percentage of Cycles:</label>
-          <input class="poppins-regular" type="text" id="northCyclePercentage" name="northCyclePercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="northCyclePercentage" name="northCyclePercentage" value="40" oninput="validateDecimal(this)">
           <div id="northCyclePercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="directionpriority-group">
@@ -381,7 +381,7 @@
         </div> 
         <div class="form-group">
           <label class="poppins-medium" id="northPedestrianLabel" for="northPedestrian" style="display:none;">Crossing Requests (per hour):</label>
-          <input class="poppins-regular" type="text" id="northPedestrian" name="northRequestFrequency" style="display:none;">
+          <input class="poppins-regular" type="text" id="northPedestrian" name="northRequestFrequency" value="120" style="display:none;">
           <div id="northPedestrianError" class="text-danger poppins-regular"></div>
         </div>
       </div>
@@ -390,37 +390,37 @@
       <div id="southForm" class="form-container">
         <div class="form-group">
           <label class="poppins-medium" for="southVehiclesIn">Total Vehicles Incoming (per hour):</label>
-          <input class="poppins-regular" type="text" id="southVehiclesIn" name="southVehiclesIn" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="southVehiclesIn" name="southVehiclesIn" value="1210" oninput="validateInteger(this)">
           <div id="southVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southLeftOut">Total Vehicles Exiting East (per hour):</label>
-          <input class="poppins-regular" type="text" id="southLeftOut" name="southLeftOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="southLeftOut" name="southLeftOut" value="450" oninput="validateInteger(this)">
           <div id="southLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southStraightOut">Total Vehicles Exiting South (per hour):</label>
-          <input class="poppins-regular" type="text" id="southStraightOut" name="southStraightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="southStraightOut" name="southStraightOut" value="480" oninput="validateInteger(this)">
           <div id="southStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southRightOut">Total Vehicles Exiting West (per hour):</label>
-          <input class="poppins-regular" type="text" id="southRightOut" name="southRightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="southRightOut" name="southRightOut" value="280" oninput="validateInteger(this)">
           <div id="southRightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southCarPercentage">Percentage of Cars:</label>
-          <input class="poppins-regular" type="text" id="southCarPercentage" name="southCarPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="southCarPercentage" name="southCarPercentage" value="30" oninput="validateDecimal(this)">
           <div id="southCarPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southBusPercentage">Percentage of Buses:</label>
-          <input class="poppins-regular" type="text" id="southBusPercentage" name="southBusPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="southBusPercentage" name="southBusPercentage" value="0" oninput="validateDecimal(this)">
           <div id="southBusPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="southCyclePercentage">Percentage of Cycles:</label>
-          <input class="poppins-regular" type="text" id="southCyclePercentage" name="southCyclePercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="southCyclePercentage" name="southCyclePercentage" value="70" oninput="validateDecimal(this)">
           <div id="southCyclePercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="directionpriority-group">
@@ -439,7 +439,7 @@
         </div> 
         <div class="form-group">
           <label class="poppins-medium" id="southPedestrianLabel" for="southPedestrian" style="display:none;">Crossing Requests (per hour):</label>
-          <input class="poppins-regular" type="text" id="southPedestrian" name="southRequestFrequency" style="display:none;">
+          <input class="poppins-regular" type="text" id="southPedestrian" name="southRequestFrequency" value="15" style="display:none;">
           <div id="southPedestrianError" class="text-danger poppins-regular"></div>
         </div>
       </div>
@@ -448,37 +448,37 @@
       <div id="eastForm" class="form-container">
         <div class="form-group">
           <label class="poppins-medium" for="eastVehiclesIn">Total Vehicles Incoming (per hour):</label>
-          <input class="poppins-regular" type="text" id="eastVehiclesIn" name="eastVehiclesIn" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="eastVehiclesIn" name="eastVehiclesIn" value="65" oninput="validateInteger(this)">
           <div id="eastVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastLeftOut">Total Vehicles Exiting North (per hour):</label>
-          <input class="poppins-regular" type="text" id="eastLeftOut" name="eastLeftOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="eastLeftOut" name="eastLeftOut" value="20" oninput="validateInteger(this)">
           <div id="eastLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastStraightOut">Total Vehicles Exiting East (per hour):</label>
-          <input class="poppins-regular" type="text" id="eastStraightOut" name="eastStraightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="eastStraightOut" name="eastStraightOut" value="15" oninput="validateInteger(this)">
           <div id="eastStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastRightOut">Total Vehicles Exiting South (per hour):</label>
-          <input class="poppins-regular" type="text" id="eastRightOut" name="eastRightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="eastRightOut" name="eastRightOut" value="30" oninput="validateInteger(this)">
           <div id="eastRightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastCarPercentage">Percentage of Cars:</label>
-          <input class="poppins-regular" type="text" id="eastCarPercentage" name="eastCarPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="eastCarPercentage" name="eastCarPercentage" value="30" oninput="validateDecimal(this)">
           <div id="eastCarPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastBusPercentage">Percentage of Buses:</label>
-          <input class="poppins-regular" type="text" id="eastBusPercentage" name="eastBusPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="eastBusPercentage" name="eastBusPercentage" value="20" oninput="validateDecimal(this)">
           <div id="eastBusPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="eastCyclePercentage">Percentage of Cycles:</label>
-          <input class="poppins-regular" type="text" id="eastCyclePercentage" name="eastCyclePercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="eastCyclePercentage" name="eastCyclePercentage" value="50" oninput="validateDecimal(this)">
           <div id="eastCyclePercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="directionpriority-group">
@@ -497,7 +497,7 @@
         </div> 
         <div class="form-group">
           <label class="poppins-medium" id="eastPedestrianLabel" for="eastPedestrian" style="display:none;">Crossing Requests (per hour):</label>
-          <input class="poppins-regular" type="text" id="eastPedestrian" name="eastRequestFrequency" style="display:none;">
+          <input class="poppins-regular" type="text" id="eastPedestrian" name="eastRequestFrequency" value="100" style="display:none;">
           <div id="eastPedestrianError" class="text-danger poppins-regular"></div>
         </div>
       </div>
@@ -506,37 +506,37 @@
       <div id="westForm" class="form-container">
         <div class="form-group">
           <label class="poppins-medium" for="westVehiclesIn">Total Vehicles Incoming (per hour):</label>
-          <input class="poppins-regular" type="text" id="westVehiclesIn" name="westVehiclesIn" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="westVehiclesIn" name="westVehiclesIn" value="370" oninput="validateInteger(this)">
           <div id="westVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westLeftOut">Total Vehicles Exiting South (per hour):</label>
-          <input class="poppins-regular" type="text" id="westLeftOut" name="westLeftOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="westLeftOut" name="westLeftOut" value="100" oninput="validateInteger(this)">
           <div id="westLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westStraightOut">Total Vehicles Exiting West (per hour):</label>
-          <input class="poppins-regular" type="text" id="westStraightOut" name="westStraightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="westStraightOut" name="westStraightOut" value="150" oninput="validateInteger(this)">
           <div id="westStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westRightOut">Total Vehicles Exiting North (per hour):</label>
-          <input class="poppins-regular" type="text" id="westRightOut" name="westRightOut" oninput="validateInteger(this)">
+          <input class="poppins-regular" type="text" id="westRightOut" name="westRightOut" value="120" oninput="validateInteger(this)">
           <div id="westRightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westCarPercentage">Percentage of Cars:</label>
-          <input class="poppins-regular" type="text" id="westCarPercentage" name="westCarPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="westCarPercentage" name="westCarPercentage" value="50"  oninput="validateDecimal(this)">
           <div id="westCarPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westBusPercentage">Percentage of Buses:</label>
-          <input class="poppins-regular" type="text" id="westBusPercentage" name="westBusPercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="westBusPercentage" name="westBusPercentage" value="30" oninput="validateDecimal(this)">
           <div id="westBusPercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
           <label class="poppins-medium" for="westCyclePercentage">Percentage of Cycles:</label>
-          <input class="poppins-regular" type="text" id="westCyclePercentage" name="westCyclePercentage"  oninput="validateDecimal(this)">
+          <input class="poppins-regular" type="text" id="westCyclePercentage" name="westCyclePercentage" value="20" oninput="validateDecimal(this)">
           <div id="westCyclePercentageError" class="text-danger poppins-regular"></div>
         </div>
         <div class="directionpriority-group">
@@ -555,7 +555,7 @@
         </div> 
         <div class="form-group">
           <label class="poppins-medium" id="westPedestrianLabel" for="westPedestrian" style="display:none;">Crossing Requests (per hour):</label>
-          <input class="poppins-regular" type="text" id="westPedestrian" name="westRequestFrequency" style="display:none;">
+          <input class="poppins-regular" type="text" id="westPedestrian" name="westRequestFrequency" value="32" style="display:none;">
           <div id="westPedestrianError" class="text-danger poppins-regular"></div>
         </div>
       </div>

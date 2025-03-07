@@ -24,6 +24,7 @@ def updateJLState(jlid, stid):
     return updateState(id=jlid, isJunction=False, stateID=stid)
 
 
+# Updates the state of a junction or junction layout
 def updateState(id, isJunction, stateID):
     updateJStateQuery = """
         UPDATE junctions

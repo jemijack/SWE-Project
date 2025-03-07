@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 
+# Formats data from the html form into a predertimned JSON object
 def formatFormData(form, uid):
     formData = {
         "jName": form.get("junctionSetName"),
@@ -15,7 +16,7 @@ def formatFormData(form, uid):
         "trafficFlows": {
             "northArm": {
                 "totalVph": int(form.get("northVehiclesIn")),
-                "exitingVPH": {
+                "exitingVph": {
                     "east": int(form.get("northLeftOut")),
                     "south": int(form.get("northStraightOut")),
                     "west": int(form.get("northRightOut"))
@@ -25,12 +26,12 @@ def formatFormData(form, uid):
                     "cycle": int(form.get("northCyclePercentage")),
                     "car": int(form.get("northCarPercentage"))
                 },
-                "pedestrianCrossingRPH": int(form.get("northRequestFrequency")),
+                "pedestrianCrossingRph": int(form.get("northRequestFrequency")),
                 "priority": int(form.get("northPriority"))
             },
             "eastArm": {
-                "totalVPH": int(form.get("eastVehiclesIn")),
-                "exitingVPH": {
+                "totalVph": int(form.get("eastVehiclesIn")),
+                "exitingVph": {
                     "north": int(form.get("eastRightOut")),
                     "south": int(form.get("eastLeftOut")),
                     "west": int(form.get("eastStraightOut")),
@@ -40,12 +41,12 @@ def formatFormData(form, uid):
                     "bus": int(form.get("eastBusPercentage")),
                     "cycle": int(form.get("eastCyclePercentage"))
                 },
-                "pedestrianCrossingRPH": int(form.get("eastRequestFrequency")),
+                "pedestrianCrossingRph": int(form.get("eastRequestFrequency")),
                 "priority": int(form.get("eastPriority"))
             },
             "southArm": {
-                "totalVPH": int(form.get("southVehiclesIn")),
-                "exitingVPH": {
+                "totalVph": int(form.get("southVehiclesIn")),
+                "exitingVph": {
                     "north": int(form.get("southStraightOut")),
                     "east": int(form.get("southRightOut")),
                     "west": int(form.get("southLeftOut"))
@@ -55,12 +56,12 @@ def formatFormData(form, uid):
                     "bus": int(form.get("southBusPercentage")),
                     "cycle": int(form.get("southCyclePercentage"))
                 },
-                "pedestrianCrossingRPH": int(form.get("southRequestFrequency")),
+                "pedestrianCrossingRph": int(form.get("southRequestFrequency")),
                 "priority": int(form.get("southPriority"))
             },
             "westArm": {
-                "totalVPH": int(form.get("westVehiclesIn")),
-                "exitingVPH": {
+                "totalVph": int(form.get("westVehiclesIn")),
+                "exitingVph": {
                     "north": int(form.get("westLeftOut")),
                     "east": int(form.get("westStraightOut")),
                     "south": int(form.get("westRightOut"))
@@ -70,7 +71,7 @@ def formatFormData(form, uid):
                     "bus": int(form.get("westBusPercentage")),
                     "cycle": int(form.get("westCyclePercentage"))
                 },
-                "pedestrianCrossingRPH": int(form.get("westRequestFrequency")),
+                "pedestrianCrossingRph": int(form.get("westRequestFrequency")),
                 "priority": int(form.get("westPriority"))
             }
         }

@@ -393,7 +393,7 @@
                         
                         // Check for bus lanes and cycle lanes
                         Object.values(laneDetails).forEach(laneType => {
-                            if (laneType === 'busLane') bonusPoints += 10;
+                            if (laneType === 'bus') bonusPoints += 10;
                             if (laneType === 'cycle') bonusPoints += 15;
                         });
                         

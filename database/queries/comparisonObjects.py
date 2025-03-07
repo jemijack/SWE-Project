@@ -1,11 +1,11 @@
-from .selects import getVphObject, getName, getSimulationResults, getLayoutObjects
+from .selects import getVphObject, getName, getSimulationResults
 from .updates import updateJLState
 from ..__init__ import connect, createCursor
-from ..Objects import ResultsObject
 import psycopg2
 import json
 
-""" THIS ENTIRE FILE EXISTS TO TRY AND CHEESE THE TESTING OF THE CREATION OF THE COMPARISON PAGE'S OBJECTS"""
+
+# Creates a JSON according to the format agreed upon for the comparison page
 def getComparisonPageResultsObject(jid):
 
     results = {}  # Initialise the dictionary to be returned
@@ -14,7 +14,7 @@ def getComparisonPageResultsObject(jid):
     name = getName(jid)
 
     # Get the reshaped simulation results
-    detailedsrs = getSimulationResults(jid)
+    detailedsrs = getSimulationResults(jid) # Detailed simulation results (dsrs) contain metadata
     rDetailedsrs = reshapeSimulationResults(detailedsrs)
 
     # Get the other components
@@ -27,7 +27,7 @@ def getComparisonPageResultsObject(jid):
     for rdsr in rDetailedsrs:
         rsr = rdsr["results"]  # Don't access the metadata as we don't edit it
         for arm in rsr:
-            rsr[arm]["priority"] = dp[arm + "Arm"]
+            rsr[arm]["priority"] = dp[arm + "Arm"]  # E.g. rsr[north]["priority"] = dp[northArm]
 
     # Add the scoring weights to each of the resultsObjects
     # For the same reasons, this only works when all layouts are from the same junction set
@@ -111,7 +111,7 @@ def getScoreWeights(jid):
     return vphObject["priorities"]
 
 
-# Insert hard-coded results while we don't have the simulation working
+# Insert hard-coded results while the simulation hasn't been integrated yet
 def cheatComparisonPage(numLayouts):
     # numLayouts is the number of layouts created in that session
     # don't want to be inserting fake for layouts that don't exist
@@ -149,61 +149,27 @@ def cheatComparisonPage(numLayouts):
         },
     }
 
-    # Insert the above example ResultsObjects into the database
-    def insertRes():
-
-        # Hardcoded JLIDs are used - I believe Aadya's simulation would normally have them
-        query = """
-            INSERT INTO simulation_results (JLID, ResultsObject)
-            VALUES
-                (1, (%s)),
-                (2, (%s)),
-                (3, (%s)),
-                (4, (%s))
-        """
-        resobj = ResultsObject(json=res)
-        # Need to stringify the objects in order to insert them into the db as they contain a field of type TIMESTAMP which psycopg2 can't convert into JSONB
-        data = (json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json), json.dumps(resobj.json))
-
-        connection = None
-
-        try:  # Cheeky bit of context manager action
-            connection = connect()
-            with connection:
-                with createCursor(connection) as cursor:
-                    cursor.execute(query, data)
-                    if cursor.rowcount != 4:  # Check that all 4 rows have properly inserted
-                        return False
-                print(cursor.rowcount)
-                return True
-        except psycopg2.DatabaseError as e:
-            print(f"Error {e}")
-            return False
-        finally:
-            if connection:
-                connection.close()
-
-    # For use if there is ever under 4 junctions being simulated
+    # Inserts numLayouts fake results into the database
     def insertResNew(numLayouts):
         query = """
             INSERT INTO simulation_results (JLID, ResultsObject)
             VALUES (%s, %s)
         """
 
-        resobj = ResultsObject(json=res)
+        #resobj = ResultsObject(json=res)
         # Need to stringify the objects in order to insert them into the db as they contain a field of type TIMESTAMP which psycopg2 can't convert into JSONB
-        dresobj = json.dumps(resobj.json)
+        dresobj = json.dumps(res)
 
         connection = None
 
-        try:  # Cheeky bit of context manager action
+        try:  # Use of context manager for automatic commits / rollbacks
             connection = connect()
             with connection:
                 with createCursor(connection) as cursor:
                     for i in range(1, numLayouts + 1):
                         data = (i, dresobj)
                         cursor.execute(query, data)
-                        if cursor.rowcount != 1:  # Check that all 4 rows have properly inserted
+                        if cursor.rowcount != 1:  # Check that all numLayouts rows have successfully been inserted
                             return False
                 print(cursor.rowcount)
                 return True
@@ -214,16 +180,14 @@ def cheatComparisonPage(numLayouts):
             if connection:
                 connection.close()
 
-    # if insertRes():
-    #     print("The fake results have successfully been inserted")
-
     if insertResNew(numLayouts):
-        print("The fake results have successfully been inserted")
 
         # Now change the stateIDs of the JLIDs in the DB to say that they have been completed
+        # The trigger in the schema should automatically cause the state for the junction with
+        # jid: "jid" to also update it's state to "Finished"
         for i in range(1, (numLayouts + 1)):
             updateJLState(jlid=i, stid=3)
         return True
+    
     else:
-        print("NAY")
         return False

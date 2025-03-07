@@ -6,8 +6,8 @@ function initializeJunction(config) {
         "timestamp": "2025-02-13T12:00:00Z",
         "userId": "11",
         "junctionID": "56",
-        "northArm": { "laneCount": 3, "laneDetail": { "lane1": "busLane", "lane2": "straightOnly" }, "pedestrianCrossing": true },
-        "eastArm": { "laneCount": 3, "laneDetail": { "lane1": "cycleLane", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true },
+        "northArm": { "laneCount": 3, "laneDetail": { "lane1": "bus", "lane2": "straightOnly" }, "pedestrianCrossing": true },
+        "eastArm": { "laneCount": 3, "laneDetail": { "lane1": "cycle", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true },
         "southArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "rightOnly" }, "pedestrianCrossing": true },
         "westArm": { "laneCount": 3, "laneDetail": { "lane1": "leftStraight", "lane2": "straightOnly", "lane3": "rightOnly" }, "pedestrianCrossing": true }
     };
@@ -277,8 +277,8 @@ function initializeJunction(config) {
             let i = totalLanes - 1 - k;
             let laneKey = `lane${k + 1}`;
             let laneType = laneDetail[laneKey];
-            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
-                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+            if (k === 0 && (laneType === "bus" || laneType === "cycle")) {
+                let color = laneType === "bus" ? "#FF6347" : "#4682B4";
                 svg.append("rect")
                     .attr("x", innerX + i * laneWidth)
                     .attr("y", innerY)
@@ -289,7 +289,7 @@ function initializeJunction(config) {
                 let imgY = innerY + innerHeight - 80;
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
-                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let icon = laneType === "bus" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(180, ${imgX}, ${imgY})`;
                 svg.append("image")
                     .attr("xlink:href", `static/images/${icon}`)
@@ -373,8 +373,8 @@ function initializeJunction(config) {
             let i = totalLanes - 1 - k;
             let laneKey = `lane${k + 1}`;
             let laneType = laneDetail[laneKey];
-            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
-                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+            if (k === 0 && (laneType === "bus" || laneType === "cycle")) {
+                let color = laneType === "bus" ? "#FF6347" : "#4682B4";
                 svg.append("rect")
                     .attr("x", innerX)
                     .attr("y", innerY + i * laneWidth)
@@ -385,7 +385,7 @@ function initializeJunction(config) {
                 let imgY = innerY + (i + 0.5) * laneWidth;
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
-                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let icon = laneType === "bus" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(270, ${imgX}, ${imgY})`;
                 svg.append("image")
                     .attr("xlink:href", `static/images/${icon}`)
@@ -470,8 +470,8 @@ function initializeJunction(config) {
             let i = k;
             let laneKey = `lane${k + 1}`;
             let laneType = laneDetail[laneKey];
-            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
-                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+            if (k === 0 && (laneType === "bus" || laneType === "cycle")) {
+                let color = laneType === "bus" ? "#FF6347" : "#4682B4";
                 svg.append("rect")
                     .attr("x", innerX + i * laneWidth)
                     .attr("y", innerY)
@@ -482,7 +482,7 @@ function initializeJunction(config) {
                 let imgY = innerY + 80;
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
-                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let icon = laneType === "bus" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(0, ${imgX}, ${imgY})`;
                 svg.append("image")
                     .attr("xlink:href", `static/images/${icon}`)
@@ -568,8 +568,8 @@ function initializeJunction(config) {
             let i = k;
             let laneKey = `lane${k + 1}`;
             let laneType = laneDetail[laneKey];
-            if (k === 0 && (laneType === "busLane" || laneType === "cycleLane")) {
-                let color = laneType === "busLane" ? "#FF6347" : "#4682B4";
+            if (k === 0 && (laneType === "bus" || laneType === "cycle")) {
+                let color = laneType === "bus" ? "#FF6347" : "#4682B4";
                 svg.append("rect")
                     .attr("x", innerX)
                     .attr("y", innerY + i * laneWidth)
@@ -580,7 +580,7 @@ function initializeJunction(config) {
                 let imgY = innerY + (i + 0.5) * laneWidth;
                 let imgWidth = laneWidth * 0.8;
                 let imgHeight = laneWidth * 0.8;
-                let icon = laneType === "busLane" ? "busLane.png" : "cycle.png";
+                let icon = laneType === "bus" ? "busLane.png" : "cycle.png";
                 let transform = `rotate(90, ${imgX}, ${imgY})`;
                 svg.append("image")
                     .attr("xlink:href", `static/images/${icon}`)

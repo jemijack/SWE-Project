@@ -54,7 +54,7 @@ class LayoutObject:
         self.name = self.json["jLayoutName"]
         self.uid = self.json["userId"]
         self.timestamp = self.json["timestamp"]
-        self.jid = self.json["junctionID"]
+        self.jid = self.json["junctionId"]
         self.jlname = self.json["jLayoutName"] # Temporary - it gets changed to it's real value when pulled from the database
         errOccur = False
         errString = ""
@@ -67,10 +67,6 @@ class LayoutObject:
         if self.timestamp is None:
             errString += "Timestamp is None,"
             errOccur = True
-        # else:
-        #     # So that pyscopg2 can convert the json to a psql JSONB
-        #     self.json["timestamp"] = self.json["timestamp"].isoformat()
-
         if self.jid is None:
             errString += "Jid is None"
             errOccur = True
@@ -79,7 +75,7 @@ class LayoutObject:
             return False
         return True
 
-    # Convert from Ansha's JSON to Aadya's
+    # Convert from the old layout object structure to the new one
     def format(self):
         newJson = {}
         newJson["jLayoutName"] = self.json["configurationName"]
@@ -115,11 +111,4 @@ class LayoutObject:
             dirArm["priority"] = arm["priority"]
             newJson[arms[armCounter]] = dirArm
 
-        print(json.dumps(newJson, indent=4))
-
-
-@dataclass
-class ResultsObject:
-    jlid: Optional[int] = None
-    timestamp: Optional[str] = None
-    json: Optional[Any] = None
+        print(json.dumps(newJson, indent=4))  # Debugging

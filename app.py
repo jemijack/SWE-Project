@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify, session
 import database
 from database.Objects import VPHObject, LayoutObject
 import logging
-from datetime import datetime, timezone
 from utils import utils
 import json
 from os import urandom
@@ -10,23 +9,26 @@ from os import urandom
 app = Flask(__name__)
 app.secret_key = urandom(32)
 
+
 # Route for the login page, which will be the start page. Note that dropping the methods parameter means only GET requests will be read, by default
 @app.route("/")
 def login():
     # Displays the login page at the specified url, i.e /
-    return render_template("LoginPage.html")   
+    return render_template("LoginPage.html")  
 
-# Route to the junction set design page from the home page
-@app.route("/junctionform")
-def junctionForm():
-    # Displays the junction set design page at the specified url, i.e /junctionform
-    return render_template("CreateNewSet.html")
 
 # Route to get back to the home page from the junction set creation page
 @app.route("/home")
 def junctionFormToHome():
     # Displays the home page at the url /home
     return render_template("HomePage.html")
+
+
+# Route to the junction set design page from the home page
+@app.route("/junctionform")
+def junctionForm():
+    # Displays the junction set design page at the specified url, i.e /junctionform
+    return render_template("CreateNewSet.html")
 
 
 # Route to handle login. Takes user to the home page
@@ -42,6 +44,7 @@ def loginToHome():
     session["uid"] = uid
     # Displays the create new set form page at the specified url
     return render_template("HomePage.html") 
+
 
 # Route to handle the junction form submission (POST request)
 @app.route("/layoutform", methods=["POST"])
@@ -92,7 +95,8 @@ def save_junction():
         return jsonify({"error": "No Junction Set was created in this session so it is unkown which junction set this is meant to be a layout for"})
 
     # Create the layout's python Object representation for an easier insertion into the database
-    data["junctionID"] = jid
+    data["junctionId"] = jid
+    data["userId"] = int(data["userId"])
     logging.info(f"JSON received from the layout configuration page: {json.dumps(obj=data, indent=4)}")
     confObject = LayoutObject(json=data)
 
@@ -131,61 +135,17 @@ def save_junction():
     session["jlids"] = jlids
     logging.info(f"The layouts created in this session have the following jlids: {jlids}")
 
-# reponce from the backend
+    # Response from the backend
     response_data = {
         "status": "Success - Layout saved to the database",
         "submissionCount": len(jlids)
     }
-
 
     # If 4 layouts have been submitted, prepare for simulation/comparison
     if len(jlids) >= 4:
         response_data["redirect"] = "/loading_page"
 
     return jsonify(response_data), 200
-
-    """This stuff is for when the submissions <= 4 thing was on the server side. Now it's done in script.js"""
-    # # The user will be allowed to create up to 4 layouts for the same junction
-    # # Once four have been created, start simulating them
-    # submissionCount = len(jlids)
-    # if submissionCount == 4:
-    #     logging.info(f"The user has now submitted 4 layouts for junction: {jid}, with jlids {jlids}, simulation will begin")
-
-    #     """This should redirect them to the simulator, which then redirects to the poller,
-    #     # which then redirects to the comparison page. This is temporary"""
-    #     return jsonify({
-    #         "status": "success",
-    #         "message": f"Layout saved with id: {jlid}, There are now 4 junctions, so simulation can commence",
-    #         "submissionCount": submissionCount,
-    #         "redirect": "/comparison_page"
-    #     }), 200
-
-    # The layout has successfully been saved, and the user has created under 4 layouts so they
-    # can continue to make more layouts
-
-    # If flask simply returns success or failure messages, it better separates the
-    # business logic from the client logic
-
-
-# This is where the calls to the simulation process will happen (may be Aadya's code?)
-
-
-
-"""This is where the calls to the simulation process will happen (may be Aadya's code?)"""
-def simulateJunction():
-
-    # Get the IDs of the created junction set and it's configured layouts
-    jlids = session.get("jlids")
-    jid = session.get("jid")
-    if jid is None:
-        return jsonify({"error": "Jid not found"}), 400
-    if jlids is None:
-        return jsonify({"error": "Jlids not found"}), 400
-
-    # If there are configured layouts for this sessoin, simulate them
-    for jlid in jlids:
-        # simulate(jid, jlid)
-        print("Hmm")
 
 
 # Loading page endpoint

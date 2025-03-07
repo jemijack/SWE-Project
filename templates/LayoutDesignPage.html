@@ -26,7 +26,7 @@
 
 <div id = junctionConfigPerDirection>
 
-<!--JUNCTION NAME TO DO. UHHH IM LAZY AND USED REGEX FOR VALIDATION DON'T REALLY THINK THATS APROPRIATE--> 
+<!--Regex used for validation--> 
 
 <label for="junctionName">Junction Name:</label>
 <input type="text" id="junctionName" name="name" required minlength="1" required pattern="[a-zA-Z0-9\s]+" size="10">
@@ -53,8 +53,8 @@
     <div id="laneSettings">
         <select id="directionOptions">
             <option value="">Select Lane Type</option>
-            <option value="busLane" class="special">Bus Lane</option>
-            <option value="cycleLane" class="special">Cycle Lane</option>
+            <option value="bus" class="special">Bus Lane</option>
+            <option value="cycle" class="special">Cycle Lane</option>
             <option value="leftOnly">Dedicated Left Lane</option>
             <option value="rightOnly">Dedicated Right Lane</option>
             <option value="straightOnly">Straight Only</option>

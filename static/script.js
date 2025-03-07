@@ -3,7 +3,7 @@ let layoutData = {
     "jLayoutName": "", // User enters this
     "timestamp": new Date().toISOString(),
     "userId": "11", // This come from other page
-    "junctionID":"56", // This also comes from other page 
+    "junctionId":"56", // This also comes from other page 
 
 // we start by default with 3 lanes per direction. 
         "northArm": {
@@ -280,7 +280,7 @@ function updateLaneOptions() {
         specialOptions.forEach(option => option.hidden = true);
 
         // if a hidden option was previously selected, reset the dropdown
-        if (["busLane", "cycleLane"].includes(dropdown.value)) {
+        if (["bus", "cycle"].includes(dropdown.value)) {
             dropdown.value = "";
         }
     }

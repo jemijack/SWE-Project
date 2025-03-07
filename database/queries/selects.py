@@ -4,6 +4,7 @@ import logging  # More flexible than print statements
 import time
 
 
+# Returns the name of a junction
 def getName(jid):
     getNameQuery = """
     SELECT JName
@@ -29,10 +30,10 @@ def getName(jid):
                     JName = JName_tuple[0]
                     logging.info(f"The name for the junction with jid: {jid} has been successfully retrieved: {JName}") 
                     return JName
-                
+
                 # The name of the junction could not be found
                 return None
-            
+
     # Error handling
     except psycopg2.OperationalError as error:
         logging.error(f"Database operational error in getName on jid: {jid}: {error}")
@@ -100,6 +101,9 @@ def isSimulationFinished(jid):
     return jState == 4
 
 
+# Returns the ResultsObject stored in the database. This isn't actually used in this system
+# because only one junction set can be compared. But this function would be necessary for if
+# we allowed layouts from different junction sets to be compared
 def getSimulationResult(jlid):
     getSimulationResultsQuery = """
         SELECT ResultsObject
@@ -244,6 +248,7 @@ def getLayoutObjects(jid):
             connection.close()  # Connection still needs to be closed manually
 
 
+# Gets the vphObject for a particular junction
 def getVphObject(jid):
     getVphObjectQuery = """
         SELECT VPHObject
