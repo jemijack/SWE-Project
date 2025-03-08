@@ -280,6 +280,7 @@ button {
     margin-left: 30px;
     margin-right: auto; 
     height: auto; /* Allow height to grow with content */
+    margin-bottom: 0px
 }
 
 /* Dropdown Menu */
@@ -384,7 +385,7 @@ input[type="range"] {
     width: 60%; /* Reduced width */
     margin-left: 30px;
     margin-right: auto; /* Center the container */
-    margin-bottom: 100px; /* Added margin to move it down */
+    margin-top: 0px; /* Reduced margin to move it closer to laneSetting */
     
      
 }
