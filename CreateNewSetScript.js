@@ -223,7 +223,7 @@ function northPedestrianToggle() {
       isValid = false;
     }
   });
-
+  //This circumvents the issue of the textbox corresponding to a checkbox being empty. We provide a default value of 0, in case the textbox has not been filled in. 
   if (!document.getElementById("northPedestrianCheckbox").checked) {
       document.getElementById("northPedestrian").value = "0";
   }
@@ -245,30 +245,28 @@ function northPedestrianToggle() {
 
       // Validate only if the textbox isn't linked to an unchecked checkbox
       if (input.value.trim() === "") {
-          hasEmptyTextbox = true; // Found an empty, required textbox
+          hasEmptyTextbox = true;
           isValid = false;
       }
   });
 
-  // Prevent form submission and show alert if any textbox is empty
+  // Prevent form submission and show alert if any textbox is empty. Don't need to set isValid = false as this would have already been done above.
   if (hasEmptyTextbox) {
       alert("Please fill in all textboxes.");
   }
   
-
-  // 1. Validate that the percentages add up to 100 for all directions
 
   //parseFloat is used since value retrieved from the object produced by document.getElementId is a string
   const nCarPercentage = parseFloat(document.getElementById('northCarPercentage').value);
   const nBusPercentage = parseFloat(document.getElementById('northBusPercentage').value);
   const nCyclePercentage = parseFloat(document.getElementById('northCyclePercentage').value);
   const nTotalPercentage = nCarPercentage + nBusPercentage + nCyclePercentage;
-
+  //Checks if the sum of all percentages provided for the north arm section of the form is 100.
   if (nTotalPercentage !== 100) {
     alert("North Direction: The percentages of cars, buses, and cycles must add up to 100.");
     isValid = false;
   }
-
+  //Retrieves all percentages provided for the car, bus and cycle split, and computes their sum
   const sCarPercentage = parseFloat(document.getElementById('southCarPercentage').value);
   const sBusPercentage = parseFloat(document.getElementById('southBusPercentage').value);
   const sCyclePercentage = parseFloat(document.getElementById('southCyclePercentage').value);
@@ -299,7 +297,7 @@ function northPedestrianToggle() {
     isValid = false;
   }
 
-  // 2. Validate that incoming vehicles = exiting vehicles for every direction
+  // Validate that incoming vehicles = exiting vehicles for every direction
   const nIncoming = parseInt(document.getElementById('northVehiclesIn').value);
   const nLeftOut = parseInt(document.getElementById('northLeftOut').value);
   const nStraightOut = parseInt(document.getElementById('northStraightOut').value);
@@ -355,22 +353,22 @@ function northPedestrianToggle() {
     alert("The sum of attribute priorities must be 100.");
     isValid = false;
   }
-
+  //Here we reset the values in the textboxes from 0 to empty. The textboxes being empty will no longer cause an issue here. This ensures that accurate data is sent to Flask. Further, it could have been possible that the textbox was filled in, then the checkbox unchecked, in which case, we don't need to know the value anyway.
+  if (!document.getElementById("northPedestrianCheckbox").checked) {
+    document.getElementById("northPedestrian").value = "";
+  }
+  if (!document.getElementById("southPedestrianCheckbox").checked) {
+      document.getElementById("southPedestrian").value = "";
+  }
+  if (!document.getElementById("eastPedestrianCheckbox").checked) {
+      document.getElementById("eastPedestrian").value = "";
+  }
+  if (!document.getElementById("westPedestrianCheckbox").checked) {
+      document.getElementById("westPedestrian").value = "";
+  }
   // Return false to prevent form submission if any invalid input is found across all directions
   if (!isValid) {
     alert("Please correct the invalid fields before submitting.");
-    if (!document.getElementById("northPedestrianCheckbox").checked) {
-      document.getElementById("northPedestrian").value = "";
-    }
-    if (!document.getElementById("southPedestrianCheckbox").checked) {
-        document.getElementById("southPedestrian").value = "";
-    }
-    if (!document.getElementById("eastPedestrianCheckbox").checked) {
-        document.getElementById("eastPedestrian").value = "";
-    }
-    if (!document.getElementById("westPedestrianCheckbox").checked) {
-        document.getElementById("westPedestrian").value = "";
-    }
     return false;
   }
 
@@ -379,6 +377,12 @@ function northPedestrianToggle() {
 // Prevent form submission when the Enter key is pressed
 document.getElementById('junctionForm').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent form submission on Enter key press
+      event.preventDefault();
     }
   });
+
+// Export functions for testing
+module.exports = {
+  showDirectionForm,
+  northPedestrianToggle  
+}
