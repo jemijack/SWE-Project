@@ -14,14 +14,14 @@ app.secret_key = urandom(32)
 @app.route("/")
 def login():
     # Displays the login page at the specified url, i.e /
-    return render_template("LoginPage.html")  
+    return render_template("loginPage.html")  
 
 
 # Route to get back to the home page from the junction set creation page
 @app.route("/home", methods=["GET"])
 def junctionFormToHome():
     # Displays the home page at the url /home
-    return render_template("HomePage.html")
+    return render_template("homePage.html")
 
 
 # Route to handle login. Takes user to the home page
@@ -36,14 +36,14 @@ def loginToHome():
     logging.info(f"The User ID for this session is: {uid}")
     session["uid"] = uid
     # Displays the create new set form page at the specified url
-    return render_template("HomePage.html") 
+    return render_template("homePage.html") 
 
 
 # Route to the junction set design page from the home page
 @app.route("/junction-creation-page", methods=["GET"])
 def junctionForm():
     # Displays the junction set design page at the specified url, i.e /junctionform
-    return render_template("CreateNewSet.html")
+    return render_template("createNewSet.html")
 
 
 # Store the junction form in the database and render the layout configuration page
@@ -84,7 +84,7 @@ def handleJuncionForm():
 @app.route("/layout-design-page", methods=["GET"])
 def renderLayoutForm():
     # Render the layout configuration page
-    return render_template("LayoutDesignPage.html")
+    return render_template("layoutDesignPage.html")
 
 
 # Endpoint for when the user has finished designing the layout for their junction
