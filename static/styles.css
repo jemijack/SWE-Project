@@ -1,7 +1,59 @@
+/* GENERAL STUFF */ 
+
 .container {
     display: flex; /* Use Flexbox */
     height: 100vh; /* Full viewport height */
+    gap: 20px;
 }
+
+
+button {
+    outline: none; /* Remove outline */
+    border: none; /* Remove border */
+    cursor: pointer; /* Show pointer on hover */
+}
+
+
+/* font  things*/
+.poppins-medium-16 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.poppins-regular {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+
+
+    /* DM Sans font in bold for the page header */
+    .dm-sans-bold-header {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: bold; 
+        font-size: 32px;
+        margin-top: -10px;
+        color:#2B3674 
+
+      }
+
+      
+    /* DM Sans font in bold for the page header */
+    .dm-sans-bold-h2 {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: bold; 
+        font-size: 24px;
+        margin-top: -10px;
+        color:#2B3674 
+
+      }
+
+/*** GENERNAL STUFF ENDS **/ 
+
+
+/* FIXED MENU STUFF STARTS **/ 
 
 /* Sidebar styling AND positional Stuff */
 #direction-sidebar {
@@ -14,6 +66,7 @@
     border-right: 1px solid #ddd;
     min-height: 100vh; /* Full viewport height */
     height: auto; /* Allow it to grow with content */
+    flex-shrink: 0; 
 }
 
 
@@ -55,30 +108,47 @@
     color: darkgreen;
 }
 
-
-
 /* icon colour*/ 
 .direction-sidebar button svg {
     color: black;
     margin-right: 10px;
 }
 
+/** END OF FIXED MENU STUFF */ 
 
-/* font  things*/
-.poppins-medium-16 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+
+/******* LEFT HAND SECTION******/ 
+
+/* left-hand section has the the image and the junction-name + pedestian Crossing  SVG Image */
+
+#left-section {
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between image and junction name */
+    margin-left: 20px;
 }
 
-.poppins-regular {
+#image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: none; /* Light background */
+}
+
+#junctionName-PedestrianContainer {
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Border for definition */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     font-family: 'Poppins', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
+    font-weight: 500; /* Medium weight */
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px; /* Added margin to create space at the bottom 
 }
 
 
-/* Main content styling - thisis gonna be RHS  FOR NOW WITH ALL THE CONNTENTAND STUFF */
 #junctionConfigPerDirection {
     flex: 2; /* Take up more space than the sidebar */
     display: flex;
@@ -86,44 +156,92 @@
     gap: 20px; /* Space between containers */
 }
 
+/* junction input box */ 
+#junctionName {
+    width: 200px; /* Adjust the width as needed */
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc; /* Default border */
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    margin-bottom: 20px;
+}
 
-button {
-    outline: none; /* Remove outline */
-    border: none; /* Remove border */
-    cursor: pointer; /* Show pointer on hover */
+#junctionName:focus {
+    outline:none;
+    border-color: #4318FF;  /* Purple border on focus */
+    box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.2); /* Purple glow */
+}
+
+/* Toggle Switch Container */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Width of the toggle */
+    height: 25px; /* Height of the toggle */
+}
+
+/* Hide the default checkbox */
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider (the actual toggle) */
+.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Default gray background */
+    transition: 0.3s; /* Smooth transition */
+    border-radius: 25px; /* Rounded corners */
+}
+
+/* Circle inside the slider */
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px; /* Size of the circle */
+    width: 20px;
+    left: 3px; /* Position of the circle */
+    bottom: 3px;
+    background-color: white; /* Circle color */
+    transition: 0.3s; /* Smooth transition */
+    border-radius: 50%; /* Round circle */
+}
+
+/* When the checkbox is checked, change the background to purple */
+.toggle-switch input:checked + .slider {
+    background-color: #6a0dad; /* Purple background */
+}
+
+/* Move the circle to the right when checked */
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(25px); /* Move the circle */
 }
 
 
-    /* DM Sans font in bold for the page header */
-    .dm-sans-bold-header {
-        font-family: 'DM Sans', sans-serif;
-        font-weight: bold; 
-        font-size: 32px;
-        margin-top: -10px;
-        color:#2B3674 
+/**** END OF LEFT *** / 
 
-      }
-
-      
-    /* DM Sans font in bold for the page header */
-    .dm-sans-bold-h2 {
-        font-family: 'DM Sans', sans-serif;
-        font-weight: bold; 
-        font-size: 24px;
-        margin-top: -10px;
-        color:#2B3674 
-
-      }
 
 
 /* Lane Settings Container */
 #laneSettings {
-    margin-top: 20px; /* Space above the menu */
-    padding: 15px;
+    margin-top: 55px; /* Space above the menu */
+    padding: 15px; 
     background-color: #f9f9f9; /* Light background */
     border: 1px solid #ddd; /* Border for definition */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 60%; /* Reduced width */
+    margin-left: 30px;
+    margin-right: auto; 
+    height: auto; /* Allow height to grow with content */
 }
 
 /* Dropdown Menu */
@@ -216,116 +334,6 @@ input[type="range"] {
 }
 
 
-
-
-/******* LEFT HAND SECTION******/ 
-
-
-
-/* left-hand section has the the image and the junction-name + pedestian Crossing  SVG Image */
-
-#left-section {
-    flex: 1; /* Take up remaining space */
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Space between image and junction name */
-}
-
-
-#image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: none; /* Light background */
-}
-
-#junctionName-PedestrianContainer {
-    background-color: #f9f9f9; /* Light background */
-    border: 1px solid #ddd; /* Border for definition */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500; /* Medium weight */
-    display: flex;
-    flex-direction: column;
-}
-
-/* junction input box */ 
-#junctionName {
-    width: 200px; /* Adjust the width as needed */
-    padding: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    border: 1px solid #ccc; /* Default border */
-    border-radius: 4px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    margin-bottom: 20px;
-}
-
-#junctionName:focus {
-    outline:none;
-    border-color: #4318FF;  /* Purple border on focus */
-    box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.2); /* Purple glow */
-}
-
-/* Toggle Switch Container */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px; /* Width of the toggle */
-    height: 25px; /* Height of the toggle */
-}
-
-/* Hide the default checkbox */
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* Slider (the actual toggle) */
-.toggle-switch .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc; /* Default gray background */
-    transition: 0.3s; /* Smooth transition */
-    border-radius: 25px; /* Rounded corners */
-}
-
-/* Circle inside the slider */
-.toggle-switch .slider:before {
-    position: absolute;
-    content: "";
-    height: 20px; /* Size of the circle */
-    width: 20px;
-    left: 3px; /* Position of the circle */
-    bottom: 3px;
-    background-color: white; /* Circle color */
-    transition: 0.3s; /* Smooth transition */
-    border-radius: 50%; /* Round circle */
-}
-
-/* When the checkbox is checked, change the background to purple */
-.toggle-switch input:checked + .slider {
-    background-color: #6a0dad; /* Purple background */
-}
-
-/* Move the circle to the right when checked */
-.toggle-switch input:checked + .slider:before {
-    transform: translateX(25px); /* Move the circle */
-}
-
-
-/**** END OF LEFT *** / 
-
-
-
-
-
 /* Submission Container */
 #submissionContainer {
     padding: 15px;
@@ -335,6 +343,11 @@ input[type="range"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     display: flex;
     flex-direction: column;
+    width: 60%; /* Reduced width */
+    margin-left: 30px;
+    margin-right: auto; /* Center the container */
+    margin-top: 20px; /* Added margin to move it down */
+     
 }
 
 /* Button Styling */
