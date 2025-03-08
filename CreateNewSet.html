@@ -212,6 +212,7 @@
       font-weight: bold; 
       font-size: 32px;
       margin-top: -10px;
+      margin-bottom: 20px;
     }
 
     .form-group {
@@ -271,32 +272,33 @@
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <polyline points="5 12 12 5 19 12"></polyline>
         </svg>
-        <span class="dm-sans-bold-sidebar">Northbound</span>
+        <span class="dm-sans-bold-sidebar">North Arm</span>
       </button>
       <button type="button" id="eastButton" class="direction-button" onclick="showDirectionForm('east')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
-        <span class="dm-sans-bold-sidebar">Eastbound</span>
+        <span class="dm-sans-bold-sidebar">East Arm</span>
       </button>
       <button type="button" id="southButton" class="direction-button" onclick="showDirectionForm('south')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <polyline points="19 12 12 19 5 12"></polyline>
         </svg>
-        <span class="dm-sans-bold-sidebar">Southbound</span>
+        <span class="dm-sans-bold-sidebar">South Arm</span>
       </button>
       <button type="button" id="westButton" class="direction-button" onclick="showDirectionForm('west')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span class="dm-sans-bold-sidebar">Westbound</span>
+        <span class="dm-sans-bold-sidebar">West Arm</span>
       </button>
     </div>
     <div class="form-content">
       <h1 class="dm-sans-bold-header">Create New Junction</h1>
+      <div class="body-text">The values you provide the below fields dictate the general form your function will take. You will then use this general form to create specific junction layouts for comparison.</div>
       <!-- Junction Set Name -->
       <div class="junction-set-group">
         <label class="poppins-medium" for="junctionSetName">Junction Set Name:</label>
@@ -326,7 +328,7 @@
         <input class="poppins-regular" type="text" id="MaxQueue" name="MaxQueue" oninput="validateInteger(this)">
         <div id="MaxQueueError" class="text-danger poppins-regular"></div>
       </div>
-      <div class="body-text">The below fields apply to the direction that is currently selected.</div>
+      <div class="body-text">All of the above fields apply to the entire junction. The below fields apply only to the arm of the junction that is currently selected.</div>
 
       <!-- North Form Inputs (Only one of these will be visible at a time) -->
       <div id="northForm" class="form-container">
@@ -336,17 +338,17 @@
           <div id="northVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="northLeftOut">Total Vehicles Exiting West (per hour):</label>
+          <label class="poppins-medium" for="northLeftOut">Total Vehicles Exiting East (per hour):</label>
           <input class="poppins-regular" type="text" id="northLeftOut" name="northLeftOut" oninput="validateInteger(this)">
           <div id="northLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="northStraightOut">Total Vehicles Exiting North (per hour):</label>
+          <label class="poppins-medium" for="northStraightOut">Total Vehicles Exiting South (per hour):</label>
           <input class="poppins-regular" type="text" id="northStraightOut" name="northStraightOut" oninput="validateInteger(this)">
           <div id="northStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="northRightOut">Total Vehicles Exiting East (per hour):</label>
+          <label class="poppins-medium" for="northRightOut">Total Vehicles Exiting West (per hour):</label>
           <input class="poppins-regular" type="text" id="northRightOut" name="northRightOut" oninput="validateInteger(this)">
           <div id="northRightOutError" class="text-danger poppins-regular"></div>
         </div>
@@ -394,17 +396,17 @@
           <div id="southVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="southLeftOut">Total Vehicles Exiting East (per hour):</label>
+          <label class="poppins-medium" for="southLeftOut">Total Vehicles Exiting West (per hour):</label>
           <input class="poppins-regular" type="text" id="southLeftOut" name="southLeftOut" oninput="validateInteger(this)">
           <div id="southLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="southStraightOut">Total Vehicles Exiting South (per hour):</label>
+          <label class="poppins-medium" for="southStraightOut">Total Vehicles Exiting North (per hour):</label>
           <input class="poppins-regular" type="text" id="southStraightOut" name="southStraightOut" oninput="validateInteger(this)">
           <div id="southStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="southRightOut">Total Vehicles Exiting West (per hour):</label>
+          <label class="poppins-medium" for="southRightOut">Total Vehicles Exiting East (per hour):</label>
           <input class="poppins-regular" type="text" id="southRightOut" name="southRightOut" oninput="validateInteger(this)">
           <div id="southRightOutError" class="text-danger poppins-regular"></div>
         </div>
@@ -452,17 +454,17 @@
           <div id="eastVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="eastLeftOut">Total Vehicles Exiting North (per hour):</label>
+          <label class="poppins-medium" for="eastLeftOut">Total Vehicles Exiting South (per hour):</label>
           <input class="poppins-regular" type="text" id="eastLeftOut" name="eastLeftOut" oninput="validateInteger(this)">
           <div id="eastLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="eastStraightOut">Total Vehicles Exiting East (per hour):</label>
+          <label class="poppins-medium" for="eastStraightOut">Total Vehicles Exiting West (per hour):</label>
           <input class="poppins-regular" type="text" id="eastStraightOut" name="eastStraightOut" oninput="validateInteger(this)">
           <div id="eastStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="eastRightOut">Total Vehicles Exiting South (per hour):</label>
+          <label class="poppins-medium" for="eastRightOut">Total Vehicles Exiting North (per hour):</label>
           <input class="poppins-regular" type="text" id="eastRightOut" name="eastRightOut" oninput="validateInteger(this)">
           <div id="eastRightOutError" class="text-danger poppins-regular"></div>
         </div>
@@ -510,17 +512,17 @@
           <div id="westVehiclesInError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="westLeftOut">Total Vehicles Exiting South (per hour):</label>
+          <label class="poppins-medium" for="westLeftOut">Total Vehicles Exiting North (per hour):</label>
           <input class="poppins-regular" type="text" id="westLeftOut" name="westLeftOut" oninput="validateInteger(this)">
           <div id="westLeftOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="westStraightOut">Total Vehicles Exiting West (per hour):</label>
+          <label class="poppins-medium" for="westStraightOut">Total Vehicles Exiting East (per hour):</label>
           <input class="poppins-regular" type="text" id="westStraightOut" name="westStraightOut" oninput="validateInteger(this)">
           <div id="westStraightOutError" class="text-danger poppins-regular"></div>
         </div>
         <div class="form-group">
-          <label class="poppins-medium" for="westRightOut">Total Vehicles Exiting North (per hour):</label>
+          <label class="poppins-medium" for="westRightOut">Total Vehicles Exiting South (per hour):</label>
           <input class="poppins-regular" type="text" id="westRightOut" name="westRightOut" oninput="validateInteger(this)">
           <div id="westRightOutError" class="text-danger poppins-regular"></div>
         </div>
@@ -571,4 +573,3 @@
 
 </body>
 </html>
-
