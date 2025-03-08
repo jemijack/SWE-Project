@@ -80,6 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // This loads the 3 lanes buttons on first load. 
 document.addEventListener("DOMContentLoaded", function(){
    
+    // Highlight North as the default active direction
+    document.getElementById("northButton").classList.add("active");
    
      // Ensure North has at least 3 lanes becuase its the first direction that loads and therefore it itrs not covered by the switchLane function
       if (!layoutData["northArm"].laneDetail || Object.keys(layoutData["northArm"].laneDetail).length === 0) {
@@ -167,15 +169,55 @@ document.getElementById("lanes").addEventListener("input", function(){
     }
 }); 
 
-// Listen for changes on pedistrian crossing
-document.getElementById("pedestrian").addEventListener("change", function() {
+document.addEventListener("DOMContentLoaded", function() {
+    // Debugging: Check if the event listener is working
+    const pedestrianToggle = document.getElementById("pedestrian");
+    const sliderElement = document.getElementById("sliderElement");
     
-    // update if changed
-    layoutData[currentDirection].pedestrianCrossing = this.checked;
+    
+     // Add event listeners to the checkbox
+     if (pedestrianToggle) {
+        pedestrianToggle.addEventListener("change", function() {
+            console.log("Pedestrian crossing toggled (checkbox):", this.checked);
+            layoutData[currentDirection].pedestrianCrossing = this.checked;
+            redrawJunction();
+        });
+        
+        pedestrianToggle.addEventListener("click", function() {
+            console.log("Pedestrian crossing clicked (checkbox):", this.checked);
+            layoutData[currentDirection].pedestrianCrossing = this.checked;
+            redrawJunction();
+        });
+    }
 
-    // redraw to show new visuialisation
-    redrawJunction();
 
+    // Add listener to the visible slider as well
+    if (sliderElement) {
+        sliderElement.addEventListener("click", function() {
+            console.log("Slider clicked");
+            // Manually toggle the checkbox
+            pedestrianToggle.checked = !pedestrianToggle.checked;
+            // Trigger the change event
+            pedestrianToggle.dispatchEvent(new Event("change"));
+        });
+    }
+
+
+
+
+
+
+    
+    if (pedestrianToggle) {
+        //pedestrianToggle.checked = true;
+        pedestrianToggle.addEventListener("change", function() {
+            console.log("Pedestrian crossing toggled:", this.checked); // Debugging
+            layoutData[currentDirection].pedestrianCrossing = this.checked;
+            redrawJunction();
+        });
+    } else {
+        console.error("Pedestrian toggle element not found!"); // Debugging
+    }
 });
 
 // Creates the corrent numbe of buttons every time the numbe of lanes changes. 
@@ -187,6 +229,12 @@ function generateLaneButtons(laneCount) {
         let button = document.createElement("button");
         button.innerText = `Lane ${i + 1}`;
         button.onclick = () => switchLane(i);
+        
+        if (i === 0) {
+            button.classList.add("active");
+        }
+        
+        
         container.appendChild(button);
     }
 
@@ -393,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(`Lane ${currentLane + 1} in ${currentDirection} updated to:`, selectedValue);
             
             // Redraw junction to show the changes
-            //redrawJunction();
+            redrawJunction();
         });
     }
 });
@@ -441,6 +489,17 @@ function switchLane(laneIndex){
   //  Update the dropdown with the lane's stored value 
   document.getElementById("directionOptions").value = newLaneData 
 
+// Highlight the active lane button
+let laneButtons = document.querySelectorAll("#laneMenu button");
+laneButtons.forEach((button, index) => {
+    if (index === laneIndex) {
+        button.classList.add("active"); // Add active class to the selected lane
+    } else {
+        button.classList.remove("active"); // Remove active class from other lanes
+    }
+});
+
+
   console.log(`Switched to Lane ${laneIndex + 1} in ${currentDirection}:`, newLaneData);   
 
 }
@@ -450,6 +509,17 @@ function switchLane(laneIndex){
 
     let directionKey = direction.toLowerCase() + "Arm"; 
        
+     // Remove active class from all direction buttons
+     document.querySelectorAll(".direction-button").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    // Add active class to the selected direction button
+    let activeButton = document.getElementById(`${direction.toLowerCase()}Button`);
+    if (activeButton) {
+        activeButton.classList.add("active");
+    }
+
     // Validate the current direction **before switching**
        if (!validateDirectionSettings(currentDirection)) {
         return; 
@@ -470,6 +540,9 @@ if (currentDirection) {
     // Switch to the new direction
     currentDirection = directionKey;
     console.log("Switched to ", directionKey);
+
+    document.getElementById("pedestrian").checked = layoutData[currentDirection].pedestrianCrossing || false;
+
 
    // Get number of lanes in the new direction (default to 3 if not set)
    let laneCount;
@@ -514,7 +587,7 @@ if (currentDirection) {
         // This ensures dropdown shows default text
         document.getElementById("directionOptions").value = "";
 
-    //redrawJunction();
+    redrawJunction();
 
  console.log(`Switched to ${direction}. Current state:`, layoutData[directionKey]);
 

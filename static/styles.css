@@ -98,15 +98,19 @@ button {
     color: #333; /* Default text color */
 }
 
+.direction-button.active {
+    color: #4318FF; /* purpletext */
+    border-bottom: 3px solid black;
+    outline: none;
+    
+}
+
 /* Default home button text color */
 .direction-sidebar .back-to-home span {
     color: #4a90e2; /* Default home button text color */
 }
 
-/* Green on hover */
-.direction-sidebar .direction-button span:hover {
-    color: darkgreen;
-}
+
 
 /* icon colour*/ 
 .direction-sidebar button svg {
@@ -191,7 +195,7 @@ button {
     flex: 2; /* Take up more space than the sidebar */
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Space between containers */
+    gap: 2px; /* Space between containers */
 }
 
 /* junction input box */ 
@@ -212,22 +216,20 @@ button {
     box-shadow: 0 0 0 2px rgba(106, 13, 173, 0.2); /* Purple glow */
 }
 
-/* Toggle Switch Container */
+
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 50px; /* Width of the toggle */
-    height: 25px; /* Height of the toggle */
+    width: 50px;
+    height: 25px;
 }
 
-/* Hide the default checkbox */
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-/* Slider (the actual toggle) */
 .toggle-switch .slider {
     position: absolute;
     cursor: pointer;
@@ -235,32 +237,29 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc; /* Default gray background */
-    transition: 0.3s; /* Smooth transition */
-    border-radius: 25px; /* Rounded corners */
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 25px;
 }
 
-/* Circle inside the slider */
 .toggle-switch .slider:before {
     position: absolute;
     content: "";
-    height: 20px; /* Size of the circle */
+    height: 20px;
     width: 20px;
-    left: 3px; /* Position of the circle */
+    left: 3px;
     bottom: 3px;
-    background-color: white; /* Circle color */
-    transition: 0.3s; /* Smooth transition */
-    border-radius: 50%; /* Round circle */
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
 }
 
-/* When the checkbox is checked, change the background to purple */
 .toggle-switch input:checked + .slider {
-    background-color: #6a0dad; /* Purple background */
+    background-color:#4318FF;
 }
 
-/* Move the circle to the right when checked */
 .toggle-switch input:checked + .slider:before {
-    transform: translateX(25px); /* Move the circle */
+    transform: translateX(10px);
 }
 
 
@@ -391,7 +390,7 @@ input[type="range"] {
 }
 
 /* Button Styling */
-#submissionContainer button {
+#compareButton  {
     margin-top: 20px; /* Space above the buttons */
     background-color: #11047A;
     color: white; /* Text color */
@@ -406,8 +405,46 @@ input[type="range"] {
 
 }
 
+/* Button Styling */
+#submitLayout {
+    margin-top: 20px; /* Space above the buttons */
+    background-color: #11047A;
+    color: white; /* Text color */
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border-radius: 8px; /* Rounded corners */
+    font-weight: 600; /* Semi-bold weight */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth color transition */
+    padding: 5px 0px; /* Increase padding for better appearance */
+
+}
+
+
+/* Button Styling */
+#compareButton:disabled {
+    margin-top: 20px; /* Space above the buttons */
+    background-color: #ccc;
+    color: #888; /* Text color */
+    cursor: not-allowed; 
+    opacity: 0.7; 
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border-radius: 8px; /* Rounded corners */
+    font-weight: 600; /* Semi-bold weight */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth color transition */
+    padding: 5px 0px; /* Increase padding for better appearance */
+
+}
+
+
+
+
 /* Hover Effect for Buttons */
-#submissionContainer button:hover {
+#compareButton :hover {
     background-color: #0a025c; /* Darker shade on hover */
 }
 

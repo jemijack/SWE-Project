@@ -2,35 +2,43 @@
     {
         "userId": "11",
         "eastArm": {
-            "laneCount": 1,
+            "laneCount": 3,
             "laneDetail": {
-                "lane1": "cycleLane"
+                "lane1": "busLane",
+                "lane2": "leftOnly",
+                "lane3": "rightOnly"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
-            "laneCount": 1,
+            "laneCount": 3,
             "laneDetail": {
-                "lane1": "busLane"
+                "lane1": "straightOnly",
+                "lane2": "straightOnly",
+                "lane3": "straightOnly"
             },
             "pedestrianCrossing": false
         },
         "northArm": {
-            "laneCount": 1,
+            "laneCount": 3,
             "laneDetail": {
-                "lane1": "busLane"
+                "lane1": "busLane",
+                "lane2": "leftOnly",
+                "lane3": "rightOnly"
             },
             "pedestrianCrossing": false
         },
         "southArm": {
-            "laneCount": 1,
+            "laneCount": 3,
             "laneDetail": {
-                "lane1": "busLane"
+                "lane1": "busLane",
+                "lane2": "rightOnly",
+                "lane3": "rightOnly"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:58:10.600Z",
-        "junctionID": 1,
+        "timestamp": "2025-03-08T14:41:43.114Z",
+        "junctionID": 12,
         "jLayoutName": "hi",
         "JLID": 1
     },
@@ -39,14 +47,15 @@
         "eastArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "cycleLane"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
         "westArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "allDirs"
+                "lane1": "leftOnly",
+                "lane2": "leftOnly"
             },
             "pedestrianCrossing": false
         },
@@ -60,83 +69,13 @@
         "southArm": {
             "laneCount": 1,
             "laneDetail": {
-                "lane1": "straightOnly"
+                "lane1": "busLane"
             },
             "pedestrianCrossing": false
         },
-        "timestamp": "2025-03-05T12:58:10.600Z",
-        "junctionID": 1,
-        "jLayoutName": "Ansha Khurana",
+        "timestamp": "2025-03-08T14:41:43.114Z",
+        "junctionID": 12,
+        "jLayoutName": "HI",
         "JLID": 2
-    },
-    {
-        "userId": "11",
-        "eastArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "leftStraight"
-            },
-            "pedestrianCrossing": false
-        },
-        "westArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "northArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "southArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "leftStraight"
-            },
-            "pedestrianCrossing": false
-        },
-        "timestamp": "2025-03-05T12:58:10.600Z",
-        "junctionID": 1,
-        "jLayoutName": "Exam",
-        "JLID": 3
-    },
-    {
-        "userId": "11",
-        "eastArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "westArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "northArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "southArm": {
-            "laneCount": 1,
-            "laneDetail": {
-                "lane1": "straightOnly"
-            },
-            "pedestrianCrossing": false
-        },
-        "timestamp": "2025-03-05T12:58:10.600Z",
-        "junctionID": 1,
-        "jLayoutName": "hi",
-        "JLID": 4
     }
 ]
