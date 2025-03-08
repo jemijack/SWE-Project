@@ -1,6 +1,6 @@
 [
     {
-      "jLayoutName": "Main Street & Broadway Intersection",
+      "jLayoutName": "Layout A: Mixed-Flow Standard",
       "timestamp": "2025-03-01T12:34:56.789Z",
       "JLID": "sim_234567",
       "northArm": {
@@ -41,7 +41,7 @@
       }
     },
     {
-      "jLayoutName": "Highway 101 & Central Avenue",
+      "jLayoutName": "Layout B: Multi-Modal Transit",
       "timestamp": "2025-03-01T14:22:33.456Z",
       "JLID": "sim_123456",
       "northArm": {
@@ -80,7 +80,7 @@
       }
     },
     {
-      "jLayoutName": "Oak Street & River Road",
+      "jLayoutName": "Layout C: Turn Lane Optimised",
       "timestamp": "2025-03-02T09:15:22.123Z",
       "JLID": "sim_345678",
       "northArm": {
@@ -120,7 +120,7 @@
       }
     },
     {
-      "jLayoutName": "University Avenue & Tech Boulevard",
+      "jLayoutName": "Layout D: Maximum Transit Lanes",
       "timestamp": "2025-03-03T08:30:45.987Z",
       "JLID": "sim_456789",
       "northArm": {
