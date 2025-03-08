@@ -584,7 +584,7 @@ function submitData() {
     console.log("Sent data:", layoutData);
 
    
-    fetch('/save_junction', {
+    fetch('/layout-design-page', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(layoutData)

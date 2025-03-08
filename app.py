@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, url_for, redirect
 import database
 from database.Objects import VPHObject, LayoutObject
 import logging
@@ -18,17 +18,10 @@ def login():
 
 
 # Route to get back to the home page from the junction set creation page
-@app.route("/home")
+@app.route("/home", methods=["GET"])
 def junctionFormToHome():
     # Displays the home page at the url /home
     return render_template("HomePage.html")
-
-
-# Route to the junction set design page from the home page
-@app.route("/junctionform")
-def junctionForm():
-    # Displays the junction set design page at the specified url, i.e /junctionform
-    return render_template("CreateNewSet.html")
 
 
 # Route to handle login. Takes user to the home page
@@ -38,7 +31,7 @@ def loginToHome():
     username = request.form.get("username")
     uid = database.insertUser(username)
     if uid is None:
-        return jsonify({"error": f"Unable to generate a uid for the username {username}"}), 500
+        return jsonify({"status": f"Error: unable to generate a uid for the username {username}"}), 500
 
     logging.info(f"The User ID for this session is: {uid}")
     session["uid"] = uid
@@ -46,15 +39,21 @@ def loginToHome():
     return render_template("HomePage.html") 
 
 
-# Route to handle the junction form submission (POST request)
-@app.route("/layoutform", methods=["POST"])
-def layoutForm():
+# Route to the junction set design page from the home page
+@app.route("/junction-creation-page", methods=["GET"])
+def junctionForm():
+    # Displays the junction set design page at the specified url, i.e /junctionform
+    return render_template("CreateNewSet.html")
 
+
+# Store the junction form in the database and render the layout configuration page
+@app.route("/junction-creation-page", methods=["POST"])
+def handleJuncionForm():
     # Get the uid for the user that's created the junction
     uid = session.get("uid")
     if uid is None:
-        return jsonify({"status": "error - the user has to login in order to be able to create a junction"})
-    
+        return jsonify({"status": "Error - the user has to login in order to be able to create a junction"})
+
     # Form a predefined JSON object representing a junction set from the data
     formData = utils.formatFormData(request.form, uid)
 
@@ -62,8 +61,8 @@ def layoutForm():
     vphObject = VPHObject(json=formData)
     success = vphObject.populateFields()
 
-    # If the VPHObject contains all of the the necessary information, that means the junction is
-    # accepted and we insert it into the database, store it's resulting ID in the session for later use
+    # If the VPHObject contains all of the the necessary information, the junction is accepted
+    # and we insert it into the database, storing it's resulting ID in the session for later use
     if success:
         session["junction"] = vphObject
         jid = database.insertJunction(vphObject)
@@ -72,19 +71,26 @@ def layoutForm():
             session["jid"] = jid  # Store jid into the session for easy access
             session["jlids"] = []  # Initialise the array to store the layout IDs for this junction set
             logging.info(f"Junction with json {json.dumps(vphObject.json, indent=4)} inserted with jid {jid}")
-            return render_template("LayoutDesignPage.html")
+            return redirect(url_for('renderLayoutForm'))
 
     # Error handling
         else:
-            return jsonify({"error": "Junction insertion failed"}), 500
+            return jsonify({"status": "Error - junction insertion failed"}), 500
     else:
-        return jsonify({"error": "VPHObject is missing some key details"}), 400
+        return jsonify({"status": "Error - VPHObject is missing some key details"}), 400
+
+
+# Route to handle the junction form submission (POST request)
+@app.route("/layout-design-page", methods=["GET"])
+def renderLayoutForm():
+    # Render the layout configuration page
+    return render_template("LayoutDesignPage.html")
 
 
 # Endpoint for when the user has finished designing the layout for their junction
 # and wants to create a new one
-@app.route('/save_junction', methods=['Get', 'POST'])
-def save_junction():
+@app.route('/layout-design-page', methods=['POST'])
+def saveJunction():
 
     # Get the JSON from the frontend
     data = request.get_json()
@@ -136,26 +142,26 @@ def save_junction():
     logging.info(f"The layouts created in this session have the following jlids: {jlids}")
 
     # Response from the backend
-    response_data = {
+    responseData = {
         "status": "Success - Layout saved to the database",
         "submissionCount": len(jlids)
     }
 
     # If 4 layouts have been submitted, prepare for simulation/comparison
     if len(jlids) >= 4:
-        response_data["redirect"] = "/loading_page"
+        responseData["redirect"] = "/loading-page"
 
-    return jsonify(response_data), 200
+    return jsonify(responseData), 200
 
 
 # Loading page endpoint
-@app.route("/loading_page", methods=["GET"])
-def loading_page():
+@app.route("/loading-page", methods=["GET"])
+def loadingPage():
 
     # Get the number of layouts that have been created for this current session
     jlids = session.get("jlids")
     if jlids is None:
-        return jsonify({"status": "error - no layouts were created in this session so there is nothing to simulate"})
+        return jsonify({"status": "Error - no layouts were created in this session so there is nothing to simulate"})
     numLayouts = len(jlids)
     # Cheat and insert premade results into the database
     logging.info(f"The result of the new cheatComparisonPage is: {database.cheatComparisonPage(numLayouts)}")
@@ -168,14 +174,14 @@ def loading_page():
 
 
 # Polling endpoint
-@app.route("/simulation_status", methods=["GET"])
-def simulation_status():
+@app.route("/simulationStatus", methods=["GET"])
+def simulationStatus():
 
     # They need to have created a junction set in order to simulate it
     jid = session.get("jid")
     if jid is None:
         return jsonify({
-            "status": "error: a junction set has not been created - there's no layouts to simulate"
+            "status": "Error -  a junction set has not been created so there are no layouts to simulate"
             }), 400
 
     if database.isSimulationFinished(jid):
@@ -186,8 +192,8 @@ def simulation_status():
     return jsonify({"status": "in progress"}), 200
 
 
-@app.route("/comparison_page", methods=["GET"])
-def comparison_page():
+@app.route("/comparison-page", methods=["GET"])
+def comparisonPage():
 
     # Get the jid of the created junction set
     jid = session.get("jid")
@@ -198,7 +204,7 @@ def comparison_page():
     # a feature in this prototype
     if jid is None:
         return jsonify({
-            "status": "Error: a junction set has not been created - there are no results to display"
+            "status": "Error - a junction set has not been created - there are no results to display"
             }), 400
 
     # The simulation has finished, so the data that we need is in the database

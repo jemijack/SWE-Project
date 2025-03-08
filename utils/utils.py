@@ -76,4 +76,5 @@ def formatFormData(form, uid):
             }
         }
     }
+    
     return formData
