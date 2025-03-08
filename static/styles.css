@@ -145,7 +145,45 @@ button {
     font-weight: 500; /* Medium weight */
     display: flex;
     margin-top: 10px;
-    margin-bottom: 10px; /* Added margin to create space at the bottom 
+    margin-bottom: 10px; /* Added margin to create space at the bottom */
+    padding: 15px; /* Adjusted padding */
+    gap: 10px; /* Reduced gap between elements */
+}
+
+/* Adjust the label for Junction Name */
+#junctionName-PedestrianContainer label {
+    margin-bottom: 5px; /* Reduced margin between label and input */
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Adjust the input box for Junction Name */
+#junctionName {
+    width: 200px;
+    padding: 8px; /* Slightly reduced padding */
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-right: 30px; 
+    margin-top: 10px; 
+}
+
+
+/* Adjust the pedestrian container */
+.pedestrian-container {
+    display: flex;
+    align-items: center; /* Align label and toggle horizontally */
+    gap: 10px; /* Space between label and toggle */
+    margin-bottom: 10px; /* Move the pedestrian crossing section up */
+}
+
+/* Adjust the label for Pedestrian Crossing */
+.pedestrian-container label {
+    font-size: 16px;
+    margin-top: 5px;
+    /* Matching the header color */
 }
 
 
@@ -346,7 +384,8 @@ input[type="range"] {
     width: 60%; /* Reduced width */
     margin-left: 30px;
     margin-right: auto; /* Center the container */
-    margin-top: 20px; /* Added margin to move it down */
+    margin-bottom: 100px; /* Added margin to move it down */
+    
      
 }
 
