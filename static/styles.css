@@ -216,9 +216,30 @@ input[type="range"] {
 }
 
 
+
+
+/******* LEFT HAND SECTION******/ 
+
+
+
+/* left-hand section has the the image and the junction-name + pedestian Crossing  SVG Image */
+
+#left-section {
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between image and junction name */
+}
+
+
+#image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: none; /* Light background */
+}
+
 #junctionName-PedestrianContainer {
-    margin-top: 20px; 
-    padding: 15px;
     background-color: #f9f9f9; /* Light background */
     border: 1px solid #ddd; /* Border for definition */
     border-radius: 8px; /* Rounded corners */
@@ -299,6 +320,12 @@ input[type="range"] {
 }
 
 
+/**** END OF LEFT *** / 
+
+
+
+
+
 /* Submission Container */
 #submissionContainer {
     padding: 15px;
@@ -332,13 +359,7 @@ input[type="range"] {
 }
 
 
-/* Left Section: SVG Image */
-#image-container {
-    flex: 1; /* Take up remaining space */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f0f0; /* Light background */
-    border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Add some padding */
-}
+
+
+
+
